@@ -1,5 +1,5 @@
 // Knot service worker: works offline, always tries the network first for the app itself.
-const CACHE = 'knot-v3';
+const CACHE = 'knot-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -15,7 +15,7 @@ self.addEventListener('fetch', e => {
   if (url.hostname.endsWith('supabase.co')) return; // data and auth always go to the network
   if (url.origin === location.origin) {
     // network first, cache fallback (so new versions show up right away)
-    e.respondWith(fetch(req).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return res; })
+    e.respondWith(fetch(req, { cache: 'no-cache' }).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return res; })
       .catch(() => caches.match(req).then(r => r || caches.match('./index.html'))));
     return;
   }
