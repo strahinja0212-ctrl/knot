@@ -68,3 +68,26 @@ end $$;
 
 -- live updates between devices
 alter publication supabase_realtime add table public.projects, public.tasks, public.notes;
+
+-- Folders (added Nov 15 2026): a folder sits inside another folder, a project, or at the top level.
+create table if not exists public.folders (
+  id uuid primary key,
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  name text not null default '',
+  parent_id uuid,
+  project_id uuid,
+  color text,
+  position int default 0,
+  created_at timestamptz,
+  updated_at timestamptz not null default now(),
+  deleted boolean not null default false,
+  synced_at timestamptz not null default now()
+);
+alter table public.folders enable row level security;
+drop policy if exists own_rows on public.folders;
+create policy own_rows on public.folders for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop trigger if exists knot_touch on public.folders;
+create trigger knot_touch before insert or update on public.folders for each row execute function public.knot_touch();
+create index if not exists folders_sync_idx on public.folders (user_id, synced_at);
+alter publication supabase_realtime add table public.folders;
+alter table public.notes add column if not exists folder_id uuid;

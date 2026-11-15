@@ -265,9 +265,19 @@ details.done-list summary::-webkit-details-marker{display:none}
 .sq-btn svg{width:18px;height:18px}
 .sq-btn.ghost{background:var(--surface);border:1px solid var(--line2);color:var(--ink2)}
 .tr{width:100%;height:34px;padding:0 8px 0 calc(8px + var(--d,0) * 16px);border-radius:8px;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2);text-align:left}
-.tr:hover{background:var(--hov)}
+.tr:hover,.tr.fr:hover{background:var(--hov)}
 .tr.on{background:var(--acc-soft);color:var(--acc);font-weight:600}
 .tr.top{font-weight:600}
+.tr.fr{padding:0 4px 0 0}
+.fr-main{flex:1;min-width:0;height:100%;display:flex;align-items:center;gap:8px;padding-left:calc(8px + var(--d,0) * 16px);text-align:left;font-weight:500;color:var(--ink2)}
+.fdot{width:9px;height:9px;border-radius:50%;flex:none;border:1.5px solid var(--acc);background:transparent}
+.fr-acts{display:flex;gap:2px;opacity:0;transition:opacity .12s}
+.tr.fr:hover .fr-acts,.tr.fr:focus-within .fr-acts{opacity:1}
+@media (hover:none){.fr-acts{opacity:1}}
+.fr-acts button{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--mute)}
+.fr-acts button:hover{background:var(--hov);color:var(--ink)}
+.fr-acts svg{width:14px;height:14px}
+.tr.fr.closed .fold{transform:rotate(-90deg)}
 .tr svg{width:14px;height:14px;color:var(--faint)}
 .tr .tl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tr .cnt{font-size:12px;color:var(--mute)}
@@ -338,6 +348,9 @@ details.done-list summary::-webkit-details-marker{display:none}
 #gsvg .n{cursor:pointer}
 #gsvg .n text{font-size:12px;fill:var(--ink2);text-anchor:middle;paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round;pointer-events:none;display:none}
 #gsvg .n-hub text{display:block;font-weight:600;fill:var(--ink)}
+#gsvg .n-folder text{display:block;font-weight:600;fill:var(--ink2)}
+#gsvg .n-folder circle.c{stroke:var(--card);stroke-width:2}
+#gsvg .fring{fill:none;stroke-width:1.5;stroke-opacity:.55;stroke-dasharray:3 2.5}
 #gsvg.zoomed .n-note text{display:block}
 #gsvg.zoomed2 .n-task text{display:block}
 #gsvg .n.sel text,#gsvg .n.nb text{display:block}
@@ -496,6 +509,8 @@ const GROUP_ORDER = ['University', 'Roblox', 'Personal'];
 
 const SV = (p, extra = '') => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ${extra}>${p}</svg>`;
 const I = {
+  folder: SV('<path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>'),
+  folderPlus: SV('<path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M12 11v5M9.5 13.5h5"/>'),
   timer: SV('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/>'),
   popout: SV('<path d="M14 4h6v6M20 4l-8 8"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/>'),
   today: SV('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
@@ -521,14 +536,15 @@ const I = {
 };
 
 /* ============ store ============ */
-const TABLES = ['projects', 'tasks', 'notes'];
+const TABLES = ['projects', 'folders', 'tasks', 'notes'];
 const COLS = {
   projects: ['id', 'name', 'color', 'grp', 'position', 'created_at', 'updated_at', 'deleted'],
   tasks: ['id', 'project_id', 'title', 'due', 'due_time', 'priority', 'done', 'done_at', 'section', 'note_id', 'recur', 'created_at', 'updated_at', 'deleted'],
-  notes: ['id', 'project_id', 'folder', 'title', 'body', 'pinned', 'created_at', 'updated_at', 'deleted'],
+  folders: ['id', 'name', 'parent_id', 'project_id', 'color', 'position', 'created_at', 'updated_at', 'deleted'],
+  notes: ['id', 'project_id', 'folder', 'folder_id', 'title', 'body', 'pinned', 'created_at', 'updated_at', 'deleted'],
 };
 const store = {
-  db: load('knot.db', { projects: {}, tasks: {}, notes: {} }),
+  db: load('knot.db', { projects: {}, folders: {}, tasks: {}, notes: {} }),
   dirty: new Set(load('knot.dirty', [])),
   meta: load('knot.meta', { lastPull: {}, goal: 5 }),
 };
@@ -551,22 +567,17 @@ const create = (t, f, r = true) => put(t, { id: uid(), deleted: false, ...f }, r
 const update = (t, id, patch, r = true) => { const o = store.db[t][id]; if (o) return put(t, { ...o, ...patch }, r); };
 const removeRow = (t, id) => update(t, id, { deleted: true });
 
-// starter projects use fixed ids so every device shares them
-(function seed() {
-  if (localStorage.getItem('knot.seeded')) return;
-  [['Matematika 3', '#2563EB', 'University'], ['Verovatnoća', '#0D9488', 'University'], ['PDP', '#DB2777', 'University'],
-   ['Launch Yourself for Pets', '#7C3AED', 'Roblox'], ['+1 Egg Size', '#D97706', 'Roblox'], ['Personal', '#16A34A', 'Personal']]
-    .forEach(([name, color, grp], i) => {
-      const id = `00000000-0000-4000-8000-00000000000${i + 1}`;
-      if (!store.db.projects[id]) {
-        store.db.projects[id] = { id, name, color, grp, position: i, deleted: false, created_at: '2026-11-07T00:00:00.000Z', updated_at: '2026-11-07T00:00:00.000Z' };
-        store.dirty.add('projects:' + id);
-      }
-    });
-  localStorage.setItem('knot.seeded', '1');
-  persist();
-})();
-
+/* ---- folders: a folder sits inside another folder, a project, or at the top level ---- */
+const fParent = f => get('folders', f.parent_id);
+const fProject = f => { for (let x = f, i = 0; x && i < 50; x = fParent(x), i++) { if (!fParent(x)) return get('projects', x.project_id); } return null; };
+const fPath = f => { const out = []; for (let x = f, i = 0; x && i < 50; x = fParent(x), i++) out.unshift(x.name || 'Untitled'); return out.join(' / '); };
+const fColor = f => { for (let x = f, i = 0; x && i < 50; x = fParent(x), i++) if (x.color) return x.color; return fProject(f)?.color || null; };
+const fDesc = id => { const out = new Set([id]); let grew = true; while (grew) { grew = false; all('folders').forEach(f => { if (f.parent_id && out.has(f.parent_id) && !out.has(f.id)) { out.add(f.id); grew = true; } }); } return out; };
+const sortedFolders = () => all('folders').sort((a, b) => (a.position ?? 0) - (b.position ?? 0) || (a.name || '').localeCompare(b.name || ''));
+const noteFolder = n => get('folders', n.folder_id);
+const noteProject = n => { const f = noteFolder(n); return f ? fProject(f) : get('projects', n.project_id); };
+const noteColor = n => { const f = noteFolder(n); return (f && fColor(f)) || noteProject(n)?.color || '#A1A1AA'; };
+const notePlace = n => { const f = noteFolder(n), p = noteProject(n); return [p ? p.name : '', f ? fPath(f) : ''].filter(Boolean).join(' / ') || 'Inbox'; };
 const sortedProjects = () => all('projects').sort((a, b) => (a.position ?? 0) - (b.position ?? 0) || a.name.localeCompare(b.name));
 function groups() {
   const gs = [...new Set(sortedProjects().map(p => p.grp || 'Other'))];
@@ -856,7 +867,7 @@ function viewProject(id, tab) {
       (done.length ? `<details class="done-list"><summary>Completed · ${done.length}</summary>${taskCard(done.slice(0, 50), { hideProject: true })}</details>` : '');
   } else {
     body = `<div class="row-actions"><button class="btn pri" data-act="new-note" data-project="${id}">${I.plus}New note</button><a class="btn sec" href="#graph">${I.graph}Graph</a></div>` +
-      (notes.length ? notes.map(n => `<a class="card ncard" href="#note/${n.id}"><span class="nt"><span style="display:flex;align-items:center;gap:6px">${n.pinned ? `<span style="display:flex;width:14px;height:14px;color:var(--acc)" aria-label="Pinned">${I.pin}</span>` : ''}${esc(n.title || 'Untitled')}</span><span class="nd">${n.folder ? esc(n.folder) + ' · ' : ''}${fmtShort(dkey(new Date(n.updated_at)))}</span></span><span class="np">${esc(plain(n.body).slice(0, 180)) || '<i>Empty</i>'}</span></a>`).join('') : '<div class="card empty">No notes yet.</div>');
+      (notes.length ? notes.map(n => `<a class="card ncard" href="#note/${n.id}"><span class="nt"><span style="display:flex;align-items:center;gap:6px">${n.pinned ? `<span style="display:flex;width:14px;height:14px;color:var(--acc)" aria-label="Pinned">${I.pin}</span>` : ''}${esc(n.title || 'Untitled')}</span><span class="nd">${noteFolder(n) ? esc(fPath(noteFolder(n))) + ' · ' : ''}${fmtShort(dkey(new Date(n.updated_at)))}</span></span><span class="np">${esc(plain(n.body).slice(0, 180)) || '<i>Empty</i>'}</span></a>`).join('') : '<div class="card empty">No notes yet.</div>');
   }
   return `<div class="page">
 <div class="hdr"><a class="back" href="#projects">${I.back}Projects</a><button class="icon-btn" data-act="edit-project" data-id="${id}" aria-label="Project options">${I.more}</button></div>
@@ -869,36 +880,46 @@ ${body}</div>`;
 /* ---- notes ---- */
 function noteTree(cur) {
   const f = S.nfilter.trim().toLowerCase();
-  const notes = all('notes').filter(n => !f || ((n.title || '') + ' ' + (n.body || '') + ' ' + (n.folder || '')).toLowerCase().includes(f));
-  const isClosed = k => !f && S.closed.has(k);
   const out = [];
-  const folderRow = (name, d, key, color, count, top) => out.push(`<button class="tr${top ? ' top' : ''}${isClosed(key) ? ' closed' : ''}" style="--d:${d}" data-act="fold" data-key="${esc(key)}" aria-expanded="${!isClosed(key)}"><span class="fold">${I.down}</span>${color ? `<span class="sq" style="width:8px;height:8px;background:${esc(color)}"></span>` : ''}<span class="tl">${esc(name)}</span>${count != null ? `<span class="cnt">${count}</span>` : ''}</button>`);
-  const noteRow = (n, d) => out.push(`<a class="tr${cur && cur.id === n.id ? ' on' : ''}" style="--d:${d}" href="#note/${n.id}">${n.pinned ? I.pin : I.doc}<span class="tl">${esc(n.title || 'Untitled')}</span></a>`);
-  const emit = (ns, d, prefix) => {
-    const root = { f: {}, n: [] };
-    ns.forEach(n => { let node = root; (n.folder || '').split('/').map(s => s.trim()).filter(Boolean).forEach(seg => { node = node.f[seg] = node.f[seg] || { f: {}, n: [] }; }); node.n.push(n); });
-    const walk = (node, d, pre) => {
-      Object.keys(node.f).sort((a, b) => a.localeCompare(b)).forEach(name => { const k = pre + '/' + name; folderRow(name, d, k, null, null); if (!isClosed(k)) walk(node.f[name], d + 1, k); });
-      node.n.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (a.title || '').localeCompare(b.title || '')).forEach(n => noteRow(n, d));
+  const isClosed = k => S.closed.has(k);
+  const noteRow = (n, d, extra = '') => out.push(`<a class="tr${cur && cur.id === n.id ? ' on' : ''}" style="--d:${d}" href="#note/${n.id}">${n.pinned ? I.pin : I.doc}<span class="tl">${esc(n.title || 'Untitled')}</span>${extra}</a>`);
+  const head = (name, d, key, color, count) => out.push(`<button class="tr top${isClosed(key) ? ' closed' : ''}" style="--d:${d}" data-act="fold" data-key="${esc(key)}" aria-expanded="${!isClosed(key)}"><span class="fold">${I.down}</span>${color ? `<span class="sq" style="width:8px;height:8px;background:${esc(color)}"></span>` : ''}<span class="tl">${esc(name)}</span>${count != null ? `<span class="cnt">${count}</span>` : ''}</button>`);
+  if (f) {
+    // filtering: a flat list of matching notes with where they live
+    const hits = all('notes').filter(n => ((n.title || '') + ' ' + (n.body || '') + ' ' + notePlace(n)).toLowerCase().includes(f));
+    hits.sort((a, b) => (a.title || '').localeCompare(b.title || '')).forEach(n => noteRow(n, 0, `<span class="cnt">${esc(notePlace(n))}</span>`));
+  } else {
+    const notes = all('notes'), folders = sortedFolders();
+    const sortN = ns => ns.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (a.title || '').localeCompare(b.title || ''));
+    const countIn = fid => { const ids = fDesc(fid); return notes.filter(n => ids.has(n.folder_id)).length; };
+    const folderRow = (fo, d) => {
+      const k = 'f:' + fo.id, c = fColor(fo);
+      out.push(`<div class="tr fr${isClosed(k) ? ' closed' : ''}" style="--d:${d}"><button class="fr-main" data-act="fold" data-key="${k}" aria-expanded="${!isClosed(k)}"><span class="fold">${I.down}</span><span class="fdot" style="${c ? `background:${esc(c)};border-color:${esc(c)}` : ''}"></span><span class="tl">${esc(fo.name || 'Untitled')}</span><span class="cnt">${countIn(fo.id) || ''}</span></button><span class="fr-acts"><button data-act="new-note" data-folder="${fo.id}" aria-label="New note in ${esc(fo.name)}" title="New note here">${I.plus}</button><button data-act="edit-folder" data-id="${fo.id}" aria-label="Folder options" title="Rename, move, colour">${I.more}</button></span></div>`);
+      if (!isClosed(k)) walk(fo.id, null, d + 1);
     };
-    walk(root, d, prefix);
-  };
-  groups().forEach(g => {
-    const ps = sortedProjects().filter(p => (p.grp || 'Other') === g);
-    const gk = 'g:' + g;
-    const pn = ps.map(p => [p, notes.filter(n => n.project_id === p.id)]).filter(([, ns]) => !f || ns.length);
-    if (f && !pn.length) return;
-    folderRow(g, 0, gk, null, null, true);
-    if (isClosed(gk)) return;
-    pn.forEach(([p, ns]) => { const k = 'p:' + p.id; folderRow(p.name, 1, k, p.color, ns.length); if (!isClosed(k)) emit(ns, 2, k); });
-  });
-  const inbox = notes.filter(n => !get('projects', n.project_id));
-  if (inbox.length || !f) { folderRow('Inbox', 0, 'inbox', null, inbox.length, true); if (!isClosed('inbox')) emit(inbox, 1, 'inbox'); }
+    // children of a folder (fid) or of a top-level place (project id, or null = no project)
+    function walk(fid, pid, d) {
+      const subs = fid ? folders.filter(x => x.parent_id === fid) : folders.filter(x => !fParent(x) && (pid ? x.project_id === pid : !get('projects', x.project_id)));
+      subs.forEach(x => folderRow(x, d));
+      const ns = fid ? notes.filter(n => n.folder_id === fid) : notes.filter(n => !noteFolder(n) && (pid ? n.project_id === pid : !get('projects', n.project_id)));
+      sortN(ns).forEach(n => noteRow(n, d));
+    }
+    const ps = sortedProjects();
+    groups().forEach(g => {
+      const gk = 'g:' + g; head(g, 0, gk, null, null);
+      if (isClosed(gk)) return;
+      ps.filter(p => (p.grp || 'Other') === g).forEach(p => { const k = 'p:' + p.id; head(p.name, 1, k, p.color, notes.filter(n => noteProject(n)?.id === p.id).length); if (!isClosed(k)) walk(null, p.id, 2); });
+    });
+    if (ps.length) { head('Inbox', 0, 'inbox', null, null); if (!isClosed('inbox')) walk(null, null, 1); }
+    else walk(null, null, 0);
+  }
+  const here = cur ? noteFolder(cur) : null;
   return `<div class="tree-top"><h1 class="title sm m-only" style="flex:1">Notes</h1><a class="sq-btn ghost m-only" href="#graph" aria-label="Graph">${I.graph}</a>
 <label class="search d-only"><span style="display:flex">${I.search}</span><input id="nfilter" data-input="nfilter" value="${esc(S.nfilter)}" placeholder="Filter notes" aria-label="Filter notes"></label>
-<button class="sq-btn" data-act="new-note" data-project="${cur?.project_id || ''}" data-folder="${esc(cur?.folder || '')}" aria-label="New note">${I.plus}</button></div>
+<button class="sq-btn ghost" data-act="new-folder" data-parent="${here?.id || ''}" aria-label="New folder" title="New folder">${I.folderPlus}</button>
+<button class="sq-btn" data-act="new-note" data-project="${cur && !here ? cur.project_id || '' : ''}" data-folder="${here?.id || ''}" aria-label="New note" title="New note">${I.plus}</button></div>
 <label class="search m-only" style="margin:0 6px 10px"><span style="display:flex">${I.search}</span><input id="nfilter-m" data-input="nfilter" value="${esc(S.nfilter)}" placeholder="Filter notes" aria-label="Filter notes"></label>
-<div role="tree" aria-label="Notes">${out.join('') || '<p class="empty">No notes match.</p>'}</div>`;
+<div role="tree" aria-label="Notes">${out.join('') || `<p class="empty">${f ? 'No notes match.' : 'No notes yet. Make a folder or a note with the buttons above.'}</p>`}</div>`;
 }
 function backlinksOf(n) {
   const t = (n.title || '').trim().toLowerCase(); if (!t) return [];
@@ -910,25 +931,25 @@ function backlinksOf(n) {
 function viewNotes(id) {
   const n = get('notes', id);
   if (!n) return `<div class="notes-layout"><section class="tree-col">${noteTree(null)}</section><div class="editor-col d-only"><div class="empty" style="margin-top:20vh">Pick a note on the left, or create one with +.<br>Link notes with <code>[[Note title]]</code>.</div></div></div>`;
-  const p = get('projects', n.project_id);
+  const p = noteProject(n);
   const mode = S.nmodeFor === n.id ? S.nmode : (n.body ? 'read' : 'edit');
   const tags = tagsOf(n.body);
   const linked = sortTasks(all('tasks').filter(x => x.note_id === n.id));
-  const folders = [...new Set(all('notes').filter(o => o.project_id === n.project_id && o.folder).map(o => o.folder))];
+  const nf = noteFolder(n);
   const bl = backlinksOf(n);
   const tm = titleMap();
   const outl = linksOf(n.body);
   const editor = `<div class="ed-top">
 <a class="back m-only" href="#notes">${I.back}Notes</a>
-<nav class="crumb d-only" aria-label="Location">${esc(p ? (p.grp || 'Other') : 'Inbox')}${p ? ` <span>/</span> ${esc(p.name)}` : ''}${n.folder ? ` <span>/</span> ${esc(n.folder)}` : ''}</nav>
+<nav class="crumb d-only" aria-label="Location">${p ? `${esc(p.grp || 'Other')} <span>/</span> ${esc(p.name)}` : 'Notes'}${nf ? ` <span>/</span> ${esc(fPath(nf)).replaceAll(' / ', ' <span>/</span> ')}` : ''}</nav>
 <div class="ed-actions"><div class="seg"><button class="${mode === 'edit' ? 'on' : ''}" data-act="nmode" data-v="edit">Edit</button><button class="${mode === 'read' ? 'on' : ''}" data-act="nmode" data-v="read">Read</button></div>
 <button class="icon-btn${n.pinned ? ' on' : ''}" data-act="pin" data-id="${n.id}" aria-label="${n.pinned ? 'Unpin' : 'Pin'} note" aria-pressed="${!!n.pinned}">${I.pin}</button>
 <a class="icon-btn" href="#graph/${n.id}" aria-label="Show in graph">${I.graph}</a>
 <button class="icon-btn" data-act="del-note" data-id="${n.id}" aria-label="Delete note">${I.trash}</button></div></div>
 <input class="ed-title" id="ed-title" data-note="${n.id}" data-field="title" value="${esc(n.title)}" placeholder="Untitled" aria-label="Note title">
 <dl class="props">
-<dt>Project</dt><dd><select data-note="${n.id}" data-field="project_id" aria-label="Project"><option value="">Inbox (no project)</option>${sortedProjects().map(o => `<option value="${o.id}" ${o.id === n.project_id ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}</select></dd>
-<dt>Folder</dt><dd><input id="ed-folder" data-note="${n.id}" data-field="folder" value="${esc(n.folder || '')}" list="dl-folders" placeholder="e.g. Design or Lectures/Week 5" aria-label="Folder"><datalist id="dl-folders">${folders.map(f => `<option value="${esc(f)}">`).join('')}</datalist></dd>
+<dt>Folder</dt><dd><select data-note="${n.id}" data-field="folder_id" aria-label="Folder"><option value="">No folder</option>${sortedFolders().map(o => [fPath(o), o]).sort((x, y) => x[0].localeCompare(y[0])).map(([path, o]) => `<option value="${o.id}" ${o.id === n.folder_id ? 'selected' : ''}>${esc(path)}</option>`).join('')}</select></dd>
+${sortedProjects().length && !nf ? `<dt>Project</dt><dd><select data-note="${n.id}" data-field="project_id" aria-label="Project"><option value="">No project</option>${sortedProjects().map(o => `<option value="${o.id}" ${o.id === n.project_id ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}</select></dd>` : ''}
 <dt>Tags</dt><dd class="tags">${tags.length ? tags.map(t => `<span class="tag">#${esc(t)}</span>`).join('') : '<span class="small mute">Add #tags in the text</span>'}</dd>
 </dl>
 ${mode === 'edit' ? `<textarea class="ed-body" id="ed-body" data-note="${n.id}" data-field="body" placeholder="Write here. Link notes with [[Note title]], add #tags, checklists with - [ ], headings with #." aria-label="Note text">${esc(n.body)}</textarea>` : `<div class="md" data-note-md="${n.id}">${md(n.body)}</div>`}
@@ -999,7 +1020,7 @@ function viewGraph(a) {
 <label class="chk"><input type="checkbox" data-change="gtasks" ${S.g.tasks ? 'checked' : ''}>Tasks</label></div>
 <div class="g-chips" role="group" aria-label="Projects shown">${chips}</div>
 <div class="g-wrap"><svg id="gsvg" role="img" aria-label="Graph of notes and how they link"><g id="gvp"><g id="gedges"></g><g id="gnodes"></g></g></svg>
-<div class="g-legend d-only"><span>Colour = project</span><span>Size = links</span><span>Double-click opens a note</span></div>
+<div class="g-legend d-only"><span>Ringed dots = folders</span><span>Size = links</span><span>Double-click opens a note</span></div>
 <div class="g-zoom"><button data-act="gzoom" data-v="1.3" aria-label="Zoom in">+</button><button data-act="gzoom" data-v="0.77" aria-label="Zoom out">−</button><button data-act="gfit" aria-label="Fit graph">${I.fit}</button></div>
 <div id="gpanel"></div></div></div>`;
 }
@@ -1009,10 +1030,14 @@ function buildGraph() {
   const add = (id, type, label, color, ref) => { const n = { id, type, label, color, ref, deg: 0 }; nodes.push(n); by.set(id, n); };
   const link = (a, b, kind) => { if (a === b || !by.has(a) || !by.has(b)) return; const k = a < b ? a + '|' + b : b + '|' + a; if (seen.has(k)) return; seen.add(k); edges.push({ a, b, kind }); by.get(a).deg++; by.get(b).deg++; };
   sortedProjects().filter(p => !hidden.has(p.id)).forEach(p => add('p:' + p.id, 'hub', p.name, p.color, p));
-  const notes = all('notes').filter(n => !(n.project_id && hidden.has(n.project_id)));
-  notes.forEach(n => add('n:' + n.id, 'note', n.title || 'Untitled', get('projects', n.project_id)?.color || '#A1A1AA', n));
+  const shown = p => !(p && hidden.has(p.id));
+  const folders = sortedFolders().filter(fo => shown(fProject(fo)));
+  folders.forEach(fo => add('f:' + fo.id, 'folder', fo.name || 'Untitled', fColor(fo) || 'var(--acc)', fo));
+  folders.forEach(fo => { if (fParent(fo)) link('f:' + fo.id, 'f:' + fo.parent_id, 'folder'); else if (fo.project_id) link('f:' + fo.id, 'p:' + fo.project_id, 'folder'); });
+  const notes = all('notes').filter(n => shown(noteProject(n)));
+  notes.forEach(n => add('n:' + n.id, 'note', n.title || 'Untitled', noteColor(n), n));
   const tm = titleMap();
-  notes.forEach(n => { if (n.project_id) link('n:' + n.id, 'p:' + n.project_id, 'hub'); linksOf(n.body).forEach(t => { const m = tm.get(t.toLowerCase()); if (m) link('n:' + n.id, 'n:' + m.id, 'link'); }); });
+  notes.forEach(n => { if (noteFolder(n)) link('n:' + n.id, 'f:' + n.folder_id, 'hub'); else if (n.project_id) link('n:' + n.id, 'p:' + n.project_id, 'hub'); linksOf(n.body).forEach(t => { const m = tm.get(t.toLowerCase()); if (m) link('n:' + n.id, 'n:' + m.id, 'link'); }); });
   if (S.g.tasks) openTasks().filter(t => !(t.project_id && hidden.has(t.project_id))).forEach(t => {
     add('t:' + t.id, 'task', t.title, get('projects', t.project_id)?.color || '#A1A1AA', t);
     if (t.note_id && by.has('n:' + t.note_id)) link('t:' + t.id, 'n:' + t.note_id, 'task'); else if (t.project_id) link('t:' + t.id, 'p:' + t.project_id, 'task');
@@ -1024,7 +1049,7 @@ function buildGraph() {
   }
   return { nodes, edges, by };
 }
-const radius = n => n.type === 'hub' ? 11 + Math.min(n.deg, 14) * 0.6 : n.type === 'task' ? 4.5 : 5 + Math.min(n.deg, 10) * 0.9;
+const radius = n => n.type === 'hub' ? 11 + Math.min(n.deg, 14) * 0.6 : n.type === 'folder' ? 7.5 + Math.min(n.deg, 12) * 0.5 : n.type === 'task' ? 4.5 : 5 + Math.min(n.deg, 10) * 0.9;
 function initGraph() {
   const svg = $('#gsvg'); if (!svg) return;
   const g = buildGraph();
@@ -1036,7 +1061,7 @@ function initGraph() {
     let p = S.g.pos.get(n.id);
     if (!p) {
       fresh++;
-      const hub = n.type !== 'hub' && n.ref.project_id && S.g.pos.get('p:' + n.ref.project_id);
+      const hub = n.type !== 'hub' && ((n.ref.folder_id && S.g.pos.get('f:' + n.ref.folder_id)) || (n.ref.parent_id && S.g.pos.get('f:' + n.ref.parent_id)) || (n.ref.project_id && S.g.pos.get('p:' + n.ref.project_id)));
       const a = Math.random() * Math.PI * 2, r = n.type === 'hub' ? 220 : 50;
       p = hub ? { x: hub.x + Math.cos(a) * r, y: hub.y + Math.sin(a) * r } : { x: Math.cos(a) * (n.type === 'hub' ? r : 120 + Math.random() * 120), y: Math.sin(a) * (n.type === 'hub' ? r : 120 + Math.random() * 120) };
       p.vx = 0; p.vy = 0; S.g.pos.set(n.id, p);
@@ -1049,7 +1074,7 @@ function initGraph() {
   E.forEach(e => { e.el = document.createElementNS(NS, 'line'); e.el.setAttribute('class', 'e-' + e.kind); ge.appendChild(e.el); });
   g.nodes.forEach(n => {
     const el = document.createElementNS(NS, 'g'); el.setAttribute('class', 'n n-' + n.type); el.dataset.id = n.id;
-    el.innerHTML = `<circle class="halo" r="${n.r + 6}"></circle><circle class="c" r="${n.r}" fill="${esc(n.color)}"></circle><text y="${n.r + 14}">${esc(n.label.length > 28 ? n.label.slice(0, 27) + '…' : n.label)}</text>`;
+    el.innerHTML = `<circle class="halo" r="${n.r + 6}"></circle>${n.type === 'folder' ? `<circle class="fring" r="${n.r + 3.5}" style="stroke:${esc(n.color)}"></circle>` : ''}<circle class="c" r="${n.r}" style="fill:${esc(n.color)}"></circle><text y="${n.r + 14}">${esc(n.label.length > 28 ? n.label.slice(0, 27) + '…' : n.label)}</text>`;
     gn.appendChild(el); n.el = el;
   });
   G = { nodes: g.nodes, edges: E, by: g.by, alpha: fresh ? 1 : 0.15, raf: 0, svg };
@@ -1073,7 +1098,7 @@ function step() {
   }
   G.edges.forEach(e => {
     const p = e.A.p, q = e.B.p, dx = q.x - p.x, dy = q.y - p.y, d = Math.sqrt(dx * dx + dy * dy) || 1;
-    const rest = e.kind === 'hub' ? 70 : e.kind === 'task' ? 45 : 110, f = (d - rest) * 0.05 * a;
+    const rest = e.kind === 'hub' ? 70 : e.kind === 'folder' ? 90 : e.kind === 'task' ? 45 : 110, f = (d - rest) * 0.05 * a;
     const fx = dx / d * f, fy = dy / d * f; p.vx += fx; p.vy += fy; q.vx -= fx; q.vy -= fy;
   });
   N.forEach(n => { const p = n.p; if (p.fixed) { p.vx = p.vy = 0; return; } p.vx *= 0.6; p.vy *= 0.6; p.x += p.vx; p.y += p.vy; });
@@ -1116,7 +1141,10 @@ function renderPanel() {
   const list = nbs.length ? `<div style="display:flex;flex-direction:column;gap:6px">${nbs.slice(0, 12).map(m => `<button class="lk" data-act="gsel" data-id="${esc(m.id)}"><span class="sq" style="width:7px;height:7px;background:${esc(m.color)}"></span>${esc(m.label)}</button>`).join('')}</div>` : '';
   if (n.type === 'note') {
     const r = n.ref, p = get('projects', r.project_id);
-    el.innerHTML = `${x}<span class="side-h3">Note</span><h2>${esc(r.title || 'Untitled')}</h2><span class="small mute" style="display:flex;align-items:center;gap:6px"><span class="sq" style="width:8px;height:8px;background:${esc(n.color)}"></span>${esc(p ? p.name : 'Inbox')}${r.folder ? ' / ' + esc(r.folder) : ''}</span><p>${esc(plain(r.body).slice(0, 200)) || '<i>Empty note</i>'}</p><a class="btn pri" href="#note/${r.id}">Open note</a>${nbs.length ? `<span class="side-h3">Connected · ${nbs.length}</span>${list}` : ''}`;
+    el.innerHTML = `${x}<span class="side-h3">Note</span><h2>${esc(r.title || 'Untitled')}</h2><span class="small mute" style="display:flex;align-items:center;gap:6px"><span class="sq" style="width:8px;height:8px;background:${esc(n.color)}"></span>${esc(notePlace(r))}</span><p>${esc(plain(r.body).slice(0, 200)) || '<i>Empty note</i>'}</p><a class="btn pri" href="#note/${r.id}">Open note</a>${nbs.length ? `<span class="side-h3">Connected · ${nbs.length}</span>${list}` : ''}`;
+  } else if (n.type === 'folder') {
+    const fo = n.ref, ids = fDesc(fo.id), cnt = all('notes').filter(o => ids.has(o.folder_id)).length, up = fParent(fo) ? 'Inside ' + fPath(fParent(fo)) : fProject(fo) ? 'In ' + fProject(fo).name : 'Top level';
+    el.innerHTML = `${x}<span class="side-h3">Folder</span><h2>${esc(fo.name || 'Untitled')}</h2><p>${esc(up)} · ${cnt} note${cnt === 1 ? '' : 's'}</p><div class="btns"><button class="btn pri" data-act="new-note" data-folder="${fo.id}">${I.plus}New note</button><button class="btn sec" data-act="edit-folder" data-id="${fo.id}">Edit</button></div>${list}`;
   } else if (n.type === 'hub') {
     const p = n.ref;
     el.innerHTML = `${x}<span class="side-h3">Project</span><h2>${esc(p.name)}</h2><p>${all('notes').filter(o => o.project_id === p.id).length} notes · ${openTasks().filter(t => t.project_id === p.id).length} open tasks</p><div class="btns"><a class="btn pri" href="#project/${p.id}/notes">Open project</a><button class="btn sec" data-act="new-note" data-project="${p.id}">${I.plus}Note</button></div>${list ? `<span class="side-h3">Notes</span>${list}` : ''}`;
@@ -1207,7 +1235,7 @@ function viewSearch() {
   const ns = q ? all('notes').filter(n => ((n.title || '') + ' ' + (n.body || '')).toLowerCase().includes(q)) : [];
   return `<div class="page"><div class="hdr"><h1 class="title">Search</h1></div>
 <label class="qa" style="color:var(--mute)">${I.search}<input id="search-q" data-input="q" value="${esc(S.q)}" placeholder="Search tasks and notes" aria-label="Search tasks and notes"></label>
-${q ? `${ts.length ? `<h2 class="res-h">Tasks · ${ts.length}</h2>${taskCard(ts.slice(0, 50))}` : ''}${ns.length ? `<h2 class="res-h">Notes · ${ns.length}</h2>${ns.slice(0, 50).map(n => `<a class="card ncard" href="#note/${n.id}"><span class="nt"><span>${esc(n.title || 'Untitled')}</span><span class="nd">${esc(get('projects', n.project_id)?.name || 'Inbox')}</span></span><span class="np">${esc(plain(n.body).slice(0, 160))}</span></a>`).join('')}` : ''}${!ts.length && !ns.length ? '<div class="card empty" style="margin-top:12px">Nothing found.</div>' : ''}` : ''}</div>`;
+${q ? `${ts.length ? `<h2 class="res-h">Tasks · ${ts.length}</h2>${taskCard(ts.slice(0, 50))}` : ''}${ns.length ? `<h2 class="res-h">Notes · ${ns.length}</h2>${ns.slice(0, 50).map(n => `<a class="card ncard" href="#note/${n.id}"><span class="nt"><span>${esc(n.title || 'Untitled')}</span><span class="nd">${esc(notePlace(n))}</span></span><span class="np">${esc(plain(n.body).slice(0, 160))}</span></a>`).join('')}` : ''}${!ts.length && !ns.length ? '<div class="card empty" style="margin-top:12px">Nothing found.</div>' : ''}` : ''}</div>`;
 }
 
 /* ---- settings ---- */
@@ -1317,6 +1345,20 @@ function editProject(id) {
 <div class="dlg-actions">${p ? `<button type="button" class="btn danger" data-act="del-project" data-id="${p.id}">${I.trash}Delete</button>` : ''}<span style="flex:1"></span><button type="button" class="btn sec" data-act="close-dlg">Cancel</button><button class="btn pri">${p ? 'Save' : 'Create'}</button></div></form>`);
 }
 
+function editFolder(id, parentId) {
+  const fo = id ? get('folders', id) : null;
+  const banned = fo ? fDesc(fo.id) : new Set();
+  const cur = fo ? (fo.parent_id && get('folders', fo.parent_id) ? 'f:' + fo.parent_id : fo.project_id && get('projects', fo.project_id) ? 'p:' + fo.project_id : '') : parentId ? 'f:' + parentId : '';
+  const opts = [['', 'Top level (connected to nothing)'], ...sortedProjects().map(p => ['p:' + p.id, 'Project: ' + p.name]),
+    ...sortedFolders().filter(x => !banned.has(x.id)).map(x => ['f:' + x.id, 'Folder: ' + fPath(x)]).sort((a, b) => a[1].localeCompare(b[1]))];
+  const color = fo?.color || '';
+  openDlg(`<form class="dlg-form" data-form="folder" data-id="${id || ''}"><h2>${fo ? 'Edit folder' : 'New folder'}</h2>
+<label class="fld">Name<input name="name" value="${esc(fo?.name || '')}" required placeholder="Lectures, Ideas, Week 5…"></label>
+<label class="fld">Connected to<select name="parent">${opts.map(([v, l]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
+<fieldset style="border:none;padding:0;margin:0"><legend class="fld" style="margin-bottom:8px">Dot colour</legend><div class="swatches"><label style="background:var(--soft);border:1px solid var(--line2)" title="Inherit"><input type="radio" name="color" value="" ${!color ? 'checked' : ''} aria-label="Inherit colour"></label>${COLORS.map(c => `<label style="background:${c}"><input type="radio" name="color" value="${c}" ${c === color ? 'checked' : ''} aria-label="${c}"></label>`).join('')}</div></fieldset>
+<div class="dlg-actions">${fo ? `<button type="button" class="btn danger" data-act="del-folder" data-id="${fo.id}">${I.trash}Delete</button>` : ''}<span style="flex:1"></span><button type="button" class="btn sec" data-act="close-dlg">Cancel</button><button class="btn pri">${fo ? 'Save' : 'Create'}</button></div></form>`);
+}
+
 /* ============ actions ============ */
 function toggleTask(id) {
   const x = get('tasks', id); if (!x) return;
@@ -1330,8 +1372,10 @@ function toggleTask(id) {
   update('tasks', id, { done: true, done_at: nowISO(), recur: '' });
   toast(next ? `Done · next on ${fmtShort(next.due)}` : 'Task done', () => { update('tasks', id, { done: false, done_at: null, recur: before.recur }); if (next) removeRow('tasks', next.id); });
 }
-function newNote(project_id, folder) {
-  const n = create('notes', { project_id: project_id || null, folder: folder || '', title: 'Untitled', body: '', pinned: false }, false);
+function newNote(project_id, folder_id) {
+  const fo = get('folders', folder_id);
+  if (fo) S.closed.delete('f:' + fo.id);
+  const n = create('notes', { project_id: fo ? fProject(fo)?.id || null : project_id || null, folder_id: fo ? fo.id : null, folder: '', title: 'Untitled', body: '', pinned: false }, false);
   S.nmodeFor = n.id; S.nmode = 'edit'; S.focusTitle = n.id;
   if (location.hash === '#note/' + n.id) render(true); else location.hash = '#note/' + n.id;
 }
@@ -1339,7 +1383,7 @@ function openWiki(title) {
   let n = noteByTitle(title);
   if (!n) {
     const cur = route().v === 'note' ? get('notes', route().a) : null;
-    n = create('notes', { title: title.trim(), project_id: cur?.project_id || null, folder: cur?.folder || '', body: '', pinned: false }, false);
+    n = create('notes', { title: title.trim(), project_id: cur?.project_id || null, folder_id: cur?.folder_id || null, folder: '', body: '', pinned: false }, false);
     S.nmodeFor = n.id; S.nmode = 'edit';
   }
   if (route().v === 'graph') { S.g.sel = 'n:' + n.id; render(true); return; }
@@ -1350,6 +1394,15 @@ const ACTIONS = {
   'edit-task': el => { dlg.open && dlg.close(); editTask(el.dataset.id); },
   'del-task': el => { const id = el.dataset.id; const x = get('tasks', id); dlg.close(); removeRow('tasks', id); toast('Task deleted', () => update('tasks', id, { deleted: false, title: x.title })); },
   'close-dlg': () => dlg.close(),
+  'new-folder': el => editFolder(null, el.dataset.parent || null),
+  'edit-folder': el => editFolder(el.dataset.id),
+  'del-folder': el => {
+    const fo = get('folders', el.dataset.id); if (!fo || !confirm(`Delete folder “${fo.name}”? Notes and folders inside move up one level; nothing else is deleted.`)) return;
+    dlg.close();
+    all('folders').filter(x => x.parent_id === fo.id).forEach(x => update('folders', x.id, { parent_id: fo.parent_id || null, project_id: fo.parent_id ? null : fo.project_id }, false));
+    all('notes').filter(n => n.folder_id === fo.id).forEach(n => update('notes', n.id, { folder_id: fo.parent_id || null, project_id: fProject(fo)?.id || n.project_id || null }, false));
+    removeRow('folders', fo.id); toast('Folder deleted');
+  },
   'new-project': () => editProject(null),
   'edit-project': el => editProject(el.dataset.id),
   'del-project': el => { if (!confirm('Delete this project? Its tasks and notes are kept, without a project.')) return; dlg.close(); removeRow('projects', el.dataset.id); location.hash = '#projects'; },
@@ -1405,6 +1458,13 @@ document.addEventListener('submit', async e => {
     const d = Object.fromEntries(new FormData(f));
     update('tasks', f.dataset.id, { title: d.title.trim(), due: d.due || '', due_time: d.due_time || '', priority: +d.priority, recur: d.recur, project_id: d.project_id || null, section: d.section.trim(), note_id: d.note_id || null });
     dlg.close();
+  } else if (kind === 'folder') {
+    const d = Object.fromEntries(new FormData(f));
+    const [k, ref] = (d.parent || ':').split(':');
+    const fields = { name: d.name.trim() || 'Untitled', parent_id: k === 'f' ? ref : null, project_id: k === 'p' ? ref : null, color: d.color || null };
+    dlg.close();
+    if (f.dataset.id) update('folders', f.dataset.id, fields);
+    else { const fo = create('folders', { ...fields, position: all('folders').length }, false); if (fields.parent_id) S.closed.delete('f:' + fields.parent_id); save('knot.closed', [...S.closed]); render(true); toast(`Folder “${fo.name}” created`); }
   } else if (kind === 'project') {
     const d = Object.fromEntries(new FormData(f));
     const fields = { name: d.name.trim(), grp: d.grp.trim() || 'Personal', color: d.color || COLORS[0] };
