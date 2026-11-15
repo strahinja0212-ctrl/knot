@@ -18,36 +18,46 @@
 // Colour palettes. Each one is a full set of colours; applyTheme writes them onto <html> as CSS variables.
 // Keys: bg, side (sidebar), card, surface (inputs, raised bits), line, line2, row, soft, ink, ink2, mute, faint, ring, acc, onAcc (text on accent).
 const K = 'bg side card surface line line2 row soft ink ink2 mute faint ring acc'.split(' ');
-const pal = (name, dark, v, onAcc = '#FFFFFF') => ({ name, dark, onAcc, ...Object.fromEntries(K.map((k, i) => [k, v.split(' ')[i]])) });
+const pal = (name, group, v, onAcc, fx) => ({ name, group, onAcc, fx, ...Object.fromEntries(K.map((k, i) => [k, v.split(' ')[i]])) });
+// Night-only palettes. group k = Knot originals, c = community editor themes (open source palettes).
 const PALETTES = {
-  light:    pal('Light', 0,    '#FAFAF9 #F4F3F1 #FFFFFF #FFFFFF #EEECEA #E7E5E4 #F1F0EE #F4F4F5 #18181B #3F3F46 #52525B #71717A #A1A1AA #4F46E5'),
-  paper:    pal('Paper', 0,    '#F6F1E7 #EFE8DA #FFFCF5 #FFFCF5 #E8DFCD #DDD2BD #EEE6D6 #EFE8DA #2B2620 #4A4236 #6B604F #8A7E6B #B3A68F #B45309'),
-  sakura:   pal('Sakura', 0,   '#FCF5F6 #F7E8EB #FFFFFF #FFFFFF #F3E2E6 #EBD3D9 #F6E9EC #F8ECEF #2A1A1F #4B3239 #6E5058 #8F7179 #C4A3AC #DB2777'),
-  mint:     pal('Mint', 0,     '#F3F8F5 #E6F0EA #FFFFFF #FFFFFF #DFEBE3 #D1E2D7 #E8F1EB #EAF3ED #14211A #2F4237 #4D6356 #6B8274 #9DB5A6 #047857'),
-  lavender: pal('Lavender', 0, '#F7F5FC #ECE8F7 #FFFFFF #FFFFFF #E6E1F3 #DAD3EE #EEEAF7 #F0EDF9 #1E1A2B #3B3550 #5A5272 #7A7292 #A9A1C2 #7C3AED'),
-  sky:      pal('Sky', 0,      '#F3F7FC #E5EEF8 #FFFFFF #FFFFFF #DEE8F3 #D0DDEC #E7EFF8 #EAF1F9 #0F1B2A #2C3B4F #4A5B70 #6A7B90 #9AAABE #0369A1'),
-  dark:     pal('Dark', 1,     '#141416 #1B1B1E #1F1F23 #26262B #2C2C31 #36363C #2A2A2F #2C2C31 #F4F4F5 #D4D4D8 #A1A1AA #8B8B94 #62626B #6366F1'),
-  midnight: pal('Midnight', 1, '#05070D #0A0E18 #0E1322 #141A2C #1A2134 #252D44 #182036 #1A2134 #E8ECF6 #C3CADB #8D97AE #717C95 #4A5571 #6366F1'),
-  slate:    pal('Slate', 1,    '#1F242C #252B34 #2A313B #313943 #363E49 #424B57 #3A424D #363E49 #ECEFF4 #D3D8E0 #A3ACB9 #8A93A1 #66707E #88A9D6', '#10151C'),
-  forest:   pal('Forest', 1,   '#0E1511 #131D17 #17231C #1D2B22 #22322A #2C3F34 #213027 #22322A #E6F0EA #C4D4CA #8FA597 #75897C #4D6356 #34D399', '#062016'),
-  ocean:    pal('Ocean', 1,    '#08131D #0C1A27 #102131 #15293C #1A2F44 #233B54 #183044 #1A2F44 #E4EEF7 #C0D2E2 #8AA2B8 #6F879D #44607A #38BDF8', '#04192A'),
-  mocha:    pal('Mocha', 1,    '#18130F #1F1915 #251E19 #2D2520 #322924 #3E342D #352C26 #322924 #F3ECE6 #DCCFC4 #AE9E90 #918275 #66594E #F59E0B', '#241503'),
-  grape:    pal('Grape', 1,    '#13101C #191424 #1F192D #261F37 #2B2340 #362D4E #2E2644 #2B2340 #EEEAF6 #D2CAE3 #A397BA #877C9F #5C5274 #C084FC', '#1E0B33'),
-  ember:    pal('Ember', 1,    '#170F0E #1E1413 #251917 #2D1F1C #342422 #412E2B #382725 #342422 #F6EAE7 #E0CCC7 #B49A94 #967D77 #6B524D #FB7185', '#2A0A10'),
+  'graphite': pal('Graphite', 'k', '#141416 #19191C #1F1F23 #2A2A2E #303034 #3D3D40 #2E2E32 #303034 #F4F4F5 #D4D4D6 #A3A3A5 #858588 #636366 #818CF8', '#0B0B1A', ''),
+  'midnight': pal('Midnight', 'k', '#05070D #090C16 #0E1322 #191E2D #1F2433 #2D3140 #1D2231 #1F2433 #E8ECF6 #C7CBD6 #959AA5 #777B88 #545866 #5850EC', '#FFFFFF', ''),
+  'cyberpunk': pal('Cyberpunk', 'k', '#08080F #0C0C15 #11111C #1C1D27 #22242E #2F323C #20212C #22242E #EAFBFF #C9D8DD #98A2A9 #798189 #565C65 #FCEE0A', '#0A0A12', 'glow sharp'),
+  'synthwave': pal('Synthwave', 'k', '#150A24 #1A0E2C #211236 #2C1D40 #322346 #403052 #302144 #322346 #FBEAFF #DACAE1 #A898B3 #8A7A96 #675776 #FF4FD8', '#1A0420', 'glow'),
+  'matrix': pal('Matrix', 'k', '#000500 #010A04 #03110A #0C1D14 #112419 #1C3225 #102217 #112419 #B8FFC9 #9DDBAC #73A580 #5A8366 #3D5D47 #00FF66', '#001A08', 'glow mono sharp'),
+  'amber': pal('Amber CRT', 'k', '#0D0900 #120C02 #171005 #231A0D #2A2011 #372C1B #271E10 #2A2011 #FFD9A0 #DCBB89 #A78D65 #86704F #615037 #FFB000', '#1A1000', 'glow mono'),
+  'vampire': pal('Vampire', 'k', '#0B0507 #11070B #180A0F #23151A #2A1B20 #37292D #27191E #2A1B20 #F3E4E7 #D2C3C7 #A09195 #817377 #5E5054 #E11D48', '#FFFFFF', ''),
+  'deepsea': pal('Deep Sea', 'k', '#03111A #051824 #082030 #132B3A #193141 #263E4D #172F3E #193141 #DDF3FF #BDD3E0 #8CA3B0 #6E8593 #4C6472 #2DD4BF', '#02201C', ''),
+  'aurora': pal('Aurora', 'k', '#0A0F1E #0E1426 #121A30 #1D253A #232B41 #30384D #21293E #232B41 #E8F0FF #C8D0E0 #979FB0 #798193 #565E72 #7CFFB2', '#05200F', 'glow'),
+  'forest': pal('Forest', 'k', '#0E1511 #121B16 #17231C #212D26 #28332C #344039 #25312A #28332C #E6F0EA #C7D1CB #97A29C #7A857F #59655E #34D399', '#062016', ''),
+  'espresso': pal('Espresso', 'k', '#18130F #1E1814 #251E19 #2F2823 #352E29 #423B36 #332C27 #352E29 #F3ECE6 #D4CDC7 #A59E98 #88817B #67605B #F59E0B', '#241503', ''),
+  'sunset': pal('Sunset', 'k', '#1A0F1A #1F1221 #26162A #312133 #372739 #443443 #352537 #372739 #FFE9E0 #DEC9C5 #AD999B #8E7B81 #6B5A64 #FF8A4C', '#2A0E00', ''),
+  'cat-mocha': pal('Catppuccin Mocha', 'c', '#181825 #1B1B29 #1E1E2E #272738 #2C2D3E #36384A #2A2B3C #2C2D3E #CDD6F4 #B3BAD6 #8A90A9 #72768D #56596D #CBA6F7', '#1E1E2E', ''),
+  'cat-frappe': pal('Catppuccin Frappé', 'c', '#292C3C #2C3040 #303446 #383C4F #3C4054 #454A5E #3A3F52 #3C4054 #C6D0F5 #B0B9DB #9FA7C8 #787F9A #60667E #8CAAEE', '#232634', ''),
+  'dracula': pal('Dracula', 'c', '#21222C #242630 #282A36 #32343F #393A45 #454750 #373843 #393A45 #F8F8F2 #D9D9D6 #A9AAAB #8C8D90 #6B6C72 #BD93F9', '#21222C', ''),
+  'tokyo': pal('Tokyo Night', 'c', '#16161E #181822 #1A1B26 #222430 #272937 #313443 #262734 #272937 #C0CAF5 #A7B0D6 #848BAA #6A6F89 #4F5368 #7AA2F7', '#16161E', ''),
+  'nord': pal('Nord', 'c', '#2E3440 #343A48 #3B4252 #444B5A #49505F #545A69 #474E5D #49505F #ECEFF4 #D1D5DC #B3B8C0 #9095A0 #747986 #88C0D0', '#2E3440', ''),
+  'gruvbox': pal('Gruvbox', 'c', '#1D2021 #222424 #282828 #32312F #383633 #43413B #363532 #383633 #EBDBB2 #CEC09D #A1977E #867E6A #666154 #FABD2F', '#282828', ''),
+  'rosepine': pal('Rosé Pine', 'c', '#191724 #1C1A28 #1F1D2E #292738 #2E2C3E #3A384A #2D2B3C #2E2C3E #E0DEF4 #C3C1D6 #9795A9 #7C7A8D #5D5B6D #EBBCBA', '#191724', ''),
+  'solarized': pal('Solarized', 'c', '#002B36 #03303B #073642 #133F49 #19444E #274F57 #17424C #19444E #EEE8D5 #CBCDBF #96A49D #768B89 #516F71 #2AA198', '#002B36', ''),
+  'everforest': pal('Everforest', 'c', '#232A2E #282F34 #2D353B #353C41 #3A4144 #44494B #393F43 #3A4144 #D3C6AA #BAB099 #AEA692 #7D7B70 #62635F #A7C080', '#232A2E', ''),
+  'kanagawa': pal('Kanagawa', 'c', '#16161D #1A1A22 #1F1F28 #28282F #2E2E34 #39393C #2C2C32 #2E2E34 #DCD7BA #C0BBA4 #949183 #7A776E #5B5A57 #7E9CD8', '#16161D', ''),
+  'onedark': pal('One Dark', 'c', '#21252B #24282F #282C34 #31353D #363A42 #41454D #353940 #363A42 #DCDFE4 #C1C4CA #989BA1 #7E8288 #62656C #61AFEF', '#1B1F27', ''),
+  'monokai': pal('Monokai', 'c', '#1E1F1C #22231F #272822 #31322C #383933 #44453F #363731 #383933 #F8F8F2 #D9D9D3 #A9A9A3 #8B8C86 #6A6B65 #A6E22E', '#1E1F1C', ''),
 };
-// Optional accent override; 'auto' uses the palette's own accent.
 const ACCENTS = { indigo: '#4F46E5', blue: '#2563EB', sky: '#0284C7', teal: '#0D9488', green: '#16A34A', amber: '#D97706', orange: '#EA580C', rose: '#E11D48', pink: '#DB2777', violet: '#7C3AED' };
 function themePrefs() {
-  let t = { theme: 'system', accent: 'auto' };
+  let t = { theme: 'graphite', accent: 'auto' };
   try { t = { ...t, ...JSON.parse(localStorage.getItem('knot.theme') || '{}') }; } catch { }
-  if (t.theme !== 'system' && !PALETTES[t.theme]) t.theme = 'system';
+  if (!PALETTES[t.theme]) t.theme = 'graphite';
   if (t.accent !== 'auto' && !ACCENTS[t.accent]) t.accent = 'auto';
   return t;
 }
 function themeVars() {
   const t = themePrefs();
-  const key = t.theme === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t.theme;
-  const P = PALETTES[key], dk = P.dark, own = t.accent === 'auto';
+  const key = t.theme;
+  const P = PALETTES[key], dk = 1, own = t.accent === 'auto';
   const mix = (c, pct, base) => `color-mix(in srgb,${c} ${pct}%,${base})`;
   const v = {
     bg: P.bg, side: P.side, card: P.card, surface: P.surface, line: P.line, line2: P.line2, row: P.row, soft: P.soft,
@@ -64,7 +74,7 @@ function themeVars() {
 function applyTheme() {
   const { t, key, P, css } = themeVars();
   const h = document.documentElement;
-  h.style.cssText = css; h.dataset.theme = key;
+  h.style.cssText = css; h.dataset.theme = key; h.dataset.fx = P.fx;
   const m = document.querySelector('meta[name=theme-color]');
   if (m) m.content = P.bg;
   return t;
@@ -399,6 +409,13 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 #toast:empty{display:none}
 #toast button{color:#A5B4FC;font-weight:600;padding:6px 8px}
 @media (min-width:900px){#toast{bottom:24px}}
+/* palette effects: data-fx on <html> */
+:root[data-fx~=glow] :is(.btn.pri,.pomo-fab.run,.strip .on,.month button.on,.sq-btn,.logo){box-shadow:0 0 14px color-mix(in srgb,var(--acc) 55%,transparent)}
+:root[data-fx~=glow] :is(.title,.ptitle h1,.brand,.nav a.on,.tab.on,.pomo-time){text-shadow:0 0 12px color-mix(in srgb,var(--acc) 50%,transparent)}
+:root[data-fx~=glow] .task.done .ring{box-shadow:0 0 8px var(--acc)}
+:root[data-fx~=mono] body{font-family:'Cascadia Code',ui-monospace,Consolas,monospace;letter-spacing:-.01em}
+:root[data-fx~=sharp]{--r:3px}
+:root[data-fx~=sharp] :is(.btn,.qa,.search,.nav a,.seg,.seg button,.seg a,.th,.pv,.pomo-card,.pomo-fab,dialog,.fld input,.fld select,.chip,.tr,.strip button,.month button,.g-wrap,.sq-btn,.logo,.chk,.bl,.lk,.tag,.pill,#toast){border-radius:3px}
 /* appearance settings */
 .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-bottom:14px}
 .th{border:1px solid var(--line2);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:left;font-size:13px;font-weight:500;background:var(--surface)}
@@ -1443,13 +1460,11 @@ let lastDay = today(); setInterval(() => { if (today() !== lastDay) { lastDay = 
 /* ============ appearance ============ */
 function viewAppearance() {
   const t = applyTheme();
-  const pv = P => `<span class="pv" style="background:${P.bg}"><i style="background:${P.side}"></i><i style="background:${P.surface};display:flex;align-items:flex-end;padding:4px"><b style="height:6px;width:60%;border-radius:3px;background:${t.accent === 'auto' ? P.acc : ACCENTS[t.accent]}"></b></i></span>`;
-  const btn = (k, label, prev) => `<button class="th${t.theme === k ? ' on' : ''}" data-act="set-theme" data-v="${k}" aria-pressed="${t.theme === k}">${prev}${label}</button>`;
-  const group = dk => Object.entries(PALETTES).filter(([, P]) => P.dark === dk).map(([k, P]) => btn(k, P.name, pv(P))).join('');
-  const sys = `<span class="pv" style="background:linear-gradient(135deg,${PALETTES.light.bg} 50%,${PALETTES.dark.bg} 50%)"></span>`;
-  return `<section class="card pad set-sec"><h2>Appearance</h2><p>Saved on this device, so your phone and PC can look different. System switches between Light and Dark with your device.</p>
-<h3 class="side-h3" style="margin:4px 0 8px">Light</h3><div class="themes" role="group" aria-label="Light palettes">${btn('system', 'System', sys)}${group(0)}</div>
-<h3 class="side-h3" style="margin:4px 0 8px">Dark</h3><div class="themes" role="group" aria-label="Dark palettes">${group(1)}</div>
+  const pv = P => `<span class="pv" style="background:${P.bg}"><i style="background:${P.side}"></i><i style="background:${P.card};display:flex;flex-direction:column;justify-content:flex-end;gap:3px;padding:4px"><b style="height:3px;width:80%;border-radius:2px;background:${P.mute}"></b><b style="height:6px;width:55%;border-radius:3px;background:${t.accent === 'auto' ? P.acc : ACCENTS[t.accent]}"></b></i></span>`;
+  const group = g => Object.entries(PALETTES).filter(([, P]) => P.group === g).map(([k, P]) => `<button class="th${t.theme === k ? ' on' : ''}" data-act="set-theme" data-v="${k}" aria-pressed="${t.theme === k}">${pv(P)}${P.name}</button>`).join('');
+  return `<section class="card pad set-sec"><h2>Appearance</h2><p>Saved on this device, so your phone and PC can look different.</p>
+<h3 class="side-h3" style="margin:4px 0 8px">Knot originals</h3><div class="themes" role="group" aria-label="Knot palettes">${group('k')}</div>
+<h3 class="side-h3" style="margin:4px 0 8px">Editor classics</h3><div class="themes" role="group" aria-label="Editor palettes">${group('c')}</div>
 <h3 class="side-h3" style="margin:4px 0 8px">Accent</h3>
 <div class="accents" role="group" aria-label="Accent colour"><button class="auto${t.accent === 'auto' ? ' on' : ''}" data-act="set-accent" data-v="auto" aria-label="Palette's own accent" aria-pressed="${t.accent === 'auto'}" title="Palette's own">A</button>${Object.entries(ACCENTS).map(([k, c]) => `<button class="${t.accent === k ? 'on' : ''}" style="background:${c}" data-act="set-accent" data-v="${k}" aria-label="${k} accent" title="${k}" aria-pressed="${t.accent === k}"></button>`).join('')}</div></section>`;
 }
