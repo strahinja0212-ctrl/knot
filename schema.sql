@@ -91,3 +91,27 @@ create trigger knot_touch before insert or update on public.folders for each row
 create index if not exists folders_sync_idx on public.folders (user_id, synced_at);
 alter publication supabase_realtime add table public.folders;
 alter table public.notes add column if not exists folder_id uuid;
+
+-- Spaced repetition review state (added Nov 15 2026). One row per card once it has been reviewed;
+-- the id is a hash of note id + question text, so cards themselves live in note text.
+create table if not exists public.cards (
+  id uuid primary key,
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  note_id uuid,
+  due timestamptz,
+  ivl real default 0,
+  ease real default 2.5,
+  reps int default 0,
+  lapses int default 0,
+  created_at timestamptz,
+  updated_at timestamptz not null default now(),
+  deleted boolean not null default false,
+  synced_at timestamptz not null default now()
+);
+alter table public.cards enable row level security;
+drop policy if exists own_rows on public.cards;
+create policy own_rows on public.cards for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop trigger if exists knot_touch on public.cards;
+create trigger knot_touch before insert or update on public.cards for each row execute function public.knot_touch();
+create index if not exists cards_sync_idx on public.cards (user_id, synced_at);
+alter publication supabase_realtime add table public.cards;

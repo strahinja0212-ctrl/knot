@@ -429,6 +429,40 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 :root[data-fx~=mono] body{font-family:'Cascadia Code',ui-monospace,Consolas,monospace;letter-spacing:-.01em}
 :root[data-fx~=sharp]{--r:3px}
 :root[data-fx~=sharp] :is(.btn,.qa,.search,.nav a,.seg,.seg button,.seg a,.th,.pv,.pomo-card,.pomo-fab,dialog,.fld input,.fld select,.chip,.tr,.strip button,.month button,.g-wrap,.sq-btn,.logo,.chk,.bl,.lk,.tag,.pill,#toast){border-radius:3px}
+/* train */
+.deck-list{margin-top:16px;overflow:hidden}
+.deck{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--row);min-height:60px}
+.deck:last-child{border-bottom:none}
+.deck-h{min-height:0;padding:10px 16px;font-size:12px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.deck-h > span:first-child{width:9px}
+.dk-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.dk-main b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dk-main span{font-size:12px;color:var(--mute)}
+.dk-c{width:42px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;font-size:14px}
+.deck-h .dk-c{font-size:12px;font-weight:600}
+.dk-c.due{color:var(--ok)} .dk-c.new{color:var(--acc-ink)}
+.deck .btn{width:74px} .deck .btn[disabled]{opacity:.4;cursor:default}
+.empty-deck{opacity:.6}
+.syn{background:var(--soft);border-radius:10px;padding:12px;font-size:13px;margin:0;white-space:pre-wrap;color:var(--ink2)}
+.tr-meta{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;margin:18px 6px 8px}
+.flash{padding:32px 24px;min-height:220px;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.flash .md{max-width:none;font-size:19px;line-height:1.5}
+.flash .md p:last-child{margin-bottom:0}
+.flash hr{border:none;border-top:1px dashed var(--line2);margin:22px 0;width:100%}
+.flash .fa{color:var(--ink2)}
+.tr-src{text-align:center;margin:10px 0 16px;font-size:12px}
+.tr-src a{color:var(--mute)} .tr-src a:hover{color:var(--acc-ink)}
+.tshow{width:100%;height:52px;font-size:15px}
+.tshow kbd,.tbtn kbd{color:inherit;opacity:.6;font-size:11px}
+.tbtns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tbtn{height:64px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:1px solid var(--line2);background:var(--surface);font-size:14px}
+.tbtn span{font-size:12px;color:var(--mute)}
+.tbtn.g1 b{color:var(--warn)} .tbtn.g2 b{color:var(--ink2)} .tbtn.g3 b{color:var(--ok)} .tbtn.g4 b{color:var(--acc-ink)}
+.tbtn:hover{border-color:var(--acc)}
+@media (hover:none){.tbtn kbd,.tshow kbd{display:none}}
+.tr-done{text-align:center;margin-top:24px;padding:36px 20px}
+.tr-done h2{margin:0 0 8px;font-size:22px}
+.tr-done p{margin:0 0 6px}
 /* appearance settings */
 .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-bottom:14px}
 .th{border:1px solid var(--line2);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:left;font-size:13px;font-weight:500;background:var(--surface)}
@@ -509,6 +543,7 @@ const GROUP_ORDER = ['University', 'Roblox', 'Personal'];
 
 const SV = (p, extra = '') => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ${extra}>${p}</svg>`;
 const I = {
+  train: SV('<rect x="3" y="7" width="14" height="13" rx="2.5"/><path d="M7 4h11a3 3 0 0 1 3 3v10"/><path d="M7.5 13.5l2 2 3.5-4"/>'),
   folder: SV('<path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>'),
   folderPlus: SV('<path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M12 11v5M9.5 13.5h5"/>'),
   timer: SV('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/>'),
@@ -536,15 +571,16 @@ const I = {
 };
 
 /* ============ store ============ */
-const TABLES = ['projects', 'folders', 'tasks', 'notes'];
+const TABLES = ['projects', 'folders', 'tasks', 'notes', 'cards'];
 const COLS = {
   projects: ['id', 'name', 'color', 'grp', 'position', 'created_at', 'updated_at', 'deleted'],
   tasks: ['id', 'project_id', 'title', 'due', 'due_time', 'priority', 'done', 'done_at', 'section', 'note_id', 'recur', 'created_at', 'updated_at', 'deleted'],
   folders: ['id', 'name', 'parent_id', 'project_id', 'color', 'position', 'created_at', 'updated_at', 'deleted'],
+  cards: ['id', 'note_id', 'due', 'ivl', 'ease', 'reps', 'lapses', 'created_at', 'updated_at', 'deleted'],
   notes: ['id', 'project_id', 'folder', 'folder_id', 'title', 'body', 'pinned', 'created_at', 'updated_at', 'deleted'],
 };
 const store = {
-  db: load('knot.db', { projects: {}, folders: {}, tasks: {}, notes: {} }),
+  db: load('knot.db', { projects: {}, folders: {}, tasks: {}, notes: {}, cards: {} }),
   dirty: new Set(load('knot.dirty', [])),
   meta: load('knot.meta', { lastPull: {}, goal: 5 }),
 };
@@ -866,7 +902,7 @@ function viewProject(id, tab) {
       (keys.length ? keys.map(s => `<h2 class="sec-h"><span>${esc(s || 'Tasks')}</span><span>${secs.get(s).length}</span></h2>${taskCard(secs.get(s), { hideProject: true })}`).join('') : '<div class="card empty" style="margin-top:16px">No open tasks.</div>') +
       (done.length ? `<details class="done-list"><summary>Completed · ${done.length}</summary>${taskCard(done.slice(0, 50), { hideProject: true })}</details>` : '');
   } else {
-    body = `<div class="row-actions"><button class="btn pri" data-act="new-note" data-project="${id}">${I.plus}New note</button><a class="btn sec" href="#graph">${I.graph}Graph</a></div>` +
+    body = `<div class="row-actions"><button class="btn pri" data-act="new-note" data-project="${id}">${I.plus}New note</button><a class="btn sec" href="#graph">${I.graph}Graph</a><button class="btn sec" data-act="train-start" data-k="p:${id}">${I.train}Train</button></div>` +
       (notes.length ? notes.map(n => `<a class="card ncard" href="#note/${n.id}"><span class="nt"><span style="display:flex;align-items:center;gap:6px">${n.pinned ? `<span style="display:flex;width:14px;height:14px;color:var(--acc)" aria-label="Pinned">${I.pin}</span>` : ''}${esc(n.title || 'Untitled')}</span><span class="nd">${noteFolder(n) ? esc(fPath(noteFolder(n))) + ' · ' : ''}${fmtShort(dkey(new Date(n.updated_at)))}</span></span><span class="np">${esc(plain(n.body).slice(0, 180)) || '<i>Empty</i>'}</span></a>`).join('') : '<div class="card empty">No notes yet.</div>');
   }
   return `<div class="page">
@@ -1144,7 +1180,7 @@ function renderPanel() {
     el.innerHTML = `${x}<span class="side-h3">Note</span><h2>${esc(r.title || 'Untitled')}</h2><span class="small mute" style="display:flex;align-items:center;gap:6px"><span class="sq" style="width:8px;height:8px;background:${esc(n.color)}"></span>${esc(notePlace(r))}</span><p>${esc(plain(r.body).slice(0, 200)) || '<i>Empty note</i>'}</p><a class="btn pri" href="#note/${r.id}">Open note</a>${nbs.length ? `<span class="side-h3">Connected · ${nbs.length}</span>${list}` : ''}`;
   } else if (n.type === 'folder') {
     const fo = n.ref, ids = fDesc(fo.id), cnt = all('notes').filter(o => ids.has(o.folder_id)).length, up = fParent(fo) ? 'Inside ' + fPath(fParent(fo)) : fProject(fo) ? 'In ' + fProject(fo).name : 'Top level';
-    el.innerHTML = `${x}<span class="side-h3">Folder</span><h2>${esc(fo.name || 'Untitled')}</h2><p>${esc(up)} · ${cnt} note${cnt === 1 ? '' : 's'}</p><div class="btns"><button class="btn pri" data-act="new-note" data-folder="${fo.id}">${I.plus}New note</button><button class="btn sec" data-act="edit-folder" data-id="${fo.id}">Edit</button></div>${list}`;
+    el.innerHTML = `${x}<span class="side-h3">Folder</span><h2>${esc(fo.name || 'Untitled')}</h2><p>${esc(up)} · ${cnt} note${cnt === 1 ? '' : 's'}</p><div class="btns"><button class="btn pri" data-act="new-note" data-folder="${fo.id}">${I.plus}New note</button><button class="btn sec" data-act="edit-folder" data-id="${fo.id}">Edit</button><button class="btn sec" data-act="train-start" data-k="f:${fo.id}">${I.train}Train</button></div>${list}`;
   } else if (n.type === 'hub') {
     const p = n.ref;
     el.innerHTML = `${x}<span class="side-h3">Project</span><h2>${esc(p.name)}</h2><p>${all('notes').filter(o => o.project_id === p.id).length} notes · ${openTasks().filter(t => t.project_id === p.id).length} open tasks</p><div class="btns"><a class="btn pri" href="#project/${p.id}/notes">Open project</a><button class="btn sec" data-act="new-note" data-project="${p.id}">${I.plus}Note</button></div>${list ? `<span class="side-h3">Notes</span>${list}` : ''}`;
@@ -1272,19 +1308,19 @@ function navCounts() {
 }
 function renderSidebar(r) {
   const c = navCounts();
-  const act = { today: 'today', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', graph: 'graph', stats: 'stats', settings: 'settings', search: 'search' }[r.v];
+  const act = { today: 'today', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', graph: 'graph', stats: 'stats', train: 'train', settings: 'settings', search: 'search' }[r.v];
   const item = (k, href, icon, label, cnt = '') => `<a class="${act === k ? 'on' : ''}" href="${href}">${icon}<span class="lbl">${label}</span><span class="cnt">${cnt || ''}</span></a>`;
   const ts = openTasks();
   return `<div class="brand"><span class="logo">${I.tick}</span>${APP}</div>
 <label class="search"><span style="display:flex">${I.search}</span><input id="side-q" data-input="q" value="${esc(S.q)}" placeholder="Search" aria-label="Search tasks and notes"><kbd>Ctrl K</kbd></label>
-<nav class="nav" aria-label="Main">${item('today', '#today', I.today, 'Today', c.today)}${item('upcoming', '#upcoming', I.upcoming, 'Upcoming', c.upcoming)}${item('projects', '#projects', I.projects, 'Projects')}${item('notes', '#notes', I.notes, 'Notes', c.notes)}${item('graph', '#graph', I.graph, 'Graph')}${item('stats', '#stats', I.stats, 'Stats')}</nav>
+<nav class="nav" aria-label="Main">${item('today', '#today', I.today, 'Today', c.today)}${item('upcoming', '#upcoming', I.upcoming, 'Upcoming', c.upcoming)}${item('projects', '#projects', I.projects, 'Projects')}${item('notes', '#notes', I.notes, 'Notes', c.notes)}${item('graph', '#graph', I.graph, 'Graph')}${item('train', '#train', I.train, 'Train', trainDueAll() || '')}${item('stats', '#stats', I.stats, 'Stats')}</nav>
 <div><div class="side-h"><span>Projects</span><button data-act="new-project" aria-label="New project">${I.plus}</button></div>
 <nav class="nav" aria-label="Projects">${sortedProjects().map(p => `<a class="${r.v === 'project' && r.a === p.id ? 'on' : ''}" href="#project/${p.id}/tasks"><span class="sq" style="width:8px;height:8px;background:${esc(p.color)}"></span><span class="lbl">${esc(p.name)}</span><span class="cnt">${ts.filter(x => x.project_id === p.id).length || ''}</span></a>`).join('')}</nav></div>
 <nav class="nav side-foot">${item('settings', '#settings', I.settings, 'Settings')}<div style="padding:4px 12px"><span class="pill ${syncClass()}" data-sync>${syncLabel()}</span></div></nav>`;
 }
 function renderTabbar(r) {
-  const act = { today: 'today', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', graph: 'notes', stats: 'stats' }[r.v];
-  return [['today', 'Today', I.today], ['upcoming', 'Upcoming', I.upcoming], ['projects', 'Projects', I.projects], ['notes', 'Notes', I.notes], ['stats', 'Stats', I.stats]]
+  const act = { today: 'today', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', graph: 'notes', stats: 'stats', train: 'train' }[r.v];
+  return [['today', 'Today', I.today], ['upcoming', 'Upcoming', I.upcoming], ['projects', 'Projects', I.projects], ['notes', 'Notes', I.notes], ['train', 'Train', I.train], ['stats', 'Stats', I.stats]]
     .map(([k, l, ic]) => `<a class="tab${act === k ? ' on' : ''}" href="#${k}" ${act === k ? 'aria-current="page"' : ''}>${ic}${l}</a>`).join('');
 }
 let pendingRender = false;
@@ -1295,7 +1331,7 @@ function render(force) {
   const ae = document.activeElement, fid = ae && ae.id, ss = ae && ae.selectionStart, se = ae && ae.selectionEnd;
   if (G) { cancelAnimationFrame(G.raf); G = null; }
   const r = route();
-  const views = { today: viewToday, upcoming: viewUpcoming, projects: viewProjects, project: () => viewProject(r.a, r.b), notes: () => viewNotes(null), note: () => viewNotes(r.a), graph: () => viewGraph(r.a), stats: viewStats, settings: viewSettings, search: viewSearch };
+  const views = { today: viewToday, upcoming: viewUpcoming, projects: viewProjects, project: () => viewProject(r.a, r.b), notes: () => viewNotes(null), note: () => viewNotes(r.a), graph: () => viewGraph(r.a), stats: viewStats, train: () => viewTrain(r.a), settings: viewSettings, search: viewSearch };
   $('#main').innerHTML = (views[r.v] || viewToday)();
   $('#sidebar').innerHTML = renderSidebar(r);
   $('#tabbar').innerHTML = renderTabbar(r);
@@ -1394,6 +1430,10 @@ const ACTIONS = {
   'edit-task': el => { dlg.open && dlg.close(); editTask(el.dataset.id); },
   'del-task': el => { const id = el.dataset.id; const x = get('tasks', id); dlg.close(); removeRow('tasks', id); toast('Task deleted', () => update('tasks', id, { deleted: false, title: x.title })); },
   'close-dlg': () => dlg.close(),
+  'train-start': el => { startTrain(el.dataset.k); location.hash = '#train/' + el.dataset.k; },
+  'train-show': () => { if (S.train) { S.train.shown = true; render(true); } },
+  'train-grade': el => gradeCard(+el.dataset.v),
+  'train-exit': () => { S.train = null; location.hash = '#train'; },
   'new-folder': el => editFolder(null, el.dataset.parent || null),
   'edit-folder': el => editFolder(el.dataset.id),
   'del-folder': el => {
@@ -1509,6 +1549,11 @@ document.addEventListener('focusout', () => { setTimeout(() => { if (pendingRend
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); const s = window.innerWidth >= 900 ? $('#side-q') : null; if (s) s.focus(); else location.hash = '#search'; return; }
   if (e.key === 'Escape' && document.activeElement && document.activeElement.id === 'qa') document.activeElement.blur();
+  if (route().v === 'train' && S.train && S.train.queue.length && !typing() && !dlg.open && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    if (!S.train.shown && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); S.train.shown = true; render(true); return; }
+    if (S.train.shown && '1234'.includes(e.key)) { e.preventDefault(); gradeCard(+e.key); return; }
+    if (S.train.shown && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); gradeCard(3); return; }
+  }
   if (!typing() && !dlg.open && e.key === 'q' && !e.ctrlKey && !e.metaKey && !e.altKey) { const qa = $('#qa'); if (qa) { e.preventDefault(); qa.focus(); } }
 });
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { sync.pull(); render(); } });
@@ -1516,6 +1561,120 @@ window.addEventListener('online', () => { sync.push(); sync.pull(); });
 window.addEventListener('offline', () => sync.setStatus('offline'));
 // keep "Today" correct after midnight
 let lastDay = today(); setInterval(() => { if (today() !== lastDay) { lastDay = today(); render(); } }, 60000);
+
+/* ============ train (spaced repetition) ============ */
+// Cards live inside notes:
+//   Question :: Answer            one line = one card
+//   Question lines                multi-line card: a line with only "?" splits
+//   ?                             the question (lines above) from the answer
+//   Answer lines                  (lines below, until a blank line)
+// Review state is stored per card in the synced "cards" table; a card with no row yet is new.
+const NEW_PER_SESSION = 20;
+function hashId(str) {
+  const h = seed => { let a = 0xdeadbeef ^ seed, b = 0x41c6ce57 ^ seed; for (let i = 0; i < str.length; i++) { const c = str.charCodeAt(i); a = Math.imul(a ^ c, 2654435761); b = Math.imul(b ^ c, 1597334677); } a = Math.imul(a ^ (a >>> 16), 2246822507) ^ Math.imul(b ^ (b >>> 13), 3266489909); b = Math.imul(b ^ (b >>> 16), 2246822507) ^ Math.imul(a ^ (a >>> 13), 3266489909); return (b >>> 0).toString(16).padStart(8, '0') + (a >>> 0).toString(16).padStart(8, '0'); };
+  const x = h(1) + h(2);
+  return `${x.slice(0, 8)}-${x.slice(8, 12)}-4${x.slice(13, 16)}-8${x.slice(17, 20)}-${x.slice(20, 32)}`;
+}
+function cardsOf(n) {
+  const out = [], L = (n.body || '').split('\n');
+  let fence = false;
+  const push = (front, back) => { front = front.trim(); back = back.trim(); if (front && back) out.push({ id: hashId(n.id + '|' + front), note: n, front, back }); };
+  for (let i = 0; i < L.length; i++) {
+    const l = L[i];
+    if (/^```/.test(l)) { fence = !fence; continue; }
+    if (fence) continue;
+    if (l.trim() === '?') {
+      let a = i - 1; while (a >= 0 && L[a].trim() && L[a].trim() !== '?') a--;
+      let b = i + 1; while (b < L.length && L[b].trim()) b++;
+      push(L.slice(a + 1, i).join('\n'), L.slice(i + 1, b).join('\n'));
+      i = b; continue;
+    }
+    const m = l.match(/^\s*(?:[-*]\s+)?(.+?)\s*::\s*(.+)$/);
+    if (m) push(m[1], m[2]);
+  }
+  return out;
+}
+function deckNotes(key) {
+  const [k, id] = (key || 'all').split(':');
+  if (k === 'f') { const ids = fDesc(id); return all('notes').filter(n => ids.has(n.folder_id)); }
+  if (k === 'p') return all('notes').filter(n => noteProject(n)?.id === id);
+  return all('notes');
+}
+const deckName = key => { const [k, id] = (key || 'all').split(':'); return k === 'f' ? fPath(get('folders', id) || {}) : k === 'p' ? get('projects', id)?.name || 'Project' : 'All notes'; };
+const cardState = c => get('cards', c.id);
+const isDue = (st, now = Date.now()) => st && new Date(st.due).getTime() <= now;
+function deckStats(key) {
+  const cs = deckNotes(key).flatMap(cardsOf), now = Date.now();
+  let due = 0, fresh = 0; cs.forEach(c => { const st = cardState(c); if (!st) fresh++; else if (isDue(st, now)) due++; });
+  return { total: cs.length, due, fresh, cards: cs };
+}
+// Anki-style scheduling (simplified SM-2). Returns the new state plus a re-show delay in minutes for this session.
+function schedule(st, grade) {
+  const s = { ivl: st?.ivl || 0, ease: st?.ease || 2.5, reps: st?.reps || 0, lapses: st?.lapses || 0 };
+  let mins = null, days = 0;
+  if (grade === 1) { s.lapses += s.reps ? 1 : 0; s.ivl = 0; s.ease = Math.max(1.3, s.ease - 0.2); mins = 1; }
+  else if (s.ivl < 1) { if (grade === 2) mins = 10; else days = grade === 3 ? 1 : 4; }
+  else {
+    if (grade === 2) { days = Math.max(s.ivl + 1, s.ivl * 1.2); s.ease = Math.max(1.3, s.ease - 0.15); }
+    if (grade === 3) days = Math.max(s.ivl + 1, s.ivl * s.ease);
+    if (grade === 4) { days = Math.max(s.ivl + 2, s.ivl * s.ease * 1.3); s.ease += 0.15; }
+  }
+  if (days) { s.ivl = Math.round(days); s.reps++; }
+  s.due = new Date(Date.now() + (mins ? mins * 60000 : s.ivl * 86400000)).toISOString();
+  return { s, mins };
+}
+const ivlLabel = (st, g) => { const { s, mins } = schedule(st, g); if (mins) return mins + 'm'; return s.ivl < 30 ? s.ivl + 'd' : s.ivl < 365 ? Math.round(s.ivl / 30) + 'mo' : (s.ivl / 365).toFixed(1) + 'y'; };
+
+function startTrain(key) {
+  const { cards } = deckStats(key), now = Date.now();
+  const due = cards.filter(c => isDue(cardState(c), now)).sort((a, b) => new Date(cardState(a).due) - new Date(cardState(b).due));
+  const fresh = cards.filter(c => !cardState(c)).slice(0, NEW_PER_SESSION);
+  S.train = { key, queue: [...due, ...fresh], shown: false, done: 0, again: 0 };
+}
+function gradeCard(g) {
+  const T = S.train; if (!T || !T.queue.length || !T.shown) return;
+  const c = T.queue.shift(), st = cardState(c);
+  const { s, mins } = schedule(st, g);
+  put('cards', { ...(store.db.cards[c.id] || {}), id: c.id, note_id: c.note.id, deleted: false, ...s }, false);
+  if (mins) T.queue.splice(Math.min(mins === 1 ? 3 : 6, T.queue.length), 0, c); else T.done++;
+  if (g === 1) T.again++;
+  T.shown = false; render(true);
+}
+function viewTrain(key) {
+  const T = S.train;
+  if (key && T && T.key === key && (T.queue.length || T.done)) {
+    const c = T.queue[0], head = `<div class="hdr"><a class="back" href="#train" data-act="train-exit">${I.back}Decks</a><span class="small mute">${esc(deckName(key))}</span></div>`;
+    if (!c) {
+      const next = deckStats(key).cards.map(cardState).filter(Boolean).map(s => s.due).sort()[0];
+      return `<div class="page">${head}<div class="card pad tr-done"><h2>Done for now</h2><p>${T.done} card${T.done === 1 ? '' : 's'} reviewed${T.again ? `, ${T.again} missed once` : ''}.</p><p class="mute">${next ? 'Next review ' + dueLabel(next.slice(0, 10)).text.toLowerCase() + '.' : ''}</p><div class="btns" style="justify-content:center"><a class="btn pri" href="#train" data-act="train-exit">Back to decks</a></div></div></div>`;
+    }
+    const st = cardState(c), left = T.queue.length;
+    const btn = (g, label) => `<button class="tbtn g${g}" data-act="train-grade" data-v="${g}"><b>${label}</b><span>${ivlLabel(st, g)}</span><kbd>${g}</kbd></button>`;
+    return `<div class="page">${head}
+<div class="tr-meta"><span>${st ? 'Review' : 'New'}</span><span>${left} left · ${T.done} done</span></div>
+<div class="card flash"><div class="md fq">${md(c.front)}</div>${T.shown ? `<hr><div class="md fa">${md(c.back)}</div>` : ''}</div>
+<div class="tr-src"><a href="#note/${c.note.id}">From: ${esc(c.note.title || 'Untitled')}</a></div>
+${T.shown ? `<div class="tbtns">${btn(1, 'Again')}${btn(2, 'Hard')}${btn(3, 'Good')}${btn(4, 'Easy')}</div>` : `<button class="btn pri tshow" data-act="train-show">Show answer <kbd>Space</kbd></button>`}</div>`;
+  }
+  const decks = [['all', 'All notes', null], ...sortedProjects().map(p => ['p:' + p.id, p.name, p.color]),
+    ...sortedFolders().map(f => ['f:' + f.id, fPath(f), fColor(f)]).sort((a, b) => a[1].localeCompare(b[1]))];
+  const rows = decks.map(([k, name, color]) => {
+    const st = deckStats(k), n = st.due + Math.min(st.fresh, NEW_PER_SESSION);
+    if (!st.total && k !== 'all') return '';
+    return `<div class="deck${st.total ? '' : ' empty-deck'}"><span class="fdot" style="${color ? `background:${esc(color)};border-color:${esc(color)}` : ''}"></span><div class="dk-main"><b>${esc(name)}</b><span>${st.total} card${st.total === 1 ? '' : 's'}</span></div><span class="dk-c due" title="Due">${st.due}</span><span class="dk-c new" title="New">${st.fresh}</span><button class="btn ${n ? 'pri' : 'sec'}" data-act="train-start" data-k="${k}" ${n ? '' : 'disabled'}>Train</button></div>`;
+  }).join('');
+  return `<div class="page"><div class="hdr"><h1 class="title">Train</h1></div>
+<p class="mute" style="margin:4px 4px 0">Spaced repetition from your notes. Pick a project or folder and train; cards come back right before you'd forget them.</p>
+<div class="card deck-list"><div class="deck deck-h"><span></span><span style="flex:1">Deck</span><span class="dk-c due">Due</span><span class="dk-c new">New</span><span style="width:74px"></span></div>${rows}</div>
+<section class="card pad set-sec"><h2>Making cards</h2><p>Write these anywhere in a note. A deck includes every note in that folder, its subfolders, or project.</p>
+<pre class="syn">Derivative of sin x :: cos x
+
+What is a σ-algebra?
+?
+A family of subsets closed under
+complement and countable unions.</pre><p class="small mute" style="margin:8px 0 0">One line with <code>::</code> is a card. For longer cards, put a line with just <code>?</code> between question and answer, and leave a blank line after. Up to ${NEW_PER_SESSION} new cards per session. Keys: Space shows the answer, 1–4 grade it.</p></section></div>`;
+}
+const trainDueAll = () => { const now = Date.now(); return all('notes').flatMap(cardsOf).filter(c => isDue(cardState(c), now)).length; };
 
 /* ============ appearance ============ */
 function viewAppearance() {
