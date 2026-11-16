@@ -472,11 +472,15 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 @keyframes flipIn{from{opacity:0;transform:perspective(900px) rotateX(-14deg) translateY(14px)}}
 @keyframes breathe{50%{box-shadow:0 0 22px color-mix(in srgb,var(--acc) 60%,transparent)}}
 @keyframes strike{from{text-decoration-color:transparent}}
+@keyframes dlgOut{to{opacity:0;transform:translateY(8px) scale(.97)}}
+@keyframes fadeOut{to{opacity:0}}
+@keyframes toastOut{to{opacity:0;transform:translateY(10px)}}
+:root{--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1)}
 @media (prefers-reduced-motion:no-preference){
 :root:not([data-motion=off]){
-  &:not([data-motion=calm])[data-enter] :is(.page > *,.notes-layout > *){animation:rise .42s cubic-bezier(.2,.8,.2,1) backwards}
-  &:not([data-motion=calm])[data-enter] .page > :nth-child(2){animation-delay:.04s} &[data-enter] .page > :nth-child(3){animation-delay:.08s} &[data-enter] .page > :nth-child(n+4){animation-delay:.12s}
-  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(-n+14){animation:rise .38s cubic-bezier(.2,.8,.2,1) backwards}
+  &:not([data-motion=calm])[data-enter] :is(.page > *,.notes-layout > *){animation:rise .55s var(--ease) backwards}
+  &:not([data-motion=calm])[data-enter] .page > :nth-child(2){animation-delay:.04s} &:not([data-motion=calm])[data-enter] .page > :nth-child(3){animation-delay:.08s} &:not([data-motion=calm])[data-enter] .page > :nth-child(n+4){animation-delay:.12s}
+  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(-n+14){animation:rise .5s var(--ease) backwards}
   &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(2){animation-delay:.03s}
   &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(3){animation-delay:.06s}
   &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(4){animation-delay:.09s}
@@ -484,24 +488,39 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
   &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(6){animation-delay:.15s}
   &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(7){animation-delay:.18s}
   &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(n+8){animation-delay:.21s}
-  .task.pop .ring{animation:pop .42s cubic-bezier(.3,1.6,.5,1),burst .6s ease-out}
+  .task.pop .ring{animation:pop .45s var(--spring),burst .7s var(--ease)}
   .task.pop .ttl{animation:strike .5s ease-out}
-  .btn,.tbtn,.th,.check,.nav a,.tab,.pomo-fab,.lk,.bl,.deck,.accents button,.seg button{transition:transform .14s ease,background-color .2s,border-color .2s,color .2s,box-shadow .2s}
-  :is(.btn,.tbtn,.th,.pomo-fab,.accents button,.seg button):active{transform:scale(.95)}
-  .check:active .ring{transform:scale(.85)}
-  .ring{transition:transform .15s,background-color .2s,border-color .2s}
-  .check:hover .ring{transform:scale(1.12)}
-  @media (hover:hover){:is(.bl,.lk,.th,.tbtn):hover{transform:translateY(-2px)} .nav a:hover{transform:translateX(2px)}}
-  dialog[open]{animation:dlgIn .24s cubic-bezier(.2,.9,.3,1.15)}
-  dialog[open]::backdrop{animation:fade .24s}
-  #toast:not(:empty){animation:rise .3s cubic-bezier(.2,.9,.3,1.2)}
-  .flash.in{animation:flipIn .42s cubic-bezier(.2,.8,.2,1)}
-  .flash .fa{animation:rise .32s ease-out}
-  .tbtns .tbtn{animation:rise .3s ease-out backwards} .tbtns .tbtn:nth-child(2){animation-delay:.04s} .tbtns .tbtn:nth-child(3){animation-delay:.08s} .tbtns .tbtn:nth-child(4){animation-delay:.12s}
+  /* fluid: every state change eases instead of snapping */
+  :is(.btn,.tbtn,.th,.check,.nav a,.tab,.pomo-fab,.lk,.bl,.deck,.accents button,.seg button,.chip,.task,.tr,.qa,.search,.card,.fld input,.fld select,.mdcb,.wl){transition:transform .38s var(--spring),background-color .35s var(--ease),border-color .35s var(--ease),color .35s var(--ease),box-shadow .45s var(--ease),opacity .35s var(--ease)}
+  :is(.btn,.tbtn,.th,.pomo-fab,.accents button,.seg button,.mdcb):active{transform:scale(.94);transition-duration:.12s}
+  .ring{transition:transform .4s var(--spring),background-color .35s var(--ease),border-color .35s var(--ease),box-shadow .45s var(--ease)}
+  .check:hover .ring{transform:scale(1.14)} .check:active .ring{transform:scale(.82);transition-duration:.1s}
+  .tab svg,.nav a svg{transition:transform .4s var(--spring),filter .4s var(--ease)}
+  .tab.on svg{transform:translateY(-2px) scale(1.08)}
+  @media (hover:hover){
+    :is(.bl,.lk,.th,.tbtn,.deck):hover{transform:translateY(-2px)}
+    .nav a:hover{transform:translateX(3px)} .nav a:hover svg{transform:scale(1.1)}
+    .btn.pri:hover{transform:translateY(-1px)}
+  }
+  .btn.pri::after{transition:transform .8s var(--ease)}
+  .tr .fold{transition:transform .35s var(--spring)}
+  .nav a.on{view-transition-name:navpill} .tab.on{view-transition-name:tabpill}
+  .task.checking .ring{background:var(--acc);border-color:var(--acc);color:var(--on-acc);animation:pop .45s var(--spring),burst .7s var(--ease)}
+  .task.checking .ttl{color:var(--faint);text-decoration:line-through;animation:strike .4s var(--ease)}
+  dialog.closing{animation:dlgOut .2s var(--ease) forwards} dialog.closing::backdrop{animation:fadeOut .2s forwards}
+  #toast.out{animation:toastOut .28s var(--ease) forwards}
+  dialog[open]{animation:dlgIn .38s var(--spring)}
+  dialog[open]::backdrop{animation:fade .3s var(--ease)}
+  #toast:not(:empty):not(.out){animation:rise .42s var(--spring)}
+  .flash.in{animation:flipIn .55s var(--ease)}
+  .flash .fa{animation:rise .45s var(--ease)}
+  .tbtns .tbtn{animation:rise .45s var(--spring) backwards} .tbtns .tbtn:nth-child(2){animation-delay:.04s} .tbtns .tbtn:nth-child(3){animation-delay:.08s} .tbtns .tbtn:nth-child(4){animation-delay:.12s}
   .pomo-fab.run{animation:breathe 2.6s ease-in-out infinite}
   .logo{transition:transform .4s cubic-bezier(.3,1.6,.5,1)} .brand:hover .logo{transform:rotate(-12deg) scale(1.08)}
 }}
-::view-transition-old(root),::view-transition-new(root){animation-duration:.35s}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.28s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+::view-transition-group(*){animation-duration:.45s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+::view-transition-group(navpill),::view-transition-group(tabpill){animation-duration:.45s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
 
 /* palette effects: data-fx on <html> */
 :root[data-fx~=glow] :is(.btn.pri,.pomo-fab.run,.strip .on,.month button.on,.sq-btn,.logo){box-shadow:0 0 14px color-mix(in srgb,var(--acc) 55%,transparent)}
@@ -835,7 +854,7 @@ function route() {
   const [v = 'today', a = '', b = ''] = decodeURIComponent(location.hash.slice(1)).split('/');
   return { v: v || 'today', a, b };
 }
-window.addEventListener('hashchange', () => { enterAnim(); render(true); $('#main').scrollTop = 0; window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => withTransition(() => { enterAnim(); render(true); $('#main').scrollTop = 0; window.scrollTo(0, 0); }));
 
 /* ============ quick-add parser ============ */
 function findProject(name) {
@@ -892,7 +911,7 @@ function taskRow(x, o = {}) {
   if (x.due && !o.hideDue) { const d = dueLabel(x.due); parts.push(`<span class="${d.late && !x.done ? 'late' : ''}">${d.text}</span>`); }
   if (x.due_time) parts.push(esc(x.due_time));
   if (x.recur) parts.push(`<span title="Repeats ${esc(x.recur)}" style="display:inline-flex;width:14px;height:14px">${I.repeat}</span>`);
-  return `<div class="task${x.done ? ' done' : ''}${S.pop === x.id ? ' pop' : ''}">
+  return `<div class="task${x.done ? ' done' : ''}${S.pop === x.id ? ' pop' : ''}"${S.vtTasks ? ` style="view-transition-name:t-${x.id}"` : ''}>
 <button class="check" data-act="toggle" data-id="${x.id}" aria-label="${x.done ? 'Mark not done' : 'Complete task'}"><span class="ring p${x.done ? 4 : (x.priority || 4)}">${I.tick}</span></button>
 <button class="tbody" data-act="edit-task" data-id="${x.id}"><span class="ttl">${esc(x.title)}</span><span class="meta">${parts.join('<span aria-hidden="true">·</span>')}</span></button>
 ${x.priority == 1 && !x.done ? '<span class="chip p1">P1</span>' : ''}
@@ -1436,18 +1455,28 @@ function render(force) {
 // Plays the entry animation (fade + stagger) for the next renders after a route change.
 let enterTimer;
 function enterAnim() { const h = document.documentElement; h.dataset.enter = ''; clearTimeout(enterTimer); enterTimer = setTimeout(() => delete h.dataset.enter, 650); }
-function withTransition(fn) { if (document.startViewTransition && themePrefs().motion !== 'off' && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(fn); else fn(); }
+const motionOn = () => themePrefs().motion !== 'off' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Runs fn inside a View Transition (smooth morph between old and new screen). fn always runs exactly once,
+// even if the browser skips or stalls the transition.
+function withTransition(fn, after) {
+  let ran = false; const run = () => { if (!ran) { ran = true; fn(); } };
+  if (!document.startViewTransition || !motionOn()) { run(); after && after(); return; }
+  try { const t = document.startViewTransition(run); t.finished.catch(() => { }).finally(() => after && after()); } catch { run(); after && after(); }
+  setTimeout(run, 400);
+}
 function autoGrow(t) { t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, window.innerHeight * 0.5) + 'px'; }
 
 /* ============ dialogs + toast ============ */
 const dlg = $('#dlg');
 function openDlg(html) { dlg.innerHTML = html; dlg.showModal(); const f = dlg.querySelector('input:not([type=radio]),select'); if (f) f.focus(); }
 dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+{ const shut = dlg.close.bind(dlg); dlg.close = v => { if (!dlg.open || dlg.classList.contains('closing')) return; if (!motionOn()) return shut(v); dlg.classList.add('closing'); setTimeout(() => { dlg.classList.remove('closing'); shut(v); }, 190); }; }
 let toastTimer;
 function toast(text, undo) {
   const el = $('#toast'); clearTimeout(toastTimer);
   el.innerHTML = `<span>${esc(text)}</span>${undo ? '<button data-act="undo">Undo</button>' : ''}`;
-  toast.undo = undo; toastTimer = setTimeout(() => { el.innerHTML = ''; toast.undo = null; }, 4500);
+  el.classList.remove('out');
+  toast.undo = undo; toastTimer = setTimeout(() => { el.classList.add('out'); toastTimer = setTimeout(() => { el.innerHTML = ''; el.classList.remove('out'); toast.undo = null; }, 280); }, 4500);
 }
 function editTask(id) {
   const x = get('tasks', id); if (!x) return;
@@ -1490,16 +1519,27 @@ function editFolder(id, parentId) {
 }
 
 /* ============ actions ============ */
-function toggleTask(id) {
+function toggleTask(id, now) {
   const x = get('tasks', id); if (!x) return;
   if (x.done) { update('tasks', id, { done: false, done_at: null }); return; }
+  // fluid: the ring fills, then rows glide to their new places (a list that hides done tasks lets this one fade out)
+  const row = !now && motionOn() && document.querySelector(`.check[data-id="${id}"]`)?.closest('.task');
+  if (row && !row.classList.contains('checking')) {
+    row.classList.add('checking');
+    setTimeout(() => {
+      document.querySelectorAll('.task .check[data-id]').forEach(c => { c.closest('.task').style.viewTransitionName = 't-' + c.dataset.id; });
+      S.vtTasks = true; setTimeout(() => { S.vtTasks = false; }, 1200);
+      withTransition(() => toggleTask(id, true), () => { S.vtTasks = false; });
+    }, 240);
+    return;
+  }
   let next = null;
   if (x.recur && x.due) {
     let nd = nextDue(x.due, x.recur); while (nd < today()) nd = nextDue(nd, x.recur);
     next = create('tasks', { title: x.title, project_id: x.project_id, priority: x.priority, section: x.section, note_id: x.note_id, due_time: x.due_time, recur: x.recur, due: nd, done: false, done_at: null }, false);
   }
   const before = { ...x };
-  S.pop = id; setTimeout(() => { if (S.pop === id) S.pop = null; }, 700);
+  if (!now) { S.pop = id; setTimeout(() => { if (S.pop === id) S.pop = null; }, 700); }
   update('tasks', id, { done: true, done_at: nowISO(), recur: '' });
   toast(next ? `Done · next on ${fmtShort(next.due)}` : 'Task done', () => { update('tasks', id, { done: false, done_at: null, recur: before.recur }); if (next) removeRow('tasks', next.id); });
 }
