@@ -115,3 +115,27 @@ drop trigger if exists knot_touch on public.cards;
 create trigger knot_touch before insert or update on public.cards for each row execute function public.knot_touch();
 create index if not exists cards_sync_idx on public.cards (user_id, synced_at);
 alter publication supabase_realtime add table public.cards;
+
+-- Subprojects (added Nov 16 2026): a project can sit inside another project.
+alter table public.projects add column if not exists parent_id uuid;
+
+-- Quiz results (added Nov 16 2026). Quizzes live in note text (```quiz blocks); one row per attempt.
+create table if not exists public.quiz_results (
+  id uuid primary key,
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  note_id uuid,
+  score int default 0,
+  total int default 0,
+  passed boolean default false,
+  created_at timestamptz,
+  updated_at timestamptz not null default now(),
+  deleted boolean not null default false,
+  synced_at timestamptz not null default now()
+);
+alter table public.quiz_results enable row level security;
+drop policy if exists own_rows on public.quiz_results;
+create policy own_rows on public.quiz_results for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop trigger if exists knot_touch on public.quiz_results;
+create trigger knot_touch before insert or update on public.quiz_results for each row execute function public.knot_touch();
+create index if not exists quiz_results_sync_idx on public.quiz_results (user_id, synced_at);
+alter publication supabase_realtime add table public.quiz_results;
