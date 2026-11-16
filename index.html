@@ -613,7 +613,7 @@ button.pc:hover:not([disabled]){border-color:var(--acc)} button.pc[disabled]{cur
 .fig .it{color:var(--ink2);fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .fig .it.acc{color:var(--acc)} .fig .it.ok{color:var(--ok)} .fig .it.warn{color:var(--warn)} .fig .it.mute{color:var(--faint)} .fig .it.ink{color:var(--ink)}
 .fig .it.da{stroke-dasharray:5 4} .fig .it.do{stroke-dasharray:1.5 4} .fig .it.th{stroke-width:2.8}
-.fig .it.fi{fill:currentColor;fill-opacity:.16} .fig .it.on{fill-opacity:.4} .fig .it.ar{stroke:none;color:var(--acc);fill-opacity:.2}
+.fig .it.fi{fill:currentColor;fill-opacity:.16} .fig .it.on{fill-opacity:.4} .fig .it.ar{stroke:none;fill-opacity:.2} .fig .it.hol{fill:var(--bg);fill-opacity:1;stroke-width:1.8} .card .fig .it.hol{fill:var(--card)}
 .fig .it.pl{color:var(--acc);stroke-width:2.1} .fig .it.pl.ok{color:var(--ok)} .fig .it.pl.warn{color:var(--warn)} .fig .it.pl.mute{color:var(--faint)} .fig .it.pl.ink{color:var(--ink)}
 .fig .it.dot{fill:currentColor;fill-opacity:1;stroke:none} .fig .it.hd{fill:currentColor;fill-opacity:1;stroke-width:1}
 .fig .gr{stroke:var(--gline);stroke-width:1;fill:none}
@@ -1326,12 +1326,12 @@ function compileExpr(src) {
   if (p < toks.length) throw Error(`cannot read "${src}"`);
   return f;
 }
-const FIG_FLAGS = new Set(['dashed', 'dotted', 'fill', 'thick', 'flip', 'nonum', 'frac', 'acc', 'ok', 'warn', 'mute', 'ink']);
+const FIG_FLAGS = new Set(['dashed', 'dotted', 'fill', 'thick', 'flip', 'nonum', 'frac', 'hollow', 'acc', 'ok', 'warn', 'mute', 'ink']);
 const FIG_DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75], c: [0, 0] };
 function figSvg(src) {
   const errs = [], P = {}, items = [], B = [], pad = { l: 16, r: 16, t: 16, b: 16 };
   const clip = 'fc' + (figSvg.n = (figSvg.n || 0) + 1);
-  let view = null, W = 340, H = null, cap = '', gridStep = 0, axes = null, tickStep = [0, 0], tickPi = [false, false], rows = 0, pies = 0, boxes = 0;
+  let view = null, W = 340, H = null, cap = '', gridStep = 0, gridStepY = 0, axes = null, tickStep = [0, 0], tickPi = [false, false], rows = 0, pies = 0, boxes = 0;
   const TAU = Math.PI * 2, f1 = v => +(+v).toFixed(1);
   const num = s => { if (s === undefined) throw Error('a number is missing'); const v = compileExpr(s)(0); if (!isFinite(v)) throw Error(`"${s}" is not a number`); return v; };
   const pt = s => { if (s === undefined) throw Error('a point is missing'); if (P[s]) return P[s]; if (/,/.test(s)) { const [a, b] = s.split(','); return [num(a), num(b)]; } throw Error(`unknown point "${s}"`); };
@@ -1342,7 +1342,8 @@ function figSvg(src) {
   const cls = (fl, more = '') => ['it', ...['acc', 'ok', 'warn', 'mute', 'ink'].filter(c => fl.has(c)), fl.has('dashed') ? 'da' : '', fl.has('dotted') ? 'do' : '', fl.has('thick') ? 'th' : '', fl.has('fill') ? 'fi' : '', more].filter(Boolean).join(' ');
   const dstr = (pts, close) => 'M' + pts.map(p => f1(p[0]) + ' ' + f1(p[1])).join('L') + (close ? 'Z' : '');
   const path = (pts, fl, close, more = '', attr = '') => `<path class="${cls(fl, more)}" d="${dstr(pts, close)}"${attr}/>`;
-  const txt = (x, y, s, dir = 'c', k = 'lb', off = 11) => { const d = FIG_DIRS[dir] || FIG_DIRS.c; return `<text class="${k}" x="${f1(x + d[0] * off)}" y="${f1(y + d[1] * off)}" text-anchor="${d[0] > 0 ? 'start' : d[0] < 0 ? 'end' : 'middle'}" dominant-baseline="${d[1] > 0 ? 'hanging' : d[1] < 0 ? 'auto' : 'central'}">${esc(s)}</text>`; };
+  const TX = [];
+  const txt = (x, y, s, dir = 'c', k = 'lb', off = 11) => { const d = FIG_DIRS[dir] || FIG_DIRS.c; { const wd = String(s).length * (k.startsWith('tk') ? 6.2 : 7.8), ax = x + d[0] * off, ay = y + d[1] * off, xl = d[0] > 0 ? ax : d[0] < 0 ? ax - wd : ax - wd / 2, yt = d[1] > 0 ? ay : d[1] < 0 ? ay - 14 : ay - 8; TX.push([xl - 3, yt - 2, xl + wd + 3, yt + 18]); } return `<text class="${k}" x="${f1(x + d[0] * off)}" y="${f1(y + d[1] * off)}" text-anchor="${d[0] > 0 ? 'start' : d[0] < 0 ? 'end' : 'middle'}" dominant-baseline="${d[1] > 0 ? 'hanging' : d[1] < 0 ? 'auto' : 'central'}">${esc(s)}</text>`; };
   const head = (a, b, fl, size = 8) => { const an = Math.atan2(b[1] - a[1], b[0] - a[0]), q = k => [b[0] - size * Math.cos(an + k), b[1] - size * Math.sin(an + k)]; return `<path class="${cls(fl, 'hd')}" d="${dstr([b, q(.42), q(-.42)], true)}"/>`; };
   const NO = new Set();
   const kw = (a, k) => { const i = a.indexOf(k); if (i < 0) return undefined; const v = a[i + 1]; a.splice(i, 2); return v; };
@@ -1361,7 +1362,7 @@ function figSvg(src) {
       case 'view': view = [num(a[0]), num(a[1]), num(a[2]), num(a[3])]; if (view[0] >= view[1] || view[2] >= view[3]) { view = null; throw Error('view needs xmin < xmax and ymin < ymax'); } break;
       case 'size': W = Math.max(120, Math.min(640, num(a[0]))); if (a[1]) H = Math.max(60, Math.min(520, num(a[1]))); break;
       case 'caption': cap = labs[0] || raw; break;
-      case 'grid': gridStep = a[0] ? num(a[0]) : 1; break;
+      case 'grid': gridStep = a[0] ? num(a[0]) : 1; gridStepY = a[1] ? num(a[1]) : gridStep; break;
       case 'axes': axes = { x: labs[0] ?? 'x', y: labs[1] ?? 'y', nonum: fl.has('nonum') }; need('l', 30); need('b', 24); break;
       case 'ticks': { const ys = a[1] ?? a[0]; tickStep = [num(a[0]), num(ys)]; tickPi = [/pi|π/.test(a[0]), /pi|π/.test(ys)]; break; }
       case 'def': ext(P[a[0]] = [num(a[1]), num(a[2])]); break;
@@ -1378,7 +1379,7 @@ function figSvg(src) {
         if (a.length >= 3 && !FIG_DIRS[a[1]]) { p = P[name] = [num(a[1]), num(a[2])]; rest = a.slice(3); } else { p = pt(name); rest = a.slice(1); }
         if (rest[0]) { if (!FIG_DIRS[rest[0]]) throw Error(`bad direction "${rest[0]}"`); dir = rest[0]; }
         const lab = labs.length ? labs[0] : /,/.test(name) ? '' : name; ext(p);
-        add(2, T => { const [x, y] = T.px(p); return `<circle class="${cls(fl, 'dot')}" cx="${f1(x)}" cy="${f1(y)}" r="3.2"/>` + (lab ? txt(x, y, lab, dir) : ''); });
+        add(2, T => { const [x, y] = T.px(p); return (fl.has('hollow') ? `<circle class="${cls(fl, 'hol')}" cx="${f1(x)}" cy="${f1(y)}" r="4.2"/>` : `<circle class="${cls(fl, 'dot')}" cx="${f1(x)}" cy="${f1(y)}" r="3.2"/>`) + (lab ? txt(x, y, lab, dir) : ''); });
         break;
       }
       case 'seg': case 'line': case 'ray': case 'vec': {
@@ -1459,7 +1460,7 @@ function figSvg(src) {
         const N = 80, ps = []; for (let k = 0; k <= N; k++) { const x = r[0] + (r[1] - r[0]) * k / N; ps.push([x, f(x)]); } for (let k = N; k >= 0; k--) { const x = r[0] + (r[1] - r[0]) * k / N; ps.push([x, g(x)]); }
         if (ps.some(p => !isFinite(p[1]))) throw Error('area is not finite on that interval');
         if (!view) ext(...ps);
-        add(0, T => path(ps.map(T.px), new Set([...fl, 'fill']), true, 'ar', ` clip-path="url(#${clip})"`));
+        add(0, T => path(ps.map(T.px), new Set([...fl, 'fill', ...(['ok', 'warn', 'mute', 'ink'].some(c => fl.has(c)) ? [] : ['acc'])]), true, 'ar', ` clip-path="url(#${clip})"`));
         break;
       }
       case 'numline': {
@@ -1565,7 +1566,7 @@ function figSvg(src) {
       default: throw Error('unknown command');
     }
   }
-  String(src || '').split(/\n|;/).forEach(rawLine => {
+  (String(src || '').match(/(?:"[^"\n]*"|[^;\n"])+/g) || []).forEach(rawLine => {
     const line = rawLine.trim(); if (!line || line.startsWith('//')) return;
     try {
       const tk = line.match(/"[^"]*"|\S+/g) || [], cmd = tk.shift().toLowerCase(), labs = [], fl = new Set(), a = [];
@@ -1591,9 +1592,9 @@ function figSvg(src) {
   T.px = p => [T.X(p[0]), T.Y(p[1])];
   let bg = '';
   if (gridStep > 0) {
-    let g = gridStep; while ((x1 - x0) / g > 60 || (y1 - y0) / g > 60) g *= 2;
+    let g = gridStep, gy = gridStepY > 0 ? gridStepY : gridStep; while ((x1 - x0) / g > 60) g *= 2; while ((y1 - y0) / gy > 60) gy *= 2;
     for (let v = Math.ceil(x0 / g - 1e-9) * g; v <= x1 + 1e-9; v += g) bg += `<path class="gr" d="${dstr([[T.X(v), T.Y(y0)], [T.X(v), T.Y(y1)]])}"/>`;
-    for (let v = Math.ceil(y0 / g - 1e-9) * g; v <= y1 + 1e-9; v += g) bg += `<path class="gr" d="${dstr([[T.X(x0), T.Y(v)], [T.X(x1), T.Y(v)]])}"/>`;
+    for (let v = Math.ceil(y0 / gy - 1e-9) * gy; v <= y1 + 1e-9; v += gy) bg += `<path class="gr" d="${dstr([[T.X(x0), T.Y(v)], [T.X(x1), T.Y(v)]])}"/>`;
   }
   if (axes) {
     const ax = Math.min(Math.max(0, x0), x1), ay = Math.min(Math.max(0, y0), y1), xs = tickStep[0] || nice(30 / sx), ys = tickStep[1] || nice(24 / sy);
@@ -1609,8 +1610,11 @@ function figSvg(src) {
   }
   let body = '';
   items.sort((p, q) => p.z - q.z).forEach(it => { try { body += it.f(T); } catch (e) { errs.push(e.message); } });
-  const TW = f1(w + pad.l + pad.r), TH = f1(h + pad.t + pad.b);
-  return `<figure class="fig"><svg viewBox="0 0 ${TW} ${TH}" width="${TW}" height="${TH}" role="img" aria-label="${esc(cap || 'Figure')}"><defs><clipPath id="${clip}"><rect x="${pad.l}" y="${pad.t}" width="${f1(w)}" height="${f1(h)}"/></clipPath></defs>${bg}${body}</svg>${cap ? `<figcaption>${inline(cap)}</figcaption>` : ''}${errs.map(e => `<p class="fig-err">fig: ${esc(e)}</p>`).join('')}</figure>`;
+  let vx0 = 0, vy0 = 0, vx1 = w + pad.l + pad.r, vy1 = h + pad.t + pad.b;
+  TX.forEach(b => { if (b.every(isFinite)) { vx0 = Math.min(vx0, b[0]); vy0 = Math.min(vy0, b[1]); vx1 = Math.max(vx1, b[2]); vy1 = Math.max(vy1, b[3]); } });
+  vx0 = Math.max(vx0, -160); vy0 = Math.max(vy0, -60); vx1 = Math.min(vx1, w + pad.l + pad.r + 160); vy1 = Math.min(vy1, h + pad.t + pad.b + 60);
+  const TW = f1(vx1 - vx0), TH = f1(vy1 - vy0);
+  return `<figure class="fig"><svg viewBox="${f1(vx0)} ${f1(vy0)} ${TW} ${TH}" width="${TW}" height="${TH}" role="img" aria-label="${esc(cap || 'Figure')}"><defs><clipPath id="${clip}"><rect x="${pad.l}" y="${pad.t}" width="${f1(w)}" height="${f1(h)}"/></clipPath></defs>${bg}${body}</svg>${cap ? `<figcaption>${inline(cap)}</figcaption>` : ''}${errs.map(e => `<p class="fig-err">fig: ${esc(e)}</p>`).join('')}</figure>`;
 }
 
 /* ---- practice ---- */

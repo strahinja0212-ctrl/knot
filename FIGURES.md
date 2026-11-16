@@ -11,8 +11,8 @@ One command per line (or several on a line split with `;`). Coordinates are ordi
 
 **Values.** Any number may be an expression: `3`, `-1.5`, `7/2`, `sqrt(2)`, `2pi/3`. No spaces inside one value.
 **Points.** A point is a name defined earlier (`A`) or a literal `x,y` with no space (`3,4`, `-1,sqrt(3)`).
-**Text.** Labels go in double quotes: `"a = 5"`. Plain text and Unicode only (² √ π α β γ θ ° ′ ≈ ≤). No `$`, no `;` and no `"` inside.
-**Flags** (anywhere after the command): `dashed` `dotted` `thick` `fill` and a colour `acc` (accent) `ok` (green) `warn` (orange) `mute` (grey) `ink`.
+**Text.** Labels go in double quotes: `"a = 5"`. Plain text and Unicode only (² √ π α β γ θ ° ′ ≈ ≤). No `$` and no `"` inside. Text near the edge widens the picture, so labels are not cut off.
+**Flags** (anywhere after the command, also on `plot`, `area`, `array`, `scatter`): `dashed` `dotted` `thick` `fill` and a colour `acc` (accent) `ok` (green) `warn` (orange) `mute` (grey) `ink`.
 **Directions** for labels: `n s e w ne nw se sw c`.
 
 ### Setup
@@ -20,7 +20,7 @@ One command per line (or several on a line split with `;`). Coordinates are ordi
 |---|---|
 | `view x0 x1 y0 y1` | fixed window. Always give it for `plot`. |
 | `size W` / `size W H` | width in px (default 340, max 640). With H the two axes scale independently (use for graphs whose x and y ranges differ a lot); without H one unit is the same length on both axes (use for geometry). |
-| `grid` / `grid 2` | light grid, every 1 (or given) unit |
+| `grid` / `grid 2` / `grid 1 50` | light grid, every 1 (or given) unit; two values = x step and y step |
 | `axes` / `axes "t" "s"` | coordinate axes with numbers; optional axis names; `axes nonum` hides numbers |
 | `ticks 2` / `ticks pi/2 1` | tick step for x and y; a step written with `pi` labels the axis in multiples of π |
 | `caption "text"` | caption under the picture (`$math$` works here) |
@@ -30,6 +30,7 @@ One command per line (or several on a line split with `;`). Coordinates are ordi
 |---|---|
 | `point A 1 2` / `point A 1 2 sw` | define A, draw a dot, label it "A" (label direction default `ne`) |
 | `point A sw` | draw an already defined point |
+| `point 3,0 hollow ""` | open circle (a hole in a graph, an excluded end on a number line) |
 | `point A 1 2 n "A(1, 2)"` | custom label; `""` = dot without label |
 | `point 3,4 e "P"` | dot at a literal position |
 | `def A 1 2` | define without drawing |
