@@ -18,9 +18,18 @@
 // Colour palettes. Each one is a full set of colours; applyTheme writes them onto <html> as CSS variables.
 // Keys: bg, side (sidebar), card, surface (inputs, raised bits), line, line2, row, soft, ink, ink2, mute, faint, ring, acc, onAcc (text on accent).
 const K = 'bg side card surface line line2 row soft ink ink2 mute faint ring acc'.split(' ');
-const pal = (name, group, v, onAcc, fx) => ({ name, group, onAcc, fx, ...Object.fromEntries(K.map((k, i) => [k, v.split(' ')[i]])) });
+const pal = (name, group, v, onAcc, fx, sky) => ({ name, group, onAcc, fx, sky: sky ? sky.split(' ') : null, ...Object.fromEntries(K.map((k, i) => [k, v.split(' ')[i]])) });
 // Night-only palettes. group k = Knot originals, c = community editor themes (open source palettes).
 const PALETTES = {
+  // group a = aurora skies: animated light behind see-through glass panels. Last field = 4 sky colours.
+  'aurora': pal('Aurora', 'a', '#0A0F1E #0E1426 #121A30 #1D253A #232B41 #30384D #21293E #232B41 #E8F0FF #C8D0E0 #979FB0 #798193 #565E72 #7CFFB2', '#05200F', 'glow', '#22D3A6 #7C3AED #38BDF8 #A3E635'),
+  'borealis': pal('Borealis', 'a', '#04121A #061923 #0A2230 #12303F #173646 #22455A #153345 #173646 #E3FBF4 #C1DDD6 #8FB0AA #72928D #52716E #34F5C5', '#01241B', 'glow', '#10B981 #06B6D4 #8B5CF6 #22C55E'),
+  'nebula': pal('Nebula', 'a', '#0E0718 #130A20 #190E2A #241838 #2A1D40 #382A50 #27193C #2A1D40 #F5EAFF #D9CBE6 #A897B8 #8A7A9B #66577A #E879F9', '#2A0530', 'glow', '#C026D3 #6D28D9 #2563EB #DB2777'),
+  'lagoon': pal('Lagoon', 'a', '#031417 #051B1F #082429 #113137 #16373D #22464C #143439 #16373D #E0FBFC #BFDCDE #8DAEB1 #6F9093 #4E6F72 #22D3EE', '#02242A', 'glow', '#0891B2 #14B8A6 #3B82F6 #2DD4BF'),
+  'glacier': pal('Glacier', 'a', '#070D18 #0A1220 #0F182A #1A2437 #1F2A3E #2C374C #1D283B #1F2A3E #EEF4FF #CED7E8 #9CA7BC #7E899E #5C677C #93C5FD', '#0A1A33', 'glow', '#60A5FA #A78BFA #67E8F9 #C4B5FD'),
+  'twilight': pal('Twilight', 'a', '#100B1E #150F27 #1B1432 #261F40 #2C2447 #3A3156 #292144 #2C2447 #F1EDFF #D3CDE6 #A39CB8 #857E9A #635C78 #FBBF24', '#2A1A00', 'glow', '#4F46E5 #C026D3 #F59E0B #7C3AED'),
+  'ember': pal('Ember', 'a', '#160A0A #1D0D0D #251212 #321C1B #382120 #462E2C #351F1E #382120 #FFECE6 #E2C9C2 #B39890 #937A73 #6E5752 #FB7185', '#2A0610', 'glow', '#F97316 #E11D48 #A21CAF #F59E0B'),
+  'sakura': pal('Sakura Night', 'a', '#150A12 #1B0D17 #22111D #2E1C28 #34212E #422E3B #31202C #34212E #FFEAF4 #E2C8D6 #B396A6 #937887 #6F5664 #F9A8D4', '#2E0A1E', 'glow', '#EC4899 #F472B6 #A855F7 #FB7185'),
   'graphite': pal('Graphite', 'k', '#141416 #19191C #1F1F23 #2A2A2E #303034 #3D3D40 #2E2E32 #303034 #F4F4F5 #D4D4D6 #A3A3A5 #858588 #636366 #818CF8', '#0B0B1A', ''),
   'midnight': pal('Midnight', 'k', '#05070D #090C16 #0E1322 #191E2D #1F2433 #2D3140 #1D2231 #1F2433 #E8ECF6 #C7CBD6 #959AA5 #777B88 #545866 #5850EC', '#FFFFFF', ''),
   'cyberpunk': pal('Cyberpunk', 'k', '#08080F #0C0C15 #11111C #1C1D27 #22242E #2F323C #20212C #22242E #EAFBFF #C9D8DD #98A2A9 #798189 #565C65 #FCEE0A', '#0A0A12', 'glow sharp'),
@@ -29,7 +38,6 @@ const PALETTES = {
   'amber': pal('Amber CRT', 'k', '#0D0900 #120C02 #171005 #231A0D #2A2011 #372C1B #271E10 #2A2011 #FFD9A0 #DCBB89 #A78D65 #86704F #615037 #FFB000', '#1A1000', 'glow mono'),
   'vampire': pal('Vampire', 'k', '#0B0507 #11070B #180A0F #23151A #2A1B20 #37292D #27191E #2A1B20 #F3E4E7 #D2C3C7 #A09195 #817377 #5E5054 #E11D48', '#FFFFFF', ''),
   'deepsea': pal('Deep Sea', 'k', '#03111A #051824 #082030 #132B3A #193141 #263E4D #172F3E #193141 #DDF3FF #BDD3E0 #8CA3B0 #6E8593 #4C6472 #2DD4BF', '#02201C', ''),
-  'aurora': pal('Aurora', 'k', '#0A0F1E #0E1426 #121A30 #1D253A #232B41 #30384D #21293E #232B41 #E8F0FF #C8D0E0 #979FB0 #798193 #565E72 #7CFFB2', '#05200F', 'glow'),
   'forest': pal('Forest', 'k', '#0E1511 #121B16 #17231C #212D26 #28332C #344039 #25312A #28332C #E6F0EA #C7D1CB #97A29C #7A857F #59655E #34D399', '#062016', ''),
   'espresso': pal('Espresso', 'k', '#18130F #1E1814 #251E19 #2F2823 #352E29 #423B36 #332C27 #352E29 #F3ECE6 #D4CDC7 #A59E98 #88817B #67605B #F59E0B', '#241503', ''),
   'sunset': pal('Sunset', 'k', '#1A0F1A #1F1221 #26162A #312133 #372739 #443443 #352537 #372739 #FFE9E0 #DEC9C5 #AD999B #8E7B81 #6B5A64 #FF8A4C', '#2A0E00', ''),
@@ -48,10 +56,11 @@ const PALETTES = {
 };
 const ACCENTS = { indigo: '#4F46E5', blue: '#2563EB', sky: '#0284C7', teal: '#0D9488', green: '#16A34A', amber: '#D97706', orange: '#EA580C', rose: '#E11D48', pink: '#DB2777', violet: '#7C3AED' };
 function themePrefs() {
-  let t = { theme: 'graphite', accent: 'auto' };
+  let t = { theme: 'graphite', accent: 'auto', motion: 'full' };
   try { t = { ...t, ...JSON.parse(localStorage.getItem('knot.theme') || '{}') }; } catch { }
   if (!PALETTES[t.theme]) t.theme = 'graphite';
   if (t.accent !== 'auto' && !ACCENTS[t.accent]) t.accent = 'auto';
+  if (!['full', 'calm', 'off'].includes(t.motion)) t.motion = 'full';
   return t;
 }
 function themeVars() {
@@ -69,12 +78,17 @@ function themeVars() {
     ok: dk ? '#86EFAC' : '#166534', 'ok-soft': mix(dk ? '#86EFAC' : '#16A34A', dk ? 16 : 14, P.card),
     hov: dk ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.045)', toast: dk ? mix(P.ink, 22, P.card) : '#18181B',
   };
+  if (P.sky) {
+    // glass: panels let the sky through
+    Object.assign(v, { card: mix(P.card, 72, 'transparent'), side: mix(P.side, 58, 'transparent'), surface: mix(P.surface, 74, 'transparent'), 'acc-soft': mix('var(--acc)', 22, 'transparent') });
+    P.sky.forEach((c, i) => { v['s' + (i + 1)] = c; });
+  }
   return { t, key, P, css: Object.entries(v).map(([k, x]) => `--${k}:${x}`).join(';') + `;color-scheme:${dk ? 'dark' : 'light'}` };
 }
 function applyTheme() {
   const { t, key, P, css } = themeVars();
   const h = document.documentElement;
-  h.style.cssText = css; h.dataset.theme = key; h.dataset.fx = P.fx;
+  h.style.cssText = css; h.dataset.theme = key; h.dataset.fx = (P.fx + (P.sky ? ' sky' : '')).trim(); h.dataset.motion = t.motion;
   const m = document.querySelector('meta[name=theme-color]');
   if (m) m.content = P.bg;
   return t;
@@ -429,6 +443,68 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 #toast:empty{display:none}
 #toast button{color:#A5B4FC;font-weight:600;padding:6px 8px}
 @media (min-width:900px){#toast{bottom:24px}}
+/* aurora sky (palettes with data-fx~=sky) */
+#sky{display:none;position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:var(--bg)}
+:root[data-fx~=sky] #sky{display:block}
+#app{position:relative;z-index:1}
+#sky i{position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(72px);opacity:.40;will-change:transform}
+#sky i:nth-child(1){background:var(--s1);left:-18vmax;top:-24vmax;animation:sk1 34s ease-in-out infinite alternate}
+#sky i:nth-child(2){background:var(--s2);right:-24vmax;top:6vh;animation:sk2 41s ease-in-out infinite alternate}
+#sky i:nth-child(3){background:var(--s3);left:12vw;bottom:-34vmax;animation:sk3 47s ease-in-out infinite alternate}
+#sky i:nth-child(4){background:var(--s4);right:4vw;bottom:-30vmax;width:44vmax;height:44vmax;opacity:.30;animation:sk4 29s ease-in-out infinite alternate}
+#sky b{position:absolute;left:-15%;right:-15%;top:-8%;height:62%;background:linear-gradient(100deg,transparent 8%,var(--s1) 28%,var(--s3) 48%,var(--s2) 68%,transparent 90%);filter:blur(46px);opacity:.26;transform-origin:50% 0;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 35%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 35%,transparent);animation:curtain 23s ease-in-out infinite alternate;will-change:transform}
+@keyframes sk1{to{transform:translate(22vw,16vh) scale(1.15)}}
+@keyframes sk2{to{transform:translate(-26vw,22vh) scale(.85)}}
+@keyframes sk3{to{transform:translate(18vw,-18vh) scale(1.2)}}
+@keyframes sk4{to{transform:translate(-30vw,-12vh) scale(1.1)}}
+@keyframes curtain{0%{transform:translateX(-7%) skewX(-14deg) scaleY(.85)}50%{transform:translateX(3%) skewX(9deg) scaleY(1.12)}100%{transform:translateX(9%) skewX(-5deg) scaleY(.95)}}
+:root:is([data-motion=calm],[data-motion=off]) #sky *{animation:none}
+:root[data-fx~=sky] :is(.card,#sidebar,#tabbar,dialog,.pomo-fab,.pomo-card,.bl,.lk,.th){-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
+:root[data-fx~=sky] :is(.card,.bl,.lk,.th){border-color:color-mix(in srgb,var(--ink) 11%,transparent)}
+:root[data-fx~=sky] dialog{background:var(--card)}
+:root[data-fx~=sky] dialog::backdrop{background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+:root[data-fx~=sky] :is(.title,.ptitle h1){background:linear-gradient(90deg,var(--ink) 20%,var(--acc) 70%,var(--s3));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--acc) 35%,transparent))}
+
+/* motion (off when data-motion=off or the OS asks for reduced motion) */
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+@keyframes fade{from{opacity:0}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes burst{from{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 60%,transparent)}to{box-shadow:0 0 0 12px transparent}}
+@keyframes dlgIn{from{opacity:0;transform:translateY(12px) scale(.96)}}
+@keyframes flipIn{from{opacity:0;transform:perspective(900px) rotateX(-14deg) translateY(14px)}}
+@keyframes breathe{50%{box-shadow:0 0 22px color-mix(in srgb,var(--acc) 60%,transparent)}}
+@keyframes strike{from{text-decoration-color:transparent}}
+@media (prefers-reduced-motion:no-preference){
+:root:not([data-motion=off]){
+  &[data-enter] :is(.page > *,.notes-layout > *){animation:rise .42s cubic-bezier(.2,.8,.2,1) backwards}
+  &[data-enter] .page > :nth-child(2){animation-delay:.04s} &[data-enter] .page > :nth-child(3){animation-delay:.08s} &[data-enter] .page > :nth-child(n+4){animation-delay:.12s}
+  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(-n+14){animation:rise .38s cubic-bezier(.2,.8,.2,1) backwards}
+  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(2){animation-delay:.03s}
+  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(3){animation-delay:.06s}
+  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(4){animation-delay:.09s}
+  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(5){animation-delay:.12s}
+  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(6){animation-delay:.15s}
+  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(7){animation-delay:.18s}
+  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(n+8){animation-delay:.21s}
+  .task.pop .ring{animation:pop .42s cubic-bezier(.3,1.6,.5,1),burst .6s ease-out}
+  .task.pop .ttl{animation:strike .5s ease-out}
+  .btn,.tbtn,.th,.check,.nav a,.tab,.pomo-fab,.lk,.bl,.deck,.accents button,.seg button{transition:transform .14s ease,background-color .2s,border-color .2s,color .2s,box-shadow .2s}
+  :is(.btn,.tbtn,.th,.pomo-fab,.accents button,.seg button):active{transform:scale(.95)}
+  .check:active .ring{transform:scale(.85)}
+  .ring{transition:transform .15s,background-color .2s,border-color .2s}
+  .check:hover .ring{transform:scale(1.12)}
+  @media (hover:hover){:is(.bl,.lk,.th,.tbtn):hover{transform:translateY(-2px)} .nav a:hover{transform:translateX(2px)}}
+  dialog[open]{animation:dlgIn .24s cubic-bezier(.2,.9,.3,1.15)}
+  dialog[open]::backdrop{animation:fade .24s}
+  #toast:not(:empty){animation:rise .3s cubic-bezier(.2,.9,.3,1.2)}
+  .flash.in{animation:flipIn .42s cubic-bezier(.2,.8,.2,1)}
+  .flash .fa{animation:rise .32s ease-out}
+  .tbtns .tbtn{animation:rise .3s ease-out backwards} .tbtns .tbtn:nth-child(2){animation-delay:.04s} .tbtns .tbtn:nth-child(3){animation-delay:.08s} .tbtns .tbtn:nth-child(4){animation-delay:.12s}
+  .pomo-fab.run{animation:breathe 2.6s ease-in-out infinite}
+  .logo{transition:transform .4s cubic-bezier(.3,1.6,.5,1)} .brand:hover .logo{transform:rotate(-12deg) scale(1.08)}
+}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.35s}
+
 /* palette effects: data-fx on <html> */
 :root[data-fx~=glow] :is(.btn.pri,.pomo-fab.run,.strip .on,.month button.on,.sq-btn,.logo){box-shadow:0 0 14px color-mix(in srgb,var(--acc) 55%,transparent)}
 :root[data-fx~=glow] :is(.title,.ptitle h1,.brand,.nav a.on,.tab.on,.pomo-time){text-shadow:0 0 12px color-mix(in srgb,var(--acc) 50%,transparent)}
@@ -507,6 +583,7 @@ body.pip .pomo-time{font-size:min(22vw,64px)}
 </style>
 </head>
 <body>
+<div id="sky" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
 <div id="app">
   <aside id="sidebar" aria-label="Sidebar"></aside>
   <main id="main"></main>
@@ -761,7 +838,7 @@ function route() {
   const [v = 'today', a = '', b = ''] = decodeURIComponent(location.hash.slice(1)).split('/');
   return { v: v || 'today', a, b };
 }
-window.addEventListener('hashchange', () => { render(true); $('#main').scrollTop = 0; window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => { enterAnim(); render(true); $('#main').scrollTop = 0; window.scrollTo(0, 0); });
 
 /* ============ quick-add parser ============ */
 function findProject(name) {
@@ -818,7 +895,7 @@ function taskRow(x, o = {}) {
   if (x.due && !o.hideDue) { const d = dueLabel(x.due); parts.push(`<span class="${d.late && !x.done ? 'late' : ''}">${d.text}</span>`); }
   if (x.due_time) parts.push(esc(x.due_time));
   if (x.recur) parts.push(`<span title="Repeats ${esc(x.recur)}" style="display:inline-flex;width:14px;height:14px">${I.repeat}</span>`);
-  return `<div class="task${x.done ? ' done' : ''}">
+  return `<div class="task${x.done ? ' done' : ''}${S.pop === x.id ? ' pop' : ''}">
 <button class="check" data-act="toggle" data-id="${x.id}" aria-label="${x.done ? 'Mark not done' : 'Complete task'}"><span class="ring p${x.done ? 4 : (x.priority || 4)}">${I.tick}</span></button>
 <button class="tbody" data-act="edit-task" data-id="${x.id}"><span class="ttl">${esc(x.title)}</span><span class="meta">${parts.join('<span aria-hidden="true">·</span>')}</span></button>
 ${x.priority == 1 && !x.done ? '<span class="chip p1">P1</span>' : ''}
@@ -1359,6 +1436,10 @@ function render(force) {
   if (S.focusTitle && $('#ed-title')) { const el = $('#ed-title'); el.focus(); el.select(); S.focusTitle = null; }
   else if (fid) { const el = document.getElementById(fid); if (el) { el.focus({ preventScroll: true }); try { if (ss != null) el.setSelectionRange(ss, se); } catch { } } }
 }
+// Plays the entry animation (fade + stagger) for the next renders after a route change.
+let enterTimer;
+function enterAnim() { const h = document.documentElement; h.dataset.enter = ''; clearTimeout(enterTimer); enterTimer = setTimeout(() => delete h.dataset.enter, 650); }
+function withTransition(fn) { if (document.startViewTransition && themePrefs().motion !== 'off' && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(fn); else fn(); }
 function autoGrow(t) { t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, window.innerHeight * 0.5) + 'px'; }
 
 /* ============ dialogs + toast ============ */
@@ -1421,6 +1502,7 @@ function toggleTask(id) {
     next = create('tasks', { title: x.title, project_id: x.project_id, priority: x.priority, section: x.section, note_id: x.note_id, due_time: x.due_time, recur: x.recur, due: nd, done: false, done_at: null }, false);
   }
   const before = { ...x };
+  S.pop = id; setTimeout(() => { if (S.pop === id) S.pop = null; }, 700);
   update('tasks', id, { done: true, done_at: nowISO(), recur: '' });
   toast(next ? `Done · next on ${fmtShort(next.due)}` : 'Task done', () => { update('tasks', id, { done: false, done_at: null, recur: before.recur }); if (next) removeRow('tasks', next.id); });
 }
@@ -1479,7 +1561,8 @@ const ACTIONS = {
   gfit: () => fitGraph(),
   gsel: el => selectNode(el.dataset.id || null),
   undo: () => { const u = toast.undo; $('#toast').innerHTML = ''; toast.undo = null; if (u) u(); },
-  'set-theme': el => { localStorage.setItem('knot.theme', JSON.stringify({ ...themePrefs(), theme: el.dataset.v })); applyTheme(); render(true); },
+  'set-theme': el => { localStorage.setItem('knot.theme', JSON.stringify({ ...themePrefs(), theme: el.dataset.v })); withTransition(() => { applyTheme(); render(true); }); },
+  'set-motion': el => { localStorage.setItem('knot.theme', JSON.stringify({ ...themePrefs(), motion: el.dataset.v })); applyTheme(); render(true); },
   'set-accent': el => { localStorage.setItem('knot.theme', JSON.stringify({ ...themePrefs(), accent: el.dataset.v })); applyTheme(); render(true); },
   'pomo-open': () => { if (pipWin) { pipWin.focus(); return; } P.open = !P.open; renderPomo(); },
   'pomo-start': () => pomoStart(),
@@ -1668,7 +1751,7 @@ function viewTrain(key) {
     const btn = (g, label) => `<button class="tbtn g${g}" data-act="train-grade" data-v="${g}"><b>${label}</b><span>${ivlLabel(st, g)}</span><kbd>${g}</kbd></button>`;
     return `<div class="page">${head}
 <div class="tr-meta"><span>${st ? 'Review' : 'New'}</span><span>${left} left · ${T.done} done</span></div>
-<div class="card flash"><div class="md fq">${md(c.front)}</div>${T.shown ? `<hr><div class="md fa">${md(c.back)}</div>` : ''}</div>
+<div class="card flash${T.shown ? '' : ' in'}"><div class="md fq">${md(c.front)}</div>${T.shown ? `<hr><div class="md fa">${md(c.back)}</div>` : ''}</div>
 <div class="tr-src"><a href="#note/${c.note.id}">From: ${esc(c.note.title || 'Untitled')}</a></div>
 ${T.shown ? `<div class="tbtns">${btn(1, 'Again')}${btn(2, 'Hard')}${btn(3, 'Good')}${btn(4, 'Easy')}</div>` : `<button class="btn pri tshow" data-act="train-show">Show answer <kbd>Space</kbd></button>`}</div>`;
   }
@@ -1695,13 +1778,17 @@ const trainDueAll = () => { const now = Date.now(); return all('notes').flatMap(
 /* ============ appearance ============ */
 function viewAppearance() {
   const t = applyTheme();
-  const pv = P => `<span class="pv" style="background:${P.bg}"><i style="background:${P.side}"></i><i style="background:${P.card};display:flex;flex-direction:column;justify-content:flex-end;gap:3px;padding:4px"><b style="height:3px;width:80%;border-radius:2px;background:${P.mute}"></b><b style="height:6px;width:55%;border-radius:3px;background:${t.accent === 'auto' ? P.acc : ACCENTS[t.accent]}"></b></i></span>`;
+  const pv = P => `<span class="pv" style="background:${P.sky ? `radial-gradient(circle at 15% 15%,${P.sky[0]}99,transparent 55%),radial-gradient(circle at 85% 30%,${P.sky[1]}88,transparent 55%),radial-gradient(circle at 50% 100%,${P.sky[2]}77,transparent 60%),` : ''}${P.bg}"><i style="background:${P.side}"></i><i style="background:${P.card};display:flex;flex-direction:column;justify-content:flex-end;gap:3px;padding:4px"><b style="height:3px;width:80%;border-radius:2px;background:${P.mute}"></b><b style="height:6px;width:55%;border-radius:3px;background:${t.accent === 'auto' ? P.acc : ACCENTS[t.accent]}"></b></i></span>`;
   const group = g => Object.entries(PALETTES).filter(([, P]) => P.group === g).map(([k, P]) => `<button class="th${t.theme === k ? ' on' : ''}" data-act="set-theme" data-v="${k}" aria-pressed="${t.theme === k}">${pv(P)}${P.name}</button>`).join('');
   return `<section class="card pad set-sec"><h2>Appearance</h2><p>Saved on this device, so your phone and PC can look different.</p>
+<h3 class="side-h3" style="margin:4px 0 8px">Aurora skies</h3><div class="themes" role="group" aria-label="Aurora palettes">${group('a')}</div>
 <h3 class="side-h3" style="margin:4px 0 8px">Knot originals</h3><div class="themes" role="group" aria-label="Knot palettes">${group('k')}</div>
 <h3 class="side-h3" style="margin:4px 0 8px">Editor classics</h3><div class="themes" role="group" aria-label="Editor palettes">${group('c')}</div>
 <h3 class="side-h3" style="margin:4px 0 8px">Accent</h3>
-<div class="accents" role="group" aria-label="Accent colour"><button class="auto${t.accent === 'auto' ? ' on' : ''}" data-act="set-accent" data-v="auto" aria-label="Palette's own accent" aria-pressed="${t.accent === 'auto'}" title="Palette's own">A</button>${Object.entries(ACCENTS).map(([k, c]) => `<button class="${t.accent === k ? 'on' : ''}" style="background:${c}" data-act="set-accent" data-v="${k}" aria-label="${k} accent" title="${k}" aria-pressed="${t.accent === k}"></button>`).join('')}</div></section>`;
+<div class="accents" role="group" aria-label="Accent colour"><button class="auto${t.accent === 'auto' ? ' on' : ''}" data-act="set-accent" data-v="auto" aria-label="Palette's own accent" aria-pressed="${t.accent === 'auto'}" title="Palette's own">A</button>${Object.entries(ACCENTS).map(([k, c]) => `<button class="${t.accent === k ? 'on' : ''}" style="background:${c}" data-act="set-accent" data-v="${k}" aria-label="${k} accent" title="${k}" aria-pressed="${t.accent === k}"></button>`).join('')}</div>
+<h3 class="side-h3" style="margin:16px 0 8px">Motion</h3>
+<div class="seg" role="group" aria-label="Motion">${[['full', 'Full'], ['calm', 'Calm'], ['off', 'Off']].map(([k, l]) => `<button class="${t.motion === k ? 'on' : ''}" data-act="set-motion" data-v="${k}" aria-pressed="${t.motion === k}">${l}</button>`).join('')}</div>
+<p class="small mute" style="margin:8px 0 0">Full: animations and a moving aurora sky. Calm: animations, still sky. Off: no motion.</p></section>`;
 }
 
 /* ============ pomodoro ============ */

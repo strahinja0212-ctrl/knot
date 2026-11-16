@@ -1,5 +1,5 @@
 // Knot service worker: works offline, always tries the network first for the app itself.
-const CACHE = 'knot-v8';
+const CACHE = 'knot-v9';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
