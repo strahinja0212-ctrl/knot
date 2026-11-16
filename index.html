@@ -56,11 +56,10 @@ const PALETTES = {
 };
 const ACCENTS = { indigo: '#4F46E5', blue: '#2563EB', sky: '#0284C7', teal: '#0D9488', green: '#16A34A', amber: '#D97706', orange: '#EA580C', rose: '#E11D48', pink: '#DB2777', violet: '#7C3AED' };
 function themePrefs() {
-  let t = { theme: 'graphite', accent: 'auto', motion: 'full' };
+  let t = { theme: 'graphite', accent: 'auto' };
   try { t = { ...t, ...JSON.parse(localStorage.getItem('knot.theme') || '{}') }; } catch { }
   if (!PALETTES[t.theme]) t.theme = 'graphite';
   if (t.accent !== 'auto' && !ACCENTS[t.accent]) t.accent = 'auto';
-  if (!['full', 'calm', 'off'].includes(t.motion)) t.motion = 'full';
   return t;
 }
 function themeVars() {
@@ -85,7 +84,7 @@ function themeVars() {
 function applyTheme() {
   const { t, key, P, css } = themeVars();
   const h = document.documentElement;
-  h.style.cssText = css; h.dataset.theme = key; h.dataset.fx = P.fx; h.dataset.motion = t.motion;
+  h.style.cssText = css; h.dataset.theme = key; h.dataset.fx = P.fx;
   const m = document.querySelector('meta[name=theme-color]');
   if (m) m.content = P.bg;
   return t;
@@ -282,7 +281,7 @@ details.done-list summary::-webkit-details-marker{display:none}
 .tr.fr{padding:0 4px 0 0}
 .fr-main{flex:1;min-width:0;height:100%;display:flex;align-items:center;gap:8px;padding-left:calc(8px + var(--d,0) * 16px);text-align:left;font-weight:500;color:var(--ink2)}
 .fdot{width:9px;height:9px;border-radius:50%;flex:none;border:1.5px solid var(--acc);background:transparent}
-.fr-acts{display:flex;gap:2px;opacity:0;transition:opacity .12s}
+.fr-acts{display:flex;gap:2px;opacity:0}
 .tr.fr:hover .fr-acts,.tr.fr:focus-within .fr-acts{opacity:1}
 @media (hover:none){.fr-acts{opacity:1}}
 .fr-acts button{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--mute)}
@@ -292,7 +291,7 @@ details.done-list summary::-webkit-details-marker{display:none}
 .tr svg{width:14px;height:14px;color:var(--faint)}
 .tr .tl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tr .cnt{font-size:12px;color:var(--mute)}
-.tr .fold{transition:transform .15s}
+
 .tr.closed .fold{transform:rotate(-90deg)}
 @media (max-width:899px){.tr{height:44px;font-size:15px}}
 .ed-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
@@ -443,9 +442,7 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 /* style: lit buttons and glow, all palettes (static, cheap: shadows only) */
 .btn.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));position:relative;overflow:hidden;isolation:isolate;
   box-shadow:0 0 0 1px color-mix(in srgb,var(--acc) 70%,transparent),0 6px 18px -6px color-mix(in srgb,var(--acc) 75%,transparent),inset 0 1px 0 rgba(255,255,255,.28)}
-.btn.pri::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.38) 50%,transparent 65%);transform:translateX(-130%)}
 .btn.pri:hover{box-shadow:0 0 0 1px var(--acc),0 0 22px -2px color-mix(in srgb,var(--acc) 80%,transparent),inset 0 1px 0 rgba(255,255,255,.35)}
-.btn.pri:hover::after{transform:translateX(130%);transition:transform .55s ease}
 .btn.sec:hover{border-color:color-mix(in srgb,var(--acc) 60%,var(--line2));box-shadow:0 0 14px -4px color-mix(in srgb,var(--acc) 60%,transparent);color:var(--acc-ink)}
 .logo{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 16px -2px color-mix(in srgb,var(--acc) 70%,transparent),inset 0 1px 0 rgba(255,255,255,.3)}
 .nav a.on{background:var(--acc-soft);box-shadow:inset 3px 0 0 var(--acc),0 0 20px -8px var(--acc)}
@@ -462,65 +459,6 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 .seg .on{box-shadow:0 0 12px -4px var(--acc)}
 :focus-visible{box-shadow:0 0 14px -2px var(--acc)}
 .chip.p1{box-shadow:0 0 10px -3px var(--warn)}
-
-/* motion (off when data-motion=off or the OS asks for reduced motion) */
-@keyframes rise{from{opacity:0;transform:translateY(10px)}}
-@keyframes fade{from{opacity:0}}
-@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
-@keyframes burst{from{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 60%,transparent)}to{box-shadow:0 0 0 12px transparent}}
-@keyframes dlgIn{from{opacity:0;transform:translateY(12px) scale(.96)}}
-@keyframes flipIn{from{opacity:0;transform:perspective(900px) rotateX(-14deg) translateY(14px)}}
-@keyframes breathe{50%{box-shadow:0 0 22px color-mix(in srgb,var(--acc) 60%,transparent)}}
-@keyframes strike{from{text-decoration-color:transparent}}
-@keyframes dlgOut{to{opacity:0;transform:translateY(8px) scale(.97)}}
-@keyframes fadeOut{to{opacity:0}}
-@keyframes toastOut{to{opacity:0;transform:translateY(10px)}}
-:root{--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1)}
-@media (prefers-reduced-motion:no-preference){
-:root:not([data-motion=off]){
-  &:not([data-motion=calm])[data-enter] :is(.page > *,.notes-layout > *){animation:rise .55s var(--ease) backwards}
-  &:not([data-motion=calm])[data-enter] .page > :nth-child(2){animation-delay:.04s} &:not([data-motion=calm])[data-enter] .page > :nth-child(3){animation-delay:.08s} &:not([data-motion=calm])[data-enter] .page > :nth-child(n+4){animation-delay:.12s}
-  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(-n+14){animation:rise .5s var(--ease) backwards}
-  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(2){animation-delay:.03s}
-  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(3){animation-delay:.06s}
-  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(4){animation-delay:.09s}
-  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(5){animation-delay:.12s}
-  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(6){animation-delay:.15s}
-  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(7){animation-delay:.18s}
-  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(n+8){animation-delay:.21s}
-  .task.pop .ring{animation:pop .45s var(--spring),burst .7s var(--ease)}
-  .task.pop .ttl{animation:strike .5s ease-out}
-  /* fluid: every state change eases instead of snapping */
-  :is(.btn,.tbtn,.th,.check,.nav a,.tab,.pomo-fab,.lk,.bl,.deck,.accents button,.seg button,.chip,.task,.tr,.qa,.search,.card,.fld input,.fld select,.mdcb,.wl){transition:transform .38s var(--spring),background-color .35s var(--ease),border-color .35s var(--ease),color .35s var(--ease),box-shadow .45s var(--ease),opacity .35s var(--ease)}
-  :is(.btn,.tbtn,.th,.pomo-fab,.accents button,.seg button,.mdcb):active{transform:scale(.94);transition-duration:.12s}
-  .ring{transition:transform .4s var(--spring),background-color .35s var(--ease),border-color .35s var(--ease),box-shadow .45s var(--ease)}
-  .check:hover .ring{transform:scale(1.14)} .check:active .ring{transform:scale(.82);transition-duration:.1s}
-  .tab svg,.nav a svg{transition:transform .4s var(--spring),filter .4s var(--ease)}
-  .tab.on svg{transform:translateY(-2px) scale(1.08)}
-  @media (hover:hover){
-    :is(.bl,.lk,.th,.tbtn,.deck):hover{transform:translateY(-2px)}
-    .nav a:hover{transform:translateX(3px)} .nav a:hover svg{transform:scale(1.1)}
-    .btn.pri:hover{transform:translateY(-1px)}
-  }
-  .btn.pri::after{transition:transform .8s var(--ease)}
-  .tr .fold{transition:transform .35s var(--spring)}
-  .nav a.on{view-transition-name:navpill} .tab.on{view-transition-name:tabpill}
-  .task.checking .ring{background:var(--acc);border-color:var(--acc);color:var(--on-acc);animation:pop .45s var(--spring),burst .7s var(--ease)}
-  .task.checking .ttl{color:var(--faint);text-decoration:line-through;animation:strike .4s var(--ease)}
-  dialog.closing{animation:dlgOut .2s var(--ease) forwards} dialog.closing::backdrop{animation:fadeOut .2s forwards}
-  #toast.out{animation:toastOut .28s var(--ease) forwards}
-  dialog[open]{animation:dlgIn .38s var(--spring)}
-  dialog[open]::backdrop{animation:fade .3s var(--ease)}
-  #toast:not(:empty):not(.out){animation:rise .42s var(--spring)}
-  .flash.in{animation:flipIn .55s var(--ease)}
-  .flash .fa{animation:rise .45s var(--ease)}
-  .tbtns .tbtn{animation:rise .45s var(--spring) backwards} .tbtns .tbtn:nth-child(2){animation-delay:.04s} .tbtns .tbtn:nth-child(3){animation-delay:.08s} .tbtns .tbtn:nth-child(4){animation-delay:.12s}
-  .pomo-fab.run{animation:breathe 2.6s ease-in-out infinite}
-  .logo{transition:transform .4s cubic-bezier(.3,1.6,.5,1)} .brand:hover .logo{transform:rotate(-12deg) scale(1.08)}
-}}
-::view-transition-old(root),::view-transition-new(root){animation-duration:.28s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
-::view-transition-group(*){animation-duration:.45s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
-::view-transition-group(navpill),::view-transition-group(tabpill){animation-duration:.45s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
 
 /* palette effects: data-fx on <html> */
 :root[data-fx~=glow] :is(.btn.pri,.pomo-fab.run,.strip .on,.month button.on,.sq-btn,.logo){box-shadow:0 0 14px color-mix(in srgb,var(--acc) 55%,transparent)}
@@ -854,7 +792,7 @@ function route() {
   const [v = 'today', a = '', b = ''] = decodeURIComponent(location.hash.slice(1)).split('/');
   return { v: v || 'today', a, b };
 }
-window.addEventListener('hashchange', () => withTransition(() => { enterAnim(); render(true); $('#main').scrollTop = 0; window.scrollTo(0, 0); }));
+window.addEventListener('hashchange', () => { render(true); $('#main').scrollTop = 0; window.scrollTo(0, 0); });
 
 /* ============ quick-add parser ============ */
 function findProject(name) {
@@ -911,7 +849,7 @@ function taskRow(x, o = {}) {
   if (x.due && !o.hideDue) { const d = dueLabel(x.due); parts.push(`<span class="${d.late && !x.done ? 'late' : ''}">${d.text}</span>`); }
   if (x.due_time) parts.push(esc(x.due_time));
   if (x.recur) parts.push(`<span title="Repeats ${esc(x.recur)}" style="display:inline-flex;width:14px;height:14px">${I.repeat}</span>`);
-  return `<div class="task${x.done ? ' done' : ''}${S.pop === x.id ? ' pop' : ''}"${S.vtTasks ? ` style="view-transition-name:t-${x.id}"` : ''}>
+  return `<div class="task${x.done ? ' done' : ''}">
 <button class="check" data-act="toggle" data-id="${x.id}" aria-label="${x.done ? 'Mark not done' : 'Complete task'}"><span class="ring p${x.done ? 4 : (x.priority || 4)}">${I.tick}</span></button>
 <button class="tbody" data-act="edit-task" data-id="${x.id}"><span class="ttl">${esc(x.title)}</span><span class="meta">${parts.join('<span aria-hidden="true">·</span>')}</span></button>
 ${x.priority == 1 && !x.done ? '<span class="chip p1">P1</span>' : ''}
@@ -1452,31 +1390,17 @@ function render(force) {
   if (S.focusTitle && $('#ed-title')) { const el = $('#ed-title'); el.focus(); el.select(); S.focusTitle = null; }
   else if (fid) { const el = document.getElementById(fid); if (el) { el.focus({ preventScroll: true }); try { if (ss != null) el.setSelectionRange(ss, se); } catch { } } }
 }
-// Plays the entry animation (fade + stagger) for the next renders after a route change.
-let enterTimer;
-function enterAnim() { const h = document.documentElement; h.dataset.enter = ''; clearTimeout(enterTimer); enterTimer = setTimeout(() => delete h.dataset.enter, 650); }
-const motionOn = () => themePrefs().motion !== 'off' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
-// Runs fn inside a View Transition (smooth morph between old and new screen). fn always runs exactly once,
-// even if the browser skips or stalls the transition.
-function withTransition(fn, after) {
-  let ran = false; const run = () => { if (!ran) { ran = true; fn(); } };
-  if (!document.startViewTransition || !motionOn()) { run(); after && after(); return; }
-  try { const t = document.startViewTransition(run); t.finished.catch(() => { }).finally(() => after && after()); } catch { run(); after && after(); }
-  setTimeout(run, 400);
-}
 function autoGrow(t) { t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, window.innerHeight * 0.5) + 'px'; }
 
 /* ============ dialogs + toast ============ */
 const dlg = $('#dlg');
 function openDlg(html) { dlg.innerHTML = html; dlg.showModal(); const f = dlg.querySelector('input:not([type=radio]),select'); if (f) f.focus(); }
 dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
-{ const shut = dlg.close.bind(dlg); dlg.close = v => { if (!dlg.open || dlg.classList.contains('closing')) return; if (!motionOn()) return shut(v); dlg.classList.add('closing'); setTimeout(() => { dlg.classList.remove('closing'); shut(v); }, 190); }; }
 let toastTimer;
 function toast(text, undo) {
   const el = $('#toast'); clearTimeout(toastTimer);
   el.innerHTML = `<span>${esc(text)}</span>${undo ? '<button data-act="undo">Undo</button>' : ''}`;
-  el.classList.remove('out');
-  toast.undo = undo; toastTimer = setTimeout(() => { el.classList.add('out'); toastTimer = setTimeout(() => { el.innerHTML = ''; el.classList.remove('out'); toast.undo = null; }, 280); }, 4500);
+  toast.undo = undo; toastTimer = setTimeout(() => { el.innerHTML = ''; toast.undo = null; }, 4500);
 }
 function editTask(id) {
   const x = get('tasks', id); if (!x) return;
@@ -1519,27 +1443,15 @@ function editFolder(id, parentId) {
 }
 
 /* ============ actions ============ */
-function toggleTask(id, now) {
+function toggleTask(id) {
   const x = get('tasks', id); if (!x) return;
   if (x.done) { update('tasks', id, { done: false, done_at: null }); return; }
-  // fluid: the ring fills, then rows glide to their new places (a list that hides done tasks lets this one fade out)
-  const row = !now && motionOn() && document.querySelector(`.check[data-id="${id}"]`)?.closest('.task');
-  if (row && !row.classList.contains('checking')) {
-    row.classList.add('checking');
-    setTimeout(() => {
-      document.querySelectorAll('.task .check[data-id]').forEach(c => { c.closest('.task').style.viewTransitionName = 't-' + c.dataset.id; });
-      S.vtTasks = true; setTimeout(() => { S.vtTasks = false; }, 1200);
-      withTransition(() => toggleTask(id, true), () => { S.vtTasks = false; });
-    }, 240);
-    return;
-  }
   let next = null;
   if (x.recur && x.due) {
     let nd = nextDue(x.due, x.recur); while (nd < today()) nd = nextDue(nd, x.recur);
     next = create('tasks', { title: x.title, project_id: x.project_id, priority: x.priority, section: x.section, note_id: x.note_id, due_time: x.due_time, recur: x.recur, due: nd, done: false, done_at: null }, false);
   }
   const before = { ...x };
-  if (!now) { S.pop = id; setTimeout(() => { if (S.pop === id) S.pop = null; }, 700); }
   update('tasks', id, { done: true, done_at: nowISO(), recur: '' });
   toast(next ? `Done · next on ${fmtShort(next.due)}` : 'Task done', () => { update('tasks', id, { done: false, done_at: null, recur: before.recur }); if (next) removeRow('tasks', next.id); });
 }
@@ -1598,8 +1510,7 @@ const ACTIONS = {
   gfit: () => fitGraph(),
   gsel: el => selectNode(el.dataset.id || null),
   undo: () => { const u = toast.undo; $('#toast').innerHTML = ''; toast.undo = null; if (u) u(); },
-  'set-theme': el => { localStorage.setItem('knot.theme', JSON.stringify({ ...themePrefs(), theme: el.dataset.v })); withTransition(() => { applyTheme(); render(true); }); },
-  'set-motion': el => { localStorage.setItem('knot.theme', JSON.stringify({ ...themePrefs(), motion: el.dataset.v })); applyTheme(); render(true); },
+  'set-theme': el => { localStorage.setItem('knot.theme', JSON.stringify({ ...themePrefs(), theme: el.dataset.v })); applyTheme(); render(true); },
   'set-accent': el => { localStorage.setItem('knot.theme', JSON.stringify({ ...themePrefs(), accent: el.dataset.v })); applyTheme(); render(true); },
   'pomo-open': () => { if (pipWin) { pipWin.focus(); return; } P.open = !P.open; renderPomo(); },
   'pomo-start': () => pomoStart(),
@@ -1788,7 +1699,7 @@ function viewTrain(key) {
     const btn = (g, label) => `<button class="tbtn g${g}" data-act="train-grade" data-v="${g}"><b>${label}</b><span>${ivlLabel(st, g)}</span><kbd>${g}</kbd></button>`;
     return `<div class="page">${head}
 <div class="tr-meta"><span>${st ? 'Review' : 'New'}</span><span>${left} left · ${T.done} done</span></div>
-<div class="card flash${T.shown ? '' : ' in'}"><div class="md fq">${md(c.front)}</div>${T.shown ? `<hr><div class="md fa">${md(c.back)}</div>` : ''}</div>
+<div class="card flash"><div class="md fq">${md(c.front)}</div>${T.shown ? `<hr><div class="md fa">${md(c.back)}</div>` : ''}</div>
 <div class="tr-src"><a href="#note/${c.note.id}">From: ${esc(c.note.title || 'Untitled')}</a></div>
 ${T.shown ? `<div class="tbtns">${btn(1, 'Again')}${btn(2, 'Hard')}${btn(3, 'Good')}${btn(4, 'Easy')}</div>` : `<button class="btn pri tshow" data-act="train-show">Show answer <kbd>Space</kbd></button>`}</div>`;
   }
@@ -1822,10 +1733,7 @@ function viewAppearance() {
 <h3 class="side-h3" style="margin:4px 0 8px">Knot originals</h3><div class="themes" role="group" aria-label="Knot palettes">${group('k')}</div>
 <h3 class="side-h3" style="margin:4px 0 8px">Editor classics</h3><div class="themes" role="group" aria-label="Editor palettes">${group('c')}</div>
 <h3 class="side-h3" style="margin:4px 0 8px">Accent</h3>
-<div class="accents" role="group" aria-label="Accent colour"><button class="auto${t.accent === 'auto' ? ' on' : ''}" data-act="set-accent" data-v="auto" aria-label="Palette's own accent" aria-pressed="${t.accent === 'auto'}" title="Palette's own">A</button>${Object.entries(ACCENTS).map(([k, c]) => `<button class="${t.accent === k ? 'on' : ''}" style="background:${c}" data-act="set-accent" data-v="${k}" aria-label="${k} accent" title="${k}" aria-pressed="${t.accent === k}"></button>`).join('')}</div>
-<h3 class="side-h3" style="margin:16px 0 8px">Motion</h3>
-<div class="seg" role="group" aria-label="Motion">${[['full', 'Full'], ['calm', 'Calm'], ['off', 'Off']].map(([k, l]) => `<button class="${t.motion === k ? 'on' : ''}" data-act="set-motion" data-v="${k}" aria-pressed="${t.motion === k}">${l}</button>`).join('')}</div>
-<p class="small mute" style="margin:8px 0 0">Full: all animations. Calm: only small ones (presses, hovers). Off: no motion.</p></section>`;
+<div class="accents" role="group" aria-label="Accent colour"><button class="auto${t.accent === 'auto' ? ' on' : ''}" data-act="set-accent" data-v="auto" aria-label="Palette's own accent" aria-pressed="${t.accent === 'auto'}" title="Palette's own">A</button>${Object.entries(ACCENTS).map(([k, c]) => `<button class="${t.accent === k ? 'on' : ''}" style="background:${c}" data-act="set-accent" data-v="${k}" aria-label="${k} accent" title="${k}" aria-pressed="${t.accent === k}"></button>`).join('')}</div></section>`;
 }
 
 /* ============ pomodoro ============ */
