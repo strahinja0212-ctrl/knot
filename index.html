@@ -311,6 +311,11 @@ details.done-list summary::-webkit-details-marker{display:none}
 .struck{color:var(--faint);text-decoration:line-through}
 .md blockquote{margin:0 0 12px;padding:4px 14px;border-left:3px solid var(--line2);color:var(--mute)}
 .md pre{background:var(--soft);border-radius:10px;padding:12px;overflow:auto;font-size:13px}
+.mx{font-family:'Cambria Math','STIX Two Math','Latin Modern Math',Cambria,Georgia,serif;font-size:1.08em;white-space:nowrap;padding:0 2px}
+.mxb{display:block;text-align:center;font-size:1.3em;margin:4px 0 14px;white-space:normal}
+.mx .mn{color:var(--ok)} .mx .mo{color:var(--acc-ink);padding:0 .18em;font-weight:600} .mx .mb{color:var(--mute)}
+.mx .mv{font-style:italic;color:var(--warn)} .mx .mt{color:var(--ink2)}
+.mx .mq{display:inline-block;font-family:system-ui,sans-serif;font-size:.85em;color:var(--warn);font-weight:700;min-width:1em;text-align:center;background:color-mix(in srgb,var(--warn) 14%,transparent);border-radius:4px;padding:0 .15em}
 .md code{background:var(--soft);border-radius:4px;padding:1px 5px;font-size:.9em}
 .md pre code{background:none;padding:0}
 .md hr{border:none;border-top:1px solid var(--line2);margin:18px 0}
@@ -324,9 +329,11 @@ details.done-list summary::-webkit-details-marker{display:none}
 .side-sec{display:flex;flex-direction:column;gap:8px}
 .side-h3{margin:0;font-size:12px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
 .bl{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
-.bl b{font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px}
+.bl b{font-size:14px;font-weight:500;display:flex;align-items:baseline;gap:6px;line-height:1.35}
+.bl .sq,.lk .sq{flex-shrink:0;transform:translateY(-1px)}
+.bl > span{overflow-wrap:anywhere}
 .bl span{font-size:12px;color:var(--mute);line-height:1.45}
-.lk{height:34px;padding:0 10px;border-radius:8px;display:flex;align-items:center;gap:8px;font-size:14px;background:var(--surface);border:1px solid var(--line);text-align:left;width:100%}
+.lk{min-height:34px;padding:7px 10px;line-height:1.35;border-radius:8px;display:flex;align-items:center;gap:8px;font-size:14px;background:var(--surface);border:1px solid var(--line);text-align:left;width:100%}
 .lk.missing{color:var(--faint);border-style:dashed}
 
 /* graph */
@@ -990,13 +997,20 @@ ${sortedProjects().length && !nf ? `<dt>Project</dt><dd><select data-note="${n.i
 </dl>
 ${mode === 'edit' ? `<textarea class="ed-body" id="ed-body" data-note="${n.id}" data-field="body" placeholder="Write here. Link notes with [[Note title]], add #tags, checklists with - [ ], headings with #." aria-label="Note text">${esc(n.body)}</textarea>` : `<div class="md" data-note-md="${n.id}">${md(n.body)}</div>`}
 <section class="linked"><h2 class="side-h3">Linked tasks · ${linked.length}</h2>${taskCard(linked, { hideNote: true })}${quickAdd({ project: n.project_id || '', note: n.id, ph: 'Add a task linked to this note' })}</section>`;
-  const side = `<section class="side-sec"><h2 class="side-h3">Backlinks · ${bl.length}</h2>${bl.length ? bl.map(b => { const bp = get('projects', b.n.project_id); return `<a class="bl" href="#note/${b.n.id}"><b><span class="sq" style="width:7px;height:7px;background:${esc(bp?.color || '#A1A1AA')}"></span>${esc(b.n.title || 'Untitled')}</b><span>${esc(b.ctx)}</span></a>`; }).join('') : '<p class="small mute" style="margin:0">No notes link here yet.</p>'}</section>
+  const side = `<section class="side-sec"><h2 class="side-h3">Backlinks · ${bl.length}</h2>${bl.length ? bl.map(b => { const bp = get('projects', b.n.project_id); return `<a class="bl" href="#note/${b.n.id}"><b><span class="sq" style="width:7px;height:7px;background:${esc(bp?.color || '#A1A1AA')}"></span>${esc(b.n.title || 'Untitled')}</b><span>${esc(b.ctx.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, t, a) => a || t).replace(/\$/g, ''))}</span></a>`; }).join('') : '<p class="small mute" style="margin:0">No notes link here yet.</p>'}</section>
 <section class="side-sec"><h2 class="side-h3">Links · ${outl.length}</h2>${outl.length ? outl.map(t => { const m = tm.get(t.toLowerCase()); return `<button class="lk${m ? '' : ' missing'}" data-act="wiki" data-title="${esc(t)}">${m ? `<span class="sq" style="width:7px;height:7px;background:${esc(get('projects', m.project_id)?.color || '#A1A1AA')}"></span>` : '+'}${esc(t)}</button>`; }).join('') : '<p class="small mute" style="margin:0">Type [[ to link another note.</p>'}</section>`;
   return `<div class="notes-layout has-note"><section class="tree-col">${noteTree(n)}</section><div class="editor-col">${editor}</div><aside class="note-side">${side}</aside></div>`;
 }
 
 /* ---- markdown ---- */
+function mathHtml(src) {
+  const t = src.replace(/<=/g, '≤').replace(/>=/g, '≥').replace(/!=/g, '≠').replace(/\*/g, '×').replace(/(^|[\s(])-(?=[\s\d(a-zA-Z])/g, '$1−').replace(/(\d)-(\d)/g, '$1−$2');
+  return t.replace(/(\d+(?:[.,]\d+)*)|([+−×·÷=<>≤≥≠≈:/^%→])|([?▢□])|([()\[\]{}])|([a-zA-Z]+)/g, (m, n, o, q, b, v) =>
+    n ? `<span class="mn">${n}</span>` : o ? `<span class="mo">${esc(o)}</span>` : q ? '<span class="mq">▢</span>' : b ? `<span class="mb">${b}</span>` : v.length === 1 ? `<span class="mv">${v}</span>` : `<span class="mt">${v}</span>`);
+}
 function inline(s) {
+  const maths = [];
+  s = String(s).replace(/\$([^\s$](?:[^$\n]*[^\s$])?)\$(?!\d)/g, (_, m) => { maths.push(m); return `\u0001${maths.length - 1}\u0001`; });
   let h = esc(s);
   const codes = [];
   h = h.replace(/`([^`]+)`/g, (_, c) => { codes.push(c); return `\u0000${codes.length - 1}\u0000`; });
@@ -1005,6 +1019,7 @@ function inline(s) {
   h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/(^|[^*\w])\*([^*\s][^*]*)\*/g, '$1<em>$2</em>');
   h = h.replace(/(^|\s)#([\p{L}\p{N}_-]+)/gu, '$1<span class="tag">#$2</span>');
   h = h.replace(/\u0000(\d+)\u0000/g, (_, i) => `<code>${codes[i]}</code>`);
+  h = h.replace(/\u0001(\d+)\u0001/g, (_, i) => `<span class="mx">${mathHtml(maths[i])}</span>`);
   return h;
 }
 function mdTable(rows) {
@@ -1018,13 +1033,14 @@ function md(src) {
   if (!String(src || '').trim()) return '<p class="mute">Empty note. Switch to Edit to write.</p>';
   const L = src.split('\n'), out = [];
   const LIST = /^\s*([-*]|\d+\.)\s+/;
-  const STOP = /^(#{1,4}\s|```|\s*\||\s*>|\s*([-*]|\d+\.)\s+|\s*(---|\*\*\*)\s*$)/;
+  const STOP = /^(#{1,4}\s|```|\s*\$\$|\s*\||\s*>|\s*([-*]|\d+\.)\s+|\s*(---|\*\*\*)\s*$)/;
   let i = 0;
   while (i < L.length) {
     const l = L[i]; let m;
     if (/^```/.test(l)) { const buf = []; i++; while (i < L.length && !/^```/.test(L[i])) buf.push(L[i++]); i++; out.push(`<pre><code>${esc(buf.join('\n'))}</code></pre>`); continue; }
     if ((m = l.match(/^(#{1,4})\s+(.*)/))) { const h = Math.min(m[1].length + 1, 4); out.push(`<h${h}>${inline(m[2])}</h${h}>`); i++; continue; }
     if (/^\s*(---|\*\*\*)\s*$/.test(l)) { out.push('<hr>'); i++; continue; }
+    if ((m = l.match(/^\s*\$\$(.+)\$\$\s*$/))) { out.push(`<div class="mx mxb">${mathHtml(m[1].trim())}</div>`); i++; continue; }
     if (/^\s*\|/.test(l)) { const rows = []; while (i < L.length && /^\s*\|/.test(L[i])) rows.push(L[i++]); out.push(mdTable(rows)); continue; }
     if (/^\s*>/.test(l)) { const buf = []; while (i < L.length && /^\s*>/.test(L[i])) buf.push(L[i++].replace(/^\s*>\s?/, '')); out.push(`<blockquote>${buf.map(inline).join('<br>')}</blockquote>`); continue; }
     if (LIST.test(l)) {
