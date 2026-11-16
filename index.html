@@ -80,7 +80,7 @@ function themeVars() {
   };
   if (P.sky) {
     // glass: panels let the sky through
-    Object.assign(v, { card: mix(P.card, 72, 'transparent'), side: mix(P.side, 58, 'transparent'), surface: mix(P.surface, 74, 'transparent'), 'acc-soft': mix('var(--acc)', 22, 'transparent') });
+    Object.assign(v, { card: mix(P.card, 80, 'transparent'), side: mix(P.side, 66, 'transparent'), surface: mix(P.surface, 82, 'transparent'), 'acc-soft': mix('var(--acc)', 22, 'transparent') });
     P.sky.forEach((c, i) => { v['s' + (i + 1)] = c; });
   }
   return { t, key, P, css: Object.entries(v).map(([k, x]) => `--${k}:${x}`).join(';') + `;color-scheme:${dk ? 'dark' : 'light'}` };
@@ -447,23 +447,22 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 #sky{display:none;position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:var(--bg)}
 :root[data-fx~=sky] #sky{display:block}
 #app{position:relative;z-index:1}
-#sky i{position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(72px);opacity:.40;will-change:transform}
-#sky i:nth-child(1){background:var(--s1);left:-18vmax;top:-24vmax;animation:sk1 34s ease-in-out infinite alternate}
-#sky i:nth-child(2){background:var(--s2);right:-24vmax;top:6vh;animation:sk2 41s ease-in-out infinite alternate}
-#sky i:nth-child(3){background:var(--s3);left:12vw;bottom:-34vmax;animation:sk3 47s ease-in-out infinite alternate}
-#sky i:nth-child(4){background:var(--s4);right:4vw;bottom:-30vmax;width:44vmax;height:44vmax;opacity:.30;animation:sk4 29s ease-in-out infinite alternate}
-#sky b{position:absolute;left:-15%;right:-15%;top:-8%;height:62%;background:linear-gradient(100deg,transparent 8%,var(--s1) 28%,var(--s3) 48%,var(--s2) 68%,transparent 90%);filter:blur(46px);opacity:.26;transform-origin:50% 0;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 35%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 35%,transparent);animation:curtain 23s ease-in-out infinite alternate;will-change:transform}
+#sky i{position:absolute;width:70vmax;height:70vmax;opacity:.62;will-change:transform;contain:strict}
+#sky i:nth-child(1){background:radial-gradient(closest-side,var(--s1),transparent);left:-18vmax;top:-24vmax;animation:sk1 34s ease-in-out infinite alternate}
+#sky i:nth-child(2){background:radial-gradient(closest-side,var(--s2),transparent);right:-24vmax;top:6vh;animation:sk2 41s ease-in-out infinite alternate}
+#sky i:nth-child(3){background:radial-gradient(closest-side,var(--s3),transparent);left:12vw;bottom:-34vmax;animation:sk3 47s ease-in-out infinite alternate}
+#sky i:nth-child(4){background:radial-gradient(closest-side,var(--s4),transparent);right:4vw;bottom:-30vmax;width:50vmax;height:50vmax;opacity:.38;animation:sk4 29s ease-in-out infinite alternate}
+#sky b{position:absolute;left:-15%;right:-15%;top:-8%;height:62%;background:linear-gradient(100deg,transparent 8%,var(--s1) 28%,var(--s3) 48%,var(--s2) 68%,transparent 90%);opacity:.2;transform-origin:50% 0;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 35%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 35%,transparent);animation:curtain 23s ease-in-out infinite alternate;will-change:transform}
 @keyframes sk1{to{transform:translate(22vw,16vh) scale(1.15)}}
 @keyframes sk2{to{transform:translate(-26vw,22vh) scale(.85)}}
 @keyframes sk3{to{transform:translate(18vw,-18vh) scale(1.2)}}
 @keyframes sk4{to{transform:translate(-30vw,-12vh) scale(1.1)}}
 @keyframes curtain{0%{transform:translateX(-7%) skewX(-14deg) scaleY(.85)}50%{transform:translateX(3%) skewX(9deg) scaleY(1.12)}100%{transform:translateX(9%) skewX(-5deg) scaleY(.95)}}
 :root:is([data-motion=calm],[data-motion=off]) #sky *{animation:none}
-:root[data-fx~=sky] :is(.card,#sidebar,#tabbar,dialog,.pomo-fab,.pomo-card,.bl,.lk,.th){-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
 :root[data-fx~=sky] :is(.card,.bl,.lk,.th){border-color:color-mix(in srgb,var(--ink) 11%,transparent)}
 :root[data-fx~=sky] dialog{background:var(--card)}
-:root[data-fx~=sky] dialog::backdrop{background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
-:root[data-fx~=sky] :is(.title,.ptitle h1){background:linear-gradient(90deg,var(--ink) 20%,var(--acc) 70%,var(--s3));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--acc) 35%,transparent))}
+:root[data-fx~=sky] dialog::backdrop{background:rgba(0,0,0,.5)}
+:root[data-fx~=sky] :is(.title,.ptitle h1){background:linear-gradient(90deg,var(--ink) 20%,var(--acc) 70%,var(--s3));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
 
 /* motion (off when data-motion=off or the OS asks for reduced motion) */
 @keyframes rise{from{opacity:0;transform:translateY(10px)}}
