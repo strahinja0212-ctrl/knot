@@ -176,7 +176,7 @@ kbd{font:inherit;font-size:11px;color:var(--mute)}
 .seg{display:inline-flex;background:var(--line);border-radius:10px;padding:3px;flex:none}
 .seg button,.seg a{height:32px;padding:0 12px;border-radius:8px;font-size:13px;font-weight:500;color:var(--mute);display:flex;align-items:center;justify-content:center}
 .seg .on{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(24,24,27,.08)}
-.seg.full{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+.seg.full{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);width:100%}
 .seg.full a{height:38px;font-size:14px}
 .back{height:44px;display:inline-flex;align-items:center;gap:2px;font-size:15px;font-weight:500;color:var(--acc)}
 .back svg{width:20px;height:20px}
@@ -240,7 +240,7 @@ details.done-list summary::-webkit-details-marker{display:none}
 .prow .ptop{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
 .prow .pname{font-size:16px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pbar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
-.pbar i{display:block;height:100%;border-radius:2px}
+.pbar i{display:block;height:100%;border-radius:2px;background:var(--acc)}
 .chev{width:16px;height:16px;color:var(--ring)}
 .ptitle{display:flex;align-items:center;gap:10px;margin-top:4px}
 .ptitle .sq{width:14px;height:14px;border-radius:4px}
@@ -467,6 +467,128 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 :root[data-fx~=mono] body{font-family:'Cascadia Code',ui-monospace,Consolas,monospace;letter-spacing:-.01em}
 :root[data-fx~=sharp]{--r:3px}
 :root[data-fx~=sharp] :is(.btn,.qa,.search,.nav a,.seg,.seg button,.seg a,.th,.pv,.pomo-card,.pomo-fab,dialog,.fld input,.fld select,.chip,.tr,.strip button,.month button,.g-wrap,.sq-btn,.logo,.chk,.bl,.lk,.tag,.pill,#toast){border-radius:3px}
+/* rail sidebar (desktop) */
+@media (min-width:900px){
+  #app{grid-template-columns:76px minmax(0,1fr)}
+  #sidebar{align-items:center;gap:14px;padding:18px 0}
+  #sidebar .logo{width:38px;height:38px;border-radius:11px;margin-bottom:6px}
+  #sidebar .logo svg{width:19px;height:19px}
+  .rail{display:flex;flex-direction:column;gap:6px;align-items:center}
+  .rail a,.rail button{position:relative;width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:var(--mute)}
+  .rail a:hover,.rail button:hover{background:var(--hov);color:var(--ink)}
+  .rail a.on{background:var(--acc-soft);color:var(--acc-ink);box-shadow:0 0 18px -8px var(--acc)}
+  .rail svg{width:22px;height:22px}
+  .rail .rc{position:absolute;top:3px;right:1px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--acc);color:var(--on-acc);font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .rail-foot{margin-top:auto}
+  #sidebar .pill{font-size:0;width:10px;height:10px;padding:0;border-radius:50%;min-height:0;margin-top:4px}
+}
+/* today */
+.t-head{display:flex;align-items:center;gap:24px;margin:8px 0 20px}
+.t-hm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.t-hm .title{margin:2px 0 8px}
+.ring-big{position:relative;flex:none}
+.ring-big > div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-big b{font-size:26px;line-height:1} .ring-big span{font-size:12px;color:var(--mute);margin-top:4px}
+.chips-s{display:flex;gap:8px;flex-wrap:wrap}
+.chip-s{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:15px;font-size:13px;font-weight:600}
+.chip-s svg{width:14px;height:14px}
+.chip-s.streak{background:var(--warn-soft);color:var(--warn)} .chip-s.lvl{background:var(--acc-soft);color:var(--acc-ink)}
+.eyebrow{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.upnext{display:flex;align-items:center;gap:12px;padding:18px 20px;flex-wrap:wrap}
+.un-main{flex:1;min-width:220px;display:flex;flex-direction:column;gap:4px}
+.un-t{font-size:19px;font-weight:600}
+.upnext.cleared{border-color:var(--ok)} .upnext.cleared .eyebrow{color:var(--ok)}
+.btn svg{width:17px;height:17px}
+@media (max-width:899px){.t-head{gap:16px}.t-head .ring-big{transform:scale(.8);margin:-11px}}
+/* task rows: select + quick delete */
+.task .sel{width:22px;height:22px;flex:none;margin-left:8px;border:2px solid var(--line2);border-radius:6px;display:flex;align-items:center;justify-content:center;color:transparent;opacity:0}
+.task .sel svg{width:14px;height:14px}
+.task:hover .sel,.selecting .task .sel,.task.cur .sel{opacity:1}
+.task .sel.on{background:var(--acc);border-color:var(--acc);color:var(--on-acc);opacity:1}
+.task.picked{background:var(--acc-soft)}
+.task.cur{box-shadow:inset 0 0 0 1.5px var(--acc)}
+.tdel{width:34px;height:34px;flex:none;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--mute);opacity:0}
+.tdel svg{width:16px;height:16px}
+.task:hover .tdel,.task.cur .tdel{opacity:1} .tdel:hover{background:var(--warn-soft);color:var(--warn)}
+@media (hover:none){.task .sel{display:none}.selecting .task .sel{display:flex}.tdel{display:none}}
+#bulk{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:45;max-width:calc(100vw - 16px)}
+@media (min-width:900px){#bulk{bottom:24px;margin-left:38px}}
+.bulk{display:flex;align-items:center;gap:6px;padding:7px;border-radius:16px;background:var(--surface);border:1px solid var(--line2);box-shadow:0 16px 40px -14px rgba(0,0,0,.85);flex-wrap:wrap}
+.bulk-n{padding:0 10px;font-size:14px;font-weight:600}
+.bulk button{height:40px;padding:0 13px;border-radius:10px;background:var(--card);font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px}
+.bulk button:hover{background:var(--hov)}
+.bulk kbd{font-size:11px;color:var(--mute)}
+.bulk .bd{background:var(--warn-soft);color:var(--warn)} .bulk .bd kbd{color:var(--warn)}
+.bulk .bulk-x{width:40px;padding:0;justify-content:center} .bulk-x svg{width:16px;height:16px}
+@media (hover:none){.bulk kbd{display:none}}
+.clear-bar{display:flex;align-items:center;gap:14px;padding:14px 18px;margin-top:16px}
+.clear-bar .pbar{flex:1;height:8px} .clear-bar span{font-size:14px;font-weight:600;color:var(--ok)}
+.keys{text-align:center;font-size:13px;color:var(--mute);margin:14px 0 0}
+/* command palette */
+dialog.pal-dlg{width:min(640px,calc(100vw - 24px));margin-top:12vh}
+.pal{display:flex;flex-direction:column}
+.pal-in{display:flex;align-items:center;gap:12px;padding:0 18px;height:60px;border-bottom:1px solid var(--line);color:var(--mute)}
+.pal-in svg{width:20px;height:20px}
+.pal-in input{flex:1;min-width:0;background:transparent;border:none;outline:none;font-size:17px;color:var(--ink)}
+#pal-res{max-height:min(420px,55vh);overflow:auto;padding:6px}
+.pal-it{width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border-radius:10px;text-align:left;font-size:15px}
+.pal-it span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pal-it small{color:var(--mute);font-size:12px}
+.pal-it.on{background:var(--acc-soft);color:var(--acc-ink)}
+.pal-foot{margin:0;padding:10px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--mute)}
+/* wins */
+.w-head{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;margin:10px 0 22px}
+.w-head .title{margin:4px 0 0} .w-head p{margin:0;color:var(--ink2);font-size:16px}
+.w-check{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--on-acc);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px -6px var(--acc)}
+.w-check svg{width:36px;height:36px}
+.w-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.w-grid{grid-template-columns:minmax(0,1fr)}}
+.w-stat{padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.w-stat > span:first-child{font-size:13px;color:var(--mute)} .w-stat b{font-size:30px;line-height:1.1}
+.w-stat .pbar{height:8px}
+.w-row{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0} .w-row > *{flex:1 1 300px}
+.wins h2{margin:0 0 12px;font-size:16px}
+.heat{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.hm{aspect-ratio:1;border-radius:6px;background:var(--line)}
+.hm.l1{background:color-mix(in srgb,var(--acc) 28%,var(--line))} .hm.l2{background:color-mix(in srgb,var(--acc) 50%,var(--line))} .hm.l3{background:color-mix(in srgb,var(--acc) 75%,var(--line))} .hm.l4{background:var(--acc)}
+.hm.now{box-shadow:0 0 0 2px var(--ink)}
+.w-list{margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:8px}
+.w-list li::marker{color:var(--acc)}
+.w-next{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-top:12px} .w-next .fld{flex:1;min-width:220px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{height:32px;padding:0 13px;border-radius:16px;border:1px dashed var(--line2);color:var(--mute);font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.badge svg{width:13px;height:13px}
+.badge.got{border:1px solid transparent;background:var(--acc-soft);color:var(--acc-ink);font-weight:600}
+/* course path */
+.path-stats{display:flex;gap:12px;margin:14px 0 18px;flex-wrap:wrap}
+.ps{padding:12px 18px;display:flex;flex-direction:column} .ps span{font-size:12px;color:var(--mute)} .ps b{font-size:22px} .ps small{font-size:14px;color:var(--mute);font-weight:500}
+.path{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.path-col{flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.pn{display:flex;gap:16px}
+.pn-rail{display:flex;flex-direction:column;align-items:center;flex:none}
+.pn-dot{width:52px;height:52px;border-radius:50%;border:3px solid var(--line2);background:var(--card);color:var(--mute);font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center}
+.pn-dot svg{width:22px;height:22px}
+.pn-line{width:3px;flex:1;min-height:20px;background:var(--line2)}
+.pn-card{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;border:1px dashed var(--line2);border-radius:16px;padding:14px 18px;margin-bottom:16px}
+.pn-t{font-size:17px;font-weight:600}
+.pn-card .pbar{height:8px;display:block}
+.pn.cur .pn-dot{border-color:var(--acc);background:var(--acc-soft);color:var(--acc-ink);box-shadow:0 0 22px -4px var(--acc)}
+.pn.cur .pn-card{border:1px solid var(--acc);background:var(--card)} .pn.cur .eyebrow{color:var(--acc-ink)}
+.pn.done .pn-dot{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)} .pn.done .pn-card{border-style:solid;background:var(--card)} .pn.done .eyebrow{color:var(--ok)}
+.pn.later .pn-t{color:var(--mute)}
+.path h2{margin:0 0 12px;font-size:16px}
+.ls-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ls{display:flex;align-items:center;gap:9px;min-height:42px;padding:0 12px;border-radius:10px;background:var(--surface);color:var(--mute);font-size:14px}
+.ls span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ls svg{width:15px;height:15px;flex:none}
+.ls.done{background:var(--ok-soft);color:var(--ok)}
+.ls.now{border:1px solid var(--acc);background:transparent;color:var(--ink);font-weight:600}
+.ls.now i{width:8px;height:8px;border-radius:50%;background:var(--acc);flex:none}
+.pc-row{display:flex;gap:12px;flex-wrap:wrap}
+.pc{flex:1 1 160px;padding:16px 18px;display:flex;flex-direction:column;gap:4px;text-align:left}
+.pc > span:first-child{font-size:13px;color:var(--mute)} .pc b{font-size:22px} .pc .small{color:var(--acc-ink)}
+button.pc:hover:not([disabled]){border-color:var(--acc)} button.pc[disabled]{cursor:default} button.pc[disabled] .small{color:var(--mute)}
+.pc.locked{border-style:dashed} .pc.locked b{color:var(--ink2)} .pc.locked .small{color:var(--mute)}
 /* quiz */
 .quiz-card{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--acc);border-radius:14px;background:var(--acc-soft);margin:0 0 14px}
 .quiz-card b{flex:1;min-width:180px} .quiz-card .small{display:block;font-weight:500}
@@ -561,6 +683,7 @@ body.pip .pomo-time{font-size:min(22vw,64px)}
 </div>
 <dialog id="dlg"></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="bulk"></div>
 <div id="pomo"></div>
 
 <script>
@@ -597,6 +720,9 @@ const GROUP_ORDER = ['University', 'Roblox', 'Personal'];
 
 const SV = (p, extra = '') => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ${extra}>${p}</svg>`;
 const I = {
+  inbox: SV('<path d="M4 13l2.5-7.5h11L20 13v6H4z"/><path d="M4 13h4.5l1 2.5h5l1-2.5H20"/>'),
+  trophy: SV('<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8M9.5 20l.5-3h4l.5 3"/>'),
+  flame: SV('<path d="M12 3c1 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-7 1 2 3 3 3 3s-1-4 0-7z"/>'),
   train: SV('<rect x="3" y="7" width="14" height="13" rx="2.5"/><path d="M7 4h11a3 3 0 0 1 3 3v10"/><path d="M7.5 13.5l2 2 3.5-4"/>'),
   folder: SV('<path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>'),
   folderPlus: SV('<path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M12 11v5M9.5 13.5h5"/>'),
@@ -824,7 +950,7 @@ function route() {
   const [v = 'today', a = '', b = ''] = decodeURIComponent(location.hash.slice(1)).split('/');
   return { v: v || 'today', a, b };
 }
-window.addEventListener('hashchange', () => { render(true); $('#main').scrollTop = 0; window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => { S.sel.clear(); S.cur = null; render(true); $('#main').scrollTop = 0; window.scrollTo(0, 0); });
 
 /* ============ quick-add parser ============ */
 function findProject(name) {
@@ -881,11 +1007,13 @@ function taskRow(x, o = {}) {
   if (x.due && !o.hideDue) { const d = dueLabel(x.due); parts.push(`<span class="${d.late && !x.done ? 'late' : ''}">${d.text}</span>`); }
   if (x.due_time) parts.push(esc(x.due_time));
   if (x.recur) parts.push(`<span title="Repeats ${esc(x.recur)}" style="display:inline-flex;width:14px;height:14px">${I.repeat}</span>`);
-  return `<div class="task${x.done ? ' done' : ''}">
+  return `<div class="task${x.done ? ' done' : ''}${S.sel.has(x.id) ? ' picked' : ''}${S.cur === x.id ? ' cur' : ''}" data-tid="${x.id}">
+<button class="sel${S.sel.has(x.id) ? ' on' : ''}" data-act="sel" data-id="${x.id}" aria-pressed="${S.sel.has(x.id)}" aria-label="Select ${esc(x.title)}">${I.tick}</button>
 <button class="check" data-act="toggle" data-id="${x.id}" aria-label="${x.done ? 'Mark not done' : 'Complete task'}"><span class="ring p${x.done ? 4 : (x.priority || 4)}">${I.tick}</span></button>
 <button class="tbody" data-act="edit-task" data-id="${x.id}"><span class="ttl">${esc(x.title)}</span><span class="meta">${parts.join('<span aria-hidden="true">·</span>')}</span></button>
 ${x.priority == 1 && !x.done ? '<span class="chip p1">P1</span>' : ''}
 ${n && !o.hideNote ? `<a class="chip note" href="#note/${n.id}">${I.doc}${esc(n.title || 'Untitled')}</a>` : ''}
+<button class="tdel" data-act="del-row" data-id="${x.id}" aria-label="Delete ${esc(x.title)}" title="Delete (Undo in the message)">${I.close}</button>
 </div>`;
 }
 const taskCard = (ts, o) => ts.length ? `<div class="card">${ts.map(x => taskRow(x, o)).join('')}</div>` : '';
@@ -899,16 +1027,20 @@ function viewToday() {
   const t = today(), ts = all('tasks');
   const overdue = sortTasks(ts.filter(x => !x.done && x.due && x.due < t));
   const open = sortTasks(ts.filter(x => !x.done && x.due === t));
-  const done = ts.filter(x => x.done && doneDay(x) === t && (!x.due || x.due <= t));
-  const total = overdue.length + open.length + done.length;
-  const pct = total ? Math.round(done.length / total * 100) : 0;
-  return `<div class="page">
-<div class="hdr"><h1 class="title">Today</h1><div class="hdr-actions m-only"><span class="pill ${syncClass()}" data-sync>${syncLabel()}</span><a class="icon-btn" href="#search" aria-label="Search">${I.search}</a><a class="icon-btn" href="#settings" aria-label="Settings">${I.settings}</a></div></div>
-<div class="subrow"><span class="mute">${fmtLong(t)}</span>${total ? `<div class="progress"><i style="width:${pct}%"></i></div><span class="small mute" style="font-weight:500">${done.length} of ${total} done</span>` : ''}</div>
-${quickAdd({ due: t })}
+  const done = ts.filter(x => x.done && doneDay(x) === t).sort((a, b) => (b.done_at || '').localeCompare(a.done_at || ''));
+  const todo = overdue.concat(open), total = todo.length + done.length, g = progress(), next = todo[0];
+  const np = next && get('projects', next.project_id);
+  const hero = next
+    ? `<section class="card upnext"><div class="un-main"><span class="eyebrow">Up next</span><span class="un-t">${esc(next.title)}</span><span class="small mute">${[np ? esc(pPath(np)) : '', next.due && next.due < t ? '<span class="late">overdue</span>' : '', next.due_time ? esc(next.due_time) : '', `+${XP.task} XP`].filter(Boolean).join(' · ')}</span></div><button class="btn pri" data-act="focus-task" data-id="${next.id}">${I.timer}Focus ${pomoCfg().focus}:00</button><button class="btn sec" data-act="toggle" data-id="${next.id}">Done</button></section>`
+    : total ? `<section class="card upnext cleared"><div class="un-main"><span class="eyebrow">Day cleared</span><span class="un-t">All ${done.length} done · +${g.xpToday} XP today</span></div><a class="btn pri" href="#wins">${I.trophy}See your wins</a></section>` : '';
+  return `<div class="page today">
+<div class="hdr m-only" style="min-height:0"><span></span><div class="hdr-actions"><span class="pill ${syncClass()}" data-sync>${syncLabel()}</span><button class="icon-btn" data-act="palette" aria-label="Search and commands">${I.search}</button><a class="icon-btn" href="#settings" aria-label="Settings">${I.settings}</a></div></div>
+<header class="t-head">${ringBig(done.length, total)}<div class="t-hm"><span class="mute small">${fmtLong(t)}</span><h1 class="title">Today</h1><div class="chips-s">${g.streak ? `<span class="chip-s streak">${I.flame}${g.streak}-day streak</span>` : ''}<span class="chip-s lvl">Level ${g.L} · ${g.xp - g.from} / ${g.to - g.from} XP</span></div></div><a class="btn sec d-only" href="#wins">${I.trophy}Wins</a></header>
+${hero}
+${quickAdd({ due: t, ph: 'Add a task, press Enter' })}
 ${overdue.length ? `<h2 class="sec-h late">Overdue</h2>${taskCard(overdue)}` : ''}
-<h2 class="sec-h">Today</h2>
-${open.length || done.length ? taskCard(open.concat(done), { hideDue: true }) : '<div class="card empty">Nothing due today. Add a task above.</div>'}
+${open.length ? `<h2 class="sec-h">Today</h2>${taskCard(open, { hideDue: true })}` : !total ? '<div class="card empty" style="margin-top:12px">Nothing due today. Add a task above.</div>' : ''}
+${done.length ? `<h2 class="sec-h"><span>Done today · ${done.length}</span><span>+${done.length * XP.task} XP</span></h2>${taskCard(done, { hideDue: true })}` : ''}
 </div>`;
 }
 
@@ -948,7 +1080,7 @@ function viewProjects() {
     const ps = projTree().filter(([p]) => (pRoot(p).grp || 'Other') === g);
     return `<h2 class="sec-h">${esc(g)}</h2><div class="card">${ps.map(([p, d]) => {
       const { open, pct } = projPct(p.id);
-      return `<a class="prow" href="#project/${p.id}/tasks" style="${d ? `padding-left:${16 + d * 22}px` : ''}"><span class="sq" style="background:${esc(p.color)}"></span><div class="pmain"><div class="ptop"><span class="pname">${esc(p.name)}</span><span class="small mute">${open} open</span></div><div class="pbar"><i style="width:${pct}%;background:${esc(p.color)}"></i></div></div><span class="chev">${I.right}</span></a>`;
+      return `<a class="prow" href="#project/${p.id}" style="${d ? `padding-left:${16 + d * 22}px` : ''}"><span class="sq" style="background:${esc(p.color)}"></span><div class="pmain"><div class="ptop"><span class="pname">${esc(p.name)}</span><span class="small mute">${open} open</span></div><div class="pbar"><i style="width:${pct}%;background:${esc(p.color)}"></i></div></div><span class="chev">${I.right}</span></a>`;
     }).join('')}</div>`;
   }).join('');
   return `<div class="page"><div class="hdr"><h1 class="title">Projects</h1><button class="btn sec" data-act="new-project">${I.plus}New project</button></div>
@@ -963,15 +1095,17 @@ function viewProject(id, tab) {
   const open = pt.filter(x => !x.done), done = pt.filter(x => x.done).sort((a, b) => (b.done_at || '').localeCompare(a.done_at || ''));
   const pids = pDesc(id), kids = pKids(id), up = pParent(p);
   const notes = all('notes').filter(n => pids.has(noteProject(n)?.id)).sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (b.updated_at || '').localeCompare(a.updated_at || ''));
-  tab = tab === 'notes' ? 'notes' : 'tasks';
+  tab = ['tasks', 'notes', 'path'].includes(tab) ? tab : kids.length ? 'path' : 'tasks';
+  if (tab === 'path' && !kids.length) tab = 'tasks';
   let body;
-  if (tab === 'tasks') {
+  if (tab === 'path') body = pathView(p, kids);
+  else if (tab === 'tasks') {
     const secs = new Map();
     sortTasks(open).forEach(x => { const s = x.section || ''; if (!secs.has(s)) secs.set(s, []); secs.get(s).push(x); });
     const keys = [...secs.keys()].sort((a, b) => (a === '' ? -1 : b === '' ? 1 : 0));
     // numbered sections ("1 Lessons", "2 Practice") keep their number order
     if (keys.every(k => !k || /^\d/.test(k))) keys.sort((a, b) => (a === '' ? -1 : b === '' ? 1 : a.localeCompare(b, undefined, { numeric: true })));
-    const subs = kids.length ? `<h2 class="sec-h"><span>Subprojects</span><span>${kids.length}</span></h2><div class="card">${kids.map(k => { const st = projPct(k.id); return `<a class="prow" href="#project/${k.id}/tasks"><span class="sq" style="background:${esc(k.color)}"></span><div class="pmain"><div class="ptop"><span class="pname">${esc(k.name)}</span><span class="small mute">${st.total ? st.pct + '% · ' + st.open + ' open' : 'no tasks yet'}</span></div><div class="pbar"><i style="width:${st.pct}%;background:${esc(k.color)}"></i></div></div><span class="chev">${I.right}</span></a>`; }).join('')}</div>` : '';
+    const subs = kids.length ? `<h2 class="sec-h"><span>Subprojects</span><span>${kids.length}</span></h2><div class="card">${kids.map(k => { const st = projPct(k.id); return `<a class="prow" href="#project/${k.id}"><span class="sq" style="background:${esc(k.color)}"></span><div class="pmain"><div class="ptop"><span class="pname">${esc(k.name)}</span><span class="small mute">${st.total ? st.pct + '% · ' + st.open + ' open' : 'no tasks yet'}</span></div><div class="pbar"><i style="width:${st.pct}%;background:${esc(k.color)}"></i></div></div><span class="chev">${I.right}</span></a>`; }).join('')}</div>` : '';
     body = subs + quickAdd({ project: id, ph: `Add a task to ${p.name}` }) +
       (keys.length ? keys.map(s => `<h2 class="sec-h"><span>${esc(s || 'Tasks')}</span><span>${secs.get(s).length}</span></h2>${taskCard(secs.get(s), { hideProject: true })}`).join('') : '<div class="card empty" style="margin-top:16px">No open tasks.</div>') +
       (done.length ? `<details class="done-list"><summary>Completed · ${done.length}</summary>${taskCard(done.slice(0, 50), { hideProject: true })}</details>` : '');
@@ -980,10 +1114,10 @@ function viewProject(id, tab) {
       (notes.length ? notes.map(n => `<a class="card ncard" href="#note/${n.id}"><span class="nt"><span style="display:flex;align-items:center;gap:6px">${n.pinned ? `<span style="display:flex;width:14px;height:14px;color:var(--acc)" aria-label="Pinned">${I.pin}</span>` : ''}${esc(n.title || 'Untitled')}</span><span class="nd">${noteFolder(n) ? esc(fPath(noteFolder(n))) + ' · ' : ''}${fmtShort(dkey(new Date(n.updated_at)))}</span></span><span class="np">${esc(plain(n.body).slice(0, 180)) || '<i>Empty</i>'}</span></a>`).join('') : '<div class="card empty">No notes yet.</div>');
   }
   return `<div class="page">
-<div class="hdr"><a class="back" href="${up ? `#project/${up.id}/tasks` : '#projects'}">${I.back}${up ? esc(up.name) : 'Projects'}</a><span style="display:flex;gap:6px"><button class="btn sec" data-act="new-project" data-parent="${id}">${I.plus}Subproject</button><button class="icon-btn" data-act="edit-project" data-id="${id}" aria-label="Project options">${I.more}</button></span></div>
+<div class="hdr"><a class="back" href="${up ? `#project/${up.id}` : '#projects'}">${I.back}${up ? esc(up.name) : 'Projects'}</a><span style="display:flex;gap:6px"><button class="btn sec" data-act="new-project" data-parent="${id}">${I.plus}Subproject</button><button class="icon-btn" data-act="edit-project" data-id="${id}" aria-label="Project options">${I.more}</button></span></div>
 <div class="ptitle"><span class="sq" style="background:${esc(p.color)}"></span><h1>${esc(p.name)}</h1></div>
 <p class="mute small" style="margin:6px 0 14px">${kids.length ? `${projPct(id).pct}% done overall · ` : ''}${open.length} open · ${done.length} done · ${notes.length} notes</p>
-<div class="seg full" role="tablist"><a role="tab" aria-selected="${tab === 'tasks'}" class="${tab === 'tasks' ? 'on' : ''}" href="#project/${id}/tasks">Tasks</a><a role="tab" aria-selected="${tab === 'notes'}" class="${tab === 'notes' ? 'on' : ''}" href="#project/${id}/notes">Notes · ${notes.length}</a></div>
+<div class="seg full" role="tablist">${kids.length ? `<a role="tab" aria-selected="${tab === 'path'}" class="${tab === 'path' ? 'on' : ''}" href="#project/${id}/path">Path</a>` : ''}<a role="tab" aria-selected="${tab === 'tasks'}" class="${tab === 'tasks' ? 'on' : ''}" href="#project/${id}/tasks">Tasks</a><a role="tab" aria-selected="${tab === 'notes'}" class="${tab === 'notes' ? 'on' : ''}" href="#project/${id}/notes">Notes · ${notes.length}</a></div>
 ${body}</div>`;
 }
 
@@ -1390,22 +1524,18 @@ ${viewAppearance()}
 /* ============ shell ============ */
 function navCounts() {
   const t = today(), ts = openTasks();
-  return { today: ts.filter(x => x.due && x.due <= t).length, upcoming: ts.filter(x => x.due && x.due > t && x.due <= addDays(t, 7)).length, notes: all('notes').length };
+  return { inbox: ts.filter(x => !x.due && !get('projects', x.project_id)).length, today: ts.filter(x => x.due && x.due <= t).length, upcoming: ts.filter(x => x.due && x.due > t && x.due <= addDays(t, 7)).length, notes: all('notes').length };
 }
 function renderSidebar(r) {
   const c = navCounts();
-  const act = { today: 'today', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', quiz: 'notes', graph: 'graph', stats: 'stats', train: 'train', settings: 'settings', search: 'search' }[r.v];
-  const item = (k, href, icon, label, cnt = '') => `<a class="${act === k ? 'on' : ''}" href="${href}">${icon}<span class="lbl">${label}</span><span class="cnt">${cnt || ''}</span></a>`;
-  const ts = openTasks();
-  return `<div class="brand"><span class="logo">${I.tick}</span>${APP}</div>
-<label class="search"><span style="display:flex">${I.search}</span><input id="side-q" data-input="q" value="${esc(S.q)}" placeholder="Search" aria-label="Search tasks and notes"><kbd>Ctrl K</kbd></label>
-<nav class="nav" aria-label="Main">${item('today', '#today', I.today, 'Today', c.today)}${item('upcoming', '#upcoming', I.upcoming, 'Upcoming', c.upcoming)}${item('projects', '#projects', I.projects, 'Projects')}${item('notes', '#notes', I.notes, 'Notes', c.notes)}${item('graph', '#graph', I.graph, 'Graph')}${item('train', '#train', I.train, 'Train', trainDueAll() || '')}${item('stats', '#stats', I.stats, 'Stats')}</nav>
-<div><div class="side-h"><span>Projects</span><button data-act="new-project" aria-label="New project">${I.plus}</button></div>
-<nav class="nav" aria-label="Projects">${projTree().map(([p, d]) => { const ids = pDesc(p.id); return `<a class="${r.v === 'project' && r.a === p.id ? 'on' : ''}" href="#project/${p.id}/tasks" style="${d ? `padding-left:${12 + d * 16}px` : ''}"><span class="sq" style="width:8px;height:8px;background:${esc(p.color)}"></span><span class="lbl">${esc(p.name)}</span><span class="cnt">${ts.filter(x => ids.has(x.project_id)).length || ''}</span></a>`; }).join('')}</nav></div>
-<nav class="nav side-foot">${item('settings', '#settings', I.settings, 'Settings')}<div style="padding:4px 12px"><span class="pill ${syncClass()}" data-sync>${syncLabel()}</span></div></nav>`;
+  const act = { today: 'today', inbox: 'inbox', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', quiz: 'notes', graph: 'graph', stats: 'stats', train: 'train', wins: 'wins', settings: 'settings', search: 'search' }[r.v];
+  const item = (k, href, icon, label, cnt = 0) => `<a class="${act === k ? 'on' : ''}" href="${href}" title="${label}" aria-label="${label}${cnt ? ', ' + cnt : ''}">${icon}${cnt ? `<span class="rc">${cnt > 99 ? '99+' : cnt}</span>` : ''}</a>`;
+  return `<span class="logo" title="${APP}">${I.tick}</span>
+<nav class="rail" aria-label="Main">${item('today', '#today', I.today, 'Today', c.today)}${item('inbox', '#inbox', I.inbox, 'Inbox', c.inbox)}${item('upcoming', '#upcoming', I.upcoming, 'Upcoming')}${item('projects', '#projects', I.projects, 'Projects')}${item('notes', '#notes', I.notes, 'Notes')}${item('graph', '#graph', I.graph, 'Graph')}${item('train', '#train', I.train, 'Train', trainDueAll())}${item('wins', '#wins', I.trophy, 'Wins')}${item('stats', '#stats', I.stats, 'Stats')}</nav>
+<nav class="rail rail-foot" aria-label="More"><button data-act="palette" title="Search and commands (Ctrl K)" aria-label="Search and commands">${I.search}</button>${item('settings', '#settings', I.settings, 'Settings')}<span class="pill ${syncClass()}" data-sync title="Sync">${syncLabel()}</span></nav>`;
 }
 function renderTabbar(r) {
-  const act = { today: 'today', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', quiz: 'notes', graph: 'notes', stats: 'stats', train: 'train' }[r.v];
+  const act = { today: 'today', inbox: 'today', wins: 'today', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', quiz: 'notes', graph: 'notes', stats: 'stats', train: 'train' }[r.v];
   return [['today', 'Today', I.today], ['upcoming', 'Upcoming', I.upcoming], ['projects', 'Projects', I.projects], ['notes', 'Notes', I.notes], ['train', 'Train', I.train], ['stats', 'Stats', I.stats]]
     .map(([k, l, ic]) => `<a class="tab${act === k ? ' on' : ''}" href="#${k}" ${act === k ? 'aria-current="page"' : ''}>${ic}${l}</a>`).join('');
 }
@@ -1417,10 +1547,11 @@ function render(force) {
   const ae = document.activeElement, fid = ae && ae.id, ss = ae && ae.selectionStart, se = ae && ae.selectionEnd;
   if (G) { cancelAnimationFrame(G.raf); G = null; }
   const r = route();
-  const views = { today: viewToday, upcoming: viewUpcoming, projects: viewProjects, project: () => viewProject(r.a, r.b), notes: () => viewNotes(null), note: () => viewNotes(r.a), graph: () => viewGraph(r.a), stats: viewStats, train: () => viewTrain(r.a), quiz: () => viewQuiz(r.a), settings: viewSettings, search: viewSearch };
+  const views = { today: viewToday, upcoming: viewUpcoming, projects: viewProjects, project: () => viewProject(r.a, r.b), notes: () => viewNotes(null), note: () => viewNotes(r.a), graph: () => viewGraph(r.a), stats: viewStats, train: () => viewTrain(r.a), quiz: () => viewQuiz(r.a), inbox: viewInbox, wins: viewWins, settings: viewSettings, search: viewSearch };
   $('#main').innerHTML = (views[r.v] || viewToday)();
   $('#sidebar').innerHTML = renderSidebar(r);
   $('#tabbar').innerHTML = renderTabbar(r);
+  $('#bulk').innerHTML = bulkBar();
   document.title = APP;
   document.body.classList.toggle('on-graph', r.v === 'graph');
   renderPomo();
@@ -1517,8 +1648,21 @@ function openWiki(title) {
 const ACTIONS = {
   toggle: el => toggleTask(el.dataset.id),
   'edit-task': el => { dlg.open && dlg.close(); editTask(el.dataset.id); },
-  'del-task': el => { const id = el.dataset.id; const x = get('tasks', id); dlg.close(); removeRow('tasks', id); toast('Task deleted', () => update('tasks', id, { deleted: false, title: x.title })); },
+  'del-task': el => { const id = el.dataset.id; dlg.close(); undoable('Task deleted', () => update('tasks', id, { deleted: true }, false)); },
   'close-dlg': () => dlg.close(),
+  palette: () => openPalette(),
+  'pal-run': el => runPal(+el.dataset.i),
+  sel: (el, e) => {
+    const id = el.dataset.id;
+    if (e && e.shiftKey && S.lastSel) { const ids = visibleTaskIds(), a = ids.indexOf(S.lastSel), b = ids.indexOf(id); if (a >= 0 && b >= 0) ids.slice(Math.min(a, b), Math.max(a, b) + 1).forEach(x => S.sel.add(x)); }
+    else S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id);
+    S.lastSel = id; render(true);
+  },
+  'sel-all': () => { visibleTaskIds().forEach(id => S.sel.add(id)); render(true); },
+  'sel-clear': () => { S.sel.clear(); render(true); },
+  bulk: el => bulk(el.dataset.v),
+  'del-row': el => { const id = el.dataset.id; S.sel.delete(id); undoable('Task deleted', () => update('tasks', id, { deleted: true }, false)); },
+  'focus-task': el => { P.taskId = el.dataset.id; if (!P.endsAt) { P.mode = 'focus'; P.left = null; } pomoSave(); if (!P.endsAt) pomoStart(); P.open = true; renderPomo(); },
   'quiz-open': el => { S.quiz = null; location.hash = '#quiz/' + (el.dataset.id || el.closest('[data-note-md]')?.dataset.noteMd); },
   'quiz-retry': () => { S.quiz = null; render(true); window.scrollTo(0, 0); $('#main').scrollTop = 0; },
   'train-start': el => { startTrain(el.dataset.k); location.hash = '#train/' + el.dataset.k; },
@@ -1528,15 +1672,16 @@ const ACTIONS = {
   'new-folder': el => editFolder(null, el.dataset.parent || null),
   'edit-folder': el => editFolder(el.dataset.id),
   'del-folder': el => {
-    const fo = get('folders', el.dataset.id); if (!fo || !confirm(`Delete folder “${fo.name}”? Notes and folders inside move up one level; nothing else is deleted.`)) return;
+    const fo = get('folders', el.dataset.id); if (!fo) return;
     dlg.close();
+    undoable(`Folder “${fo.name}” deleted`, () => {
     all('folders').filter(x => x.parent_id === fo.id).forEach(x => update('folders', x.id, { parent_id: fo.parent_id || null, project_id: fo.parent_id ? null : fo.project_id }, false));
     all('notes').filter(n => n.folder_id === fo.id).forEach(n => update('notes', n.id, { folder_id: fo.parent_id || null, project_id: fProject(fo)?.id || n.project_id || null }, false));
-    removeRow('folders', fo.id); toast('Folder deleted');
+    update('folders', fo.id, { deleted: true }, false); });
   },
   'new-project': el => editProject(null, el.dataset.parent || ''),
   'edit-project': el => editProject(el.dataset.id),
-  'del-project': el => { if (!confirm('Delete this project? Its tasks and notes are kept, without a project. Subprojects move up one level.')) return; dlg.close(); const gone = get('projects', el.dataset.id); pKids(el.dataset.id).forEach(k => update('projects', k.id, { parent_id: gone?.parent_id || null }, false)); removeRow('projects', el.dataset.id); location.hash = '#projects'; },
+  'del-project': el => { dlg.close(); const gone = get('projects', el.dataset.id); if (!gone) return; location.hash = '#projects'; undoable(`Project “${gone.name}” deleted`, () => { pKids(gone.id).forEach(k => update('projects', k.id, { parent_id: gone.parent_id || null }, false)); update('projects', gone.id, { deleted: true }, false); }); },
   'up-mode': el => { S.upMode = el.dataset.v; render(true); },
   'up-day': el => { S.upSel = el.dataset.k; render(true); if (S.upMode === 'week') { const h = document.getElementById('d-' + el.dataset.k); if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
   'up-month': el => { S.upMonth += +el.dataset.v; render(true); },
@@ -1545,7 +1690,7 @@ const ACTIONS = {
   fold: el => { const k = el.dataset.key; S.closed.has(k) ? S.closed.delete(k) : S.closed.add(k); save('knot.closed', [...S.closed]); render(true); },
   nmode: el => { const id = route().a; S.nmodeFor = id; S.nmode = el.dataset.v; render(true); if (el.dataset.v === 'edit') { const t = $('#ed-body'); if (t) t.focus(); } },
   pin: el => { const n = get('notes', el.dataset.id); if (n) update('notes', n.id, { pinned: !n.pinned }); },
-  'del-note': el => { const n = get('notes', el.dataset.id); if (!n || !confirm(`Delete “${n.title || 'Untitled'}”?`)) return; removeRow('notes', n.id); location.hash = '#notes'; toast('Note deleted', () => { update('notes', n.id, { deleted: false }); location.hash = '#note/' + n.id; }); },
+  'del-note': el => { const n = get('notes', el.dataset.id); if (!n) return; location.hash = '#notes'; undoable(`“${n.title || 'Untitled'}” deleted`, () => update('notes', n.id, { deleted: true }, false)); },
   wiki: el => openWiki(el.dataset.title),
   'md-check': el => { const id = route().a; const n = get('notes', id); if (!n) return; const L = n.body.split('\n'); const i = +el.dataset.line; L[i] = L[i].replace(/\[( |x|X)\]/, m => m === '[ ]' ? '[x]' : '[ ]'); update('notes', id, { body: L.join('\n') }); },
   gmode: el => { S.g.mode = el.dataset.v; render(true); },
@@ -1580,6 +1725,8 @@ document.addEventListener('submit', async e => {
   const f = e.target; const kind = f.dataset.form; if (!kind) return;
   e.preventDefault();
   if (kind === 'quiz') { gradeQuiz(f); return; }
+  if (kind === 'move') { const ids = f.dataset.ids.split(','), pid = f.project_id.value || null; dlg.close(); undoable(`Moved ${ids.length} task${ids.length === 1 ? '' : 's'}`, () => { ids.forEach(id => update('tasks', id, { project_id: pid }, false)); S.sel.clear(); }); return; }
+  if (kind === 'tomorrow') { const x = get('tasks', f.id.value); if (x) { update('tasks', x.id, { due: addDays(today(), 1), priority: 1 }); toast(`“${x.title.slice(0, 40)}” is first tomorrow`); } return; }
   if (kind === 'quick') {
     const q = f.q.value.trim(); if (!q) return;
     const r = parseQuick(q, { due: f.dataset.due, project_id: f.dataset.project || null });
@@ -1639,7 +1786,20 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('focusout', () => { setTimeout(() => { if (pendingRender && !typing()) render(true); }, 0); });
 document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); const s = window.innerWidth >= 900 ? $('#side-q') : null; if (s) s.focus(); else location.hash = '#search'; return; }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); if (!dlg.open) openPalette(); return; }
+  if (!typing() && !dlg.open && !e.ctrlKey && !e.metaKey && !e.altKey && route().v !== 'train' && route().v !== 'graph') {
+    const k = e.key;
+    if (k === 'j' || k === 'ArrowDown') { if (visibleTaskIds().length) { e.preventDefault(); moveCur(1); } return; }
+    if (k === 'k' || k === 'ArrowUp') { if (visibleTaskIds().length) { e.preventDefault(); moveCur(-1); } return; }
+    if (k === 'x' && S.cur) { e.preventDefault(); S.sel.has(S.cur) ? S.sel.delete(S.cur) : S.sel.add(S.cur); S.lastSel = S.cur; render(true); return; }
+    if (k === 'e' && (S.sel.size || S.cur)) { e.preventDefault(); bulk('done'); return; }
+    if ((k === 'Delete' || k === 'Backspace') && (S.sel.size || S.cur)) { e.preventDefault(); bulk('del'); return; }
+    if (k === 't' && (S.sel.size || S.cur)) { e.preventDefault(); bulk('tomorrow'); return; }
+    if (k === 'm' && (S.sel.size || S.cur)) { e.preventDefault(); bulk('move'); return; }
+    if (k === 'Enter' && S.cur && !S.sel.size && get('tasks', S.cur)) { e.preventDefault(); editTask(S.cur); return; }
+    if (k === 'z' && toast.undo) { e.preventDefault(); const u = toast.undo; toast.undo = null; $('#toast').innerHTML = ''; u(); return; }
+    if (k === 'Escape' && (S.sel.size || S.cur)) { S.sel.clear(); S.cur = null; render(true); return; }
+  }
   if (e.key === 'Escape' && document.activeElement && document.activeElement.id === 'qa') document.activeElement.blur();
   if (route().v === 'train' && S.train && S.train.queue.length && !typing() && !dlg.open && !e.ctrlKey && !e.metaKey && !e.altKey) {
     if (!S.train.shown && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); S.train.shown = true; render(true); return; }
@@ -1830,6 +1990,213 @@ function gradeQuiz(f) {
   Q.res = { pick, ok, score, pct, passed };
   render(true); window.scrollTo(0, 0); $('#main').scrollTop = 0;
   toast(passed ? `Položeno · ${score}/${Q.qs.length}` : `${score}/${Q.qs.length} · treba ${Q.pass}%`);
+}
+
+/* ============ progress: XP, levels, streaks, badges ============ */
+// Computed from data Knot already keeps: finished tasks, card reviews, passed quizzes, focus sessions.
+const XP = { task: 10, card: 2, quiz: 100, pomo: 15 };
+function activity() {
+  const days = new Map();
+  const bump = (k, f, n = 1) => { if (!k) return; const d = days.get(k) || { tasks: 0, cards: 0, quiz: 0, pomo: 0 }; d[f] += n; days.set(k, d); };
+  all('tasks').forEach(x => { if (x.done) bump(doneDay(x), 'tasks'); });
+  all('cards').forEach(c => { if ((c.reps || c.lapses) && c.updated_at) bump(dkey(new Date(c.updated_at)), 'cards'); });
+  const seen = new Set();
+  all('quiz_results').filter(r => r.passed).sort((a, b) => (a.created_at || '').localeCompare(b.created_at || '')).forEach(r => { if (seen.has(r.note_id)) return; seen.add(r.note_id); if (r.created_at) bump(dkey(new Date(r.created_at)), 'quiz'); });
+  Object.entries(load('knot.pomoLog', {})).forEach(([k, n]) => bump(k, 'pomo', n));
+  return days;
+}
+const dayXP = d => d ? d.tasks * XP.task + d.cards * XP.card + d.quiz * XP.quiz + d.pomo * XP.pomo : 0;
+const levelOf = xp => Math.floor(Math.sqrt(xp / 50)) + 1;
+const levelStart = L => 50 * (L - 1) * (L - 1);
+function progress() {
+  const days = activity(), t = today();
+  const doneTasks = all('tasks').filter(x => x.done).length;
+  const reps = all('cards').reduce((s, c) => s + (c.reps || 0) + (c.lapses || 0), 0);
+  const quizzes = new Set(all('quiz_results').filter(r => r.passed).map(r => r.note_id)).size;
+  const pomos = Object.values(load('knot.pomoLog', {})).reduce((a, b) => a + b, 0);
+  const xp = doneTasks * XP.task + reps * XP.card + quizzes * XP.quiz + pomos * XP.pomo;
+  const L = levelOf(xp), from = levelStart(L), to = levelStart(L + 1);
+  const active = k => dayXP(days.get(k)) > 0;
+  let streak = 0;
+  for (let k = active(t) ? t : addDays(t, -1); active(k); k = addDays(k, -1)) streak++;
+  let best = 0, run = 0, prev = null;
+  [...days.keys()].filter(active).sort().forEach(k => { run = prev && addDays(prev, 1) === k ? run + 1 : 1; best = Math.max(best, run); prev = k; });
+  const xpToday = dayXP(days.get(t));
+  return { days, xp, L, from, to, streak, best, xpToday, leveledToday: xpToday > 0 && levelOf(xp - xpToday) < L, doneTasks, reps, quizzes, pomos };
+}
+const BADGES = [
+  ['First task', g => g.doneTasks >= 1],
+  ['First lesson', () => all('tasks').some(x => x.done && x.note_id)],
+  ['3-day streak', g => g.best >= 3],
+  ['7-day streak', g => g.best >= 7],
+  ['30-day streak', g => g.best >= 30],
+  ['50 tasks done', g => g.doneTasks >= 50],
+  ['100 card reviews', g => g.reps >= 100],
+  ['10 focus sessions', g => g.pomos >= 10],
+  ['Course passed', g => g.quizzes >= 1],
+  ['Level 5', g => g.L >= 5],
+];
+const badgeHtml = g => `<div class="badges">${BADGES.map(([n, f]) => { const got = f(g); return `<span class="badge${got ? ' got' : ''}">${got ? I.tick : ''}${n}</span>`; }).join('')}</div>`;
+function ringBig(done, total, size = 112) {
+  const h = size / 2, r = h - 8, c = 2 * Math.PI * r, f = total ? done / total : 0;
+  return `<div class="ring-big" style="width:${size}px;height:${size}px"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${done} of ${total} done"><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--line2)" stroke-width="10"/>${done ? `<circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--acc)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${(c * f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${h} ${h})"/>` : ''}</svg><div><b>${done}/${total}</b><span>done</span></div></div>`;
+}
+function heatmap(days, n = 28) {
+  const t = today();
+  return `<div class="heat">${[...Array(n)].map((_, i) => { const k = addDays(t, i - n + 1), x = dayXP(days.get(k)), lv = x === 0 ? 0 : x < 30 ? 1 : x < 80 ? 2 : x < 150 ? 3 : 4; return `<span class="hm l${lv}${k === t ? ' now' : ''}" title="${fmtShort(k)} · ${x} XP"></span>`; }).join('')}</div>`;
+}
+
+/* ============ undo for anything ============ */
+// Runs fn, then offers Undo that puts back every row fn changed. Replaces "Are you sure?" dialogs.
+function undoable(label, fn) {
+  const snap = JSON.parse(JSON.stringify(store.db));
+  fn();
+  const changed = [];
+  TABLES.forEach(t => Object.keys(store.db[t]).forEach(id => { const a = snap[t][id], b = store.db[t][id]; if (JSON.stringify(a) !== JSON.stringify(b)) changed.push([t, id, a]); }));
+  render(true);
+  toast(label, () => { changed.forEach(([t, id, a]) => put(t, a ? { ...a } : { ...store.db[t][id], deleted: true }, false)); render(true); });
+}
+
+/* ============ selection + bulk actions ============ */
+S.sel = new Set(); S.cur = null; S.lastSel = null;
+const visibleTaskIds = () => [...document.querySelectorAll('#main .task[data-tid]')].map(e => e.dataset.tid).filter((v, i, a) => a.indexOf(v) === i);
+function bulk(kind) {
+  const ids = (S.sel.size ? [...S.sel] : S.cur ? [S.cur] : []).filter(id => get('tasks', id));
+  if (!ids.length) return;
+  if (kind === 'move') return moveDlg(ids);
+  if (kind === 'done' && ids.length === 1 && !S.sel.size) { const x = get('tasks', ids[0]); if (x) toggleTask(x.id); return; }
+  const n = ids.length, s = n === 1 ? '' : 's';
+  undoable({ done: `${n} task${s} done`, del: `${n} task${s} deleted`, tomorrow: `${n} task${s} moved to tomorrow` }[kind], () => {
+    ids.forEach(id => {
+      const x = get('tasks', id); if (!x) return;
+      if (kind === 'done' && !x.done) update('tasks', id, { done: true, done_at: nowISO() }, false);
+      if (kind === 'del') update('tasks', id, { deleted: true }, false);
+      if (kind === 'tomorrow') update('tasks', id, { due: addDays(today(), 1) }, false);
+    });
+    S.sel.clear(); if (kind === 'del') S.cur = null;
+  });
+}
+function moveDlg(ids) {
+  openDlg(`<form class="dlg-form" data-form="move" data-ids="${ids.join(',')}"><h2>Move ${ids.length} task${ids.length === 1 ? '' : 's'}</h2>
+<label class="fld">Project<select name="project_id"><option value="">No project (Inbox)</option>${projTree().map(([p, d]) => `<option value="${p.id}">${' '.repeat(d)}${esc(p.name)}</option>`).join('')}</select></label>
+<div class="dlg-actions"><span style="flex:1"></span><button type="button" class="btn sec" data-act="close-dlg">Cancel</button><button class="btn pri">Move</button></div></form>`);
+}
+function bulkBar() {
+  [...S.sel].forEach(id => { if (!get('tasks', id)) S.sel.delete(id); });
+  document.body.classList.toggle('selecting', S.sel.size > 0);
+  const n = S.sel.size; if (!n) return '';
+  const b = (v, l, k, c = '') => `<button class="${c}" data-act="bulk" data-v="${v}">${l}<kbd>${k}</kbd></button>`;
+  return `<div class="bulk" role="toolbar" aria-label="${n} selected"><span class="bulk-n">${n} selected</span>${b('done', 'Done', 'E')}${b('tomorrow', 'Tomorrow', 'T')}${b('move', 'Move to…', 'M')}${b('del', 'Delete', 'Del', 'bd')}<button class="bulk-x" data-act="sel-clear" aria-label="Clear selection">${I.close}</button></div>`;
+}
+function moveCur(step) {
+  const ids = visibleTaskIds(); if (!ids.length) return;
+  const i = ids.indexOf(S.cur);
+  S.cur = ids[i < 0 ? (step > 0 ? 0 : ids.length - 1) : Math.max(0, Math.min(ids.length - 1, i + step))];
+  render(true);
+  document.querySelector(`#main .task[data-tid="${S.cur}"]`)?.scrollIntoView({ block: 'nearest' });
+}
+
+/* ============ command palette (Ctrl K) ============ */
+const PAL_GO = [['Today', '#today'], ['Inbox', '#inbox'], ['Upcoming', '#upcoming'], ['Projects', '#projects'], ['Notes', '#notes'], ['Graph', '#graph'], ['Train', '#train'], ['Wins', '#wins'], ['Stats', '#stats'], ['Settings', '#settings']];
+function palItems(q) {
+  const raw = q.trim(), n = raw.toLowerCase(), out = [];
+  const go = PAL_GO.filter(([l]) => !n || l.toLowerCase().includes(n)).map(([l, h]) => ({ label: 'Go to ' + l, hint: '', run: () => { location.hash = h; } }));
+  const add = raw ? [{ label: `New task: ${raw}`, hint: 'task', run: () => { const r = parseQuick(raw, {}); if (r.title) { create('tasks', { ...r, done: false, done_at: null }, false); render(true); toast('Task added'); } } }] : [];
+  if (go.length && n) out.push(...go, ...add); else out.push(...add, ...go);
+  if (n) {
+    projTree().filter(([p]) => p.name.toLowerCase().includes(n)).slice(0, 5).forEach(([p]) => out.push({ label: pPath(p), hint: 'project', run: () => { location.hash = '#project/' + p.id; } }));
+    all('notes').filter(x => (x.title || '').toLowerCase().includes(n)).slice(0, 6).forEach(x => out.push({ label: x.title || 'Untitled', hint: 'note', run: () => { location.hash = '#note/' + x.id; } }));
+    openTasks().filter(x => x.title.toLowerCase().includes(n)).slice(0, 6).forEach(x => out.push({ label: x.title, hint: 'open task', run: () => editTask(x.id) }));
+    out.push({ label: `New note: ${raw}`, hint: 'note', run: () => { const nn = create('notes', { title: raw, body: '', project_id: null, folder_id: null, folder: '', pinned: false }, false); location.hash = '#note/' + nn.id; } });
+    out.push({ label: `Search everything for “${raw}”`, hint: '', run: () => { S.q = raw; location.hash = '#search'; } });
+  }
+  return out;
+}
+let PAL = { items: [], i: 0 };
+function paintPal() {
+  const q = $('#pal-q'); if (!q) return;
+  PAL.items = palItems(q.value); PAL.i = Math.min(PAL.i, Math.max(0, PAL.items.length - 1));
+  $('#pal-res').innerHTML = PAL.items.map((it, i) => `<button class="pal-it${i === PAL.i ? ' on' : ''}" data-act="pal-run" data-i="${i}" role="option" aria-selected="${i === PAL.i}"><span>${esc(it.label)}</span>${it.hint ? `<small>${it.hint}</small>` : ''}</button>`).join('');
+  $('#pal-res .on')?.scrollIntoView({ block: 'nearest' });
+}
+function openPalette() {
+  PAL = { items: [], i: 0 };
+  openDlg(`<div class="pal"><label class="pal-in">${I.search}<input id="pal-q" autocomplete="off" spellcheck="false" placeholder="Type a command, or anything to add or find" aria-label="Command"></label><div id="pal-res" role="listbox" aria-label="Results"></div><p class="pal-foot">↑ ↓ choose · Enter run · Esc close</p></div>`);
+  dlg.classList.add('pal-dlg'); paintPal();
+}
+function runPal(i) { const it = PAL.items[i]; if (!it) return; dlg.close(); it.run(); }
+dlg.addEventListener('close', () => dlg.classList.remove('pal-dlg'));
+dlg.addEventListener('input', e => { if (e.target.id === 'pal-q') { PAL.i = 0; paintPal(); } });
+dlg.addEventListener('keydown', e => {
+  if (!$('#pal-q')) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); PAL.i = (PAL.i + (e.key === 'ArrowDown' ? 1 : -1) + PAL.items.length) % Math.max(1, PAL.items.length); paintPal(); }
+  else if (e.key === 'Enter') { e.preventDefault(); runPal(PAL.i); }
+});
+
+/* ============ views: inbox, wins, course path ============ */
+function viewInbox() {
+  const ts = sortTasks(openTasks().filter(x => !x.due && !get('projects', x.project_id)));
+  const wk = addDays(today(), -6);
+  const cleared = Object.values(store.db.tasks).filter(x => x.deleted ? x.updated_at && dkey(new Date(x.updated_at)) >= wk && x.title : x.done && (doneDay(x) || '') >= wk).length;
+  const tot = cleared + ts.length;
+  return `<div class="page"><div class="hdr"><h1 class="title">Inbox</h1>${ts.length ? '<button class="btn sec" data-act="sel-all">Select all</button>' : ''}</div>
+<p class="mute" style="margin:4px 4px 0">Tasks with no date and no project. Give each one a decision: do it, schedule it, move it or delete it.</p>
+${quickAdd({ ph: 'Capture a task' })}
+${ts.length ? taskCard(ts) : '<div class="card empty" style="margin-top:12px">Inbox zero.</div>'}
+<div class="card clear-bar"><div class="pbar"><i style="width:${tot ? Math.round(cleared / tot * 100) : 100}%;background:var(--ok)"></i></div><span>${cleared} cleared this week</span></div>
+<p class="keys d-only">J / K move · X select · E done · T tomorrow · M move · Del delete · Z undo · Shift-click selects a range</p></div>`;
+}
+function viewWins() {
+  const t = today(), g = progress();
+  const done = all('tasks').filter(x => x.done && doneDay(x) === t).sort((a, b) => (a.done_at || '').localeCompare(b.done_at || ''));
+  const left = openTasks().filter(x => x.due && x.due <= t).length, cleared = done.length > 0 && !left;
+  const d = g.days.get(t) || { tasks: 0, cards: 0, quiz: 0, pomo: 0 }, mins = d.pomo * pomoCfg().focus;
+  const qs = all('quiz_results').filter(r => r.passed && r.created_at && dkey(new Date(r.created_at)) === t);
+  const wins = [...done.slice(0, 8).map(x => esc(x.title)), ...qs.map(r => 'Passed quiz: ' + esc(get('notes', r.note_id)?.title || '')), ...(d.cards ? [`Reviewed ${d.cards} card${d.cards === 1 ? '' : 's'}`] : []), ...(g.leveledToday ? [`Reached level ${g.L}`] : [])];
+  const pct = Math.round((g.xp - g.from) / (g.to - g.from) * 100);
+  const cand = sortTasks(openTasks().filter(x => x.due !== addDays(t, 1)));
+  const pl = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+  return `<div class="page wins">
+<header class="w-head">${cleared ? `<span class="w-check">${I.tick}</span>` : ''}<h1 class="title">${cleared ? 'Day cleared' : 'Today so far'}</h1><p>${pl(done.length, 'task')} done${left ? ` · ${left} still open` : ''}${d.cards ? ` · ${pl(d.cards, 'card')} reviewed` : ''}</p></header>
+<div class="w-grid">
+<div class="card w-stat"><span>XP today</span><b style="color:var(--acc-ink)">+${g.xpToday}</b><div class="pbar"><i style="width:${pct}%"></i></div><span class="small">${g.leveledToday ? `Level ${g.L} reached` : `Level ${g.L} · ${g.to - g.xp} XP to level ${g.L + 1}`}</span></div>
+<div class="card w-stat"><span>Streak</span><b style="color:var(--warn)">${pl(g.streak, 'day')}</b><span class="small">${g.best > g.streak ? `Best: ${g.best} days. ${g.best - g.streak + 1} more to beat it.` : g.streak ? 'Your best streak so far.' : 'Do one thing today to start one.'}</span></div>
+<div class="card w-stat"><span>Focus time</span><b style="color:var(--ok)">${Math.floor(mins / 60)} h ${String(mins % 60).padStart(2, '0')} m</b><span class="small">${pl(d.pomo, 'focus session')}</span></div>
+</div>
+<div class="w-row"><section class="card pad"><h2>Last 4 weeks</h2>${heatmap(g.days)}<p class="small mute" style="margin:10px 0 0">Brighter = more XP that day. Today has the outline.</p></section>
+<section class="card pad"><h2>Today's wins</h2>${wins.length ? `<ul class="w-list">${wins.map(w => `<li>${w}</li>`).join('')}</ul>` : '<p class="mute">Nothing yet. Finish one task to start.</p>'}</section></div>
+<section class="card pad"><h2>Badges</h2>${badgeHtml(g)}</section>
+${cand.length ? `<form class="card pad w-next" data-form="tomorrow"><label class="fld">Pick tomorrow's first task<select name="id">${cand.slice(0, 50).map(x => `<option value="${x.id}">${esc(x.title.slice(0, 80))}</option>`).join('')}</select></label><button class="btn pri">Set for tomorrow</button><a class="btn sec" href="#today">Close the day</a></form>` : ''}
+</div>`;
+}
+const lessonName = x => x.title.replace(/^Pročitaj:\s*/i, '').replace(/^\d+\s+/, '').replace(/\s*\([^)]*\)\s*$/, '');
+function pathView(p, kids) {
+  const S2 = kids.map(k => {
+    const pp = projPct(k.id), qn = all('notes').find(n => n.project_id === k.id && noteQuiz(n)), best = qn && quizBest(qn.id);
+    return { k, ...pp, qn, passed: qn ? !!best?.passed : pp.total > 0 && pp.open === 0 };
+  });
+  const curI = S2.findIndex(x => !x.passed), passedN = S2.filter(x => x.passed).length;
+  const deck = deckStats('p:' + p.id), learned = deck.cards.filter(c => (cardState(c)?.reps || 0) > 0).length;
+  const node = (x, i) => {
+    const st = x.passed ? 'done' : i === curI ? 'cur' : i === curI + 1 ? 'next' : 'later';
+    return `<div class="pn ${st}"><div class="pn-rail"><span class="pn-dot">${x.passed ? I.tick : String(i + 1).padStart(2, '0')}</span>${i < S2.length - 1 ? '<span class="pn-line"></span>' : ''}</div>
+<a class="pn-card" href="#project/${x.k.id}"><span class="eyebrow">${{ done: 'Passed', cur: 'In progress', next: 'Next', later: 'Later' }[st]}</span><span class="pn-t">${esc(x.k.name)}</span>${st === 'done' || st === 'cur' ? `<span class="pbar"><i style="width:${x.pct}%;background:${esc(x.k.color)}"></i></span>` : ''}<span class="small mute">${x.total ? `${x.total - x.open} of ${x.total} steps` : 'No tasks yet'}${st === 'next' ? ' · opens when the course above is passed' : ''}</span></a></div>`;
+  };
+  const cur = S2[curI];
+  let panel;
+  if (cur) {
+    const lessons = all('tasks').filter(x => x.project_id === cur.k.id && x.note_id && x.note_id !== cur.qn?.id).sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+    const nowL = lessons.find(x => !x.done), togo = lessons.filter(x => !x.done).length;
+    const ds = deckStats('p:' + cur.k.id), canTrain = ds.due + Math.min(ds.fresh, NEW_PER_SESSION);
+    const qz = cur.qn && noteQuiz(cur.qn);
+    const quiz = !cur.qn ? '' : togo
+      ? `<div class="card pc locked"><span>Final quiz</span><b>Locked</b><span class="small">${togo} lesson${togo === 1 ? '' : 's'} to go · pass at ${qz.pass}%</span></div>`
+      : `<button class="card pc" data-act="quiz-open" data-id="${cur.qn.id}"><span>Final quiz</span><b>Ready</b><span class="small">Pass at ${qz.pass}% · start now</span></button>`;
+    panel = `<section class="card pad"><h2>${esc(cur.k.name)} · lessons</h2>${lessons.length ? `<div class="ls-grid">${lessons.map(x => `<a class="ls${x.done ? ' done' : x === nowL ? ' now' : ''}" href="#note/${x.note_id}">${x.done ? I.tick : x === nowL ? '<i></i>' : ''}<span>${esc(lessonName(x))}</span></a>`).join('')}</div>` : '<p class="mute">No lesson tasks yet.</p>'}</section>
+<div class="pc-row"><button class="card pc" data-act="train-start" data-k="p:${cur.k.id}" ${canTrain ? '' : 'disabled'}><span>Train</span><b>${ds.due} due</b><span class="small">${canTrain ? 'Review now' : 'Nothing due'}${ds.fresh ? ` · ${ds.fresh} new` : ''}</span></button>${quiz}</div>`;
+  } else panel = `<section class="card pad"><h2>Every course passed</h2><p class="mute" style="margin:0">Add the next one with the Subproject button.</p></section>`;
+  return `<div class="path-stats"><div class="card ps"><span>Courses passed</span><b>${passedN} <small>/ ${kids.length}</small></b></div><div class="card ps"><span>Cards learned</span><b>${learned} <small>/ ${deck.total}</small></b></div></div>
+<div class="path"><section class="path-col" aria-label="Course path">${S2.map(node).join('')}</section><section class="path-col">${panel}<section class="card pad"><h2>Badges</h2>${badgeHtml(progress())}</section></section></div>`;
 }
 
 /* ============ appearance ============ */
