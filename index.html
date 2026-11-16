@@ -605,6 +605,36 @@ button.pc:hover:not([disabled]){border-color:var(--acc)} button.pc[disabled]{cur
 .qz-res{text-align:center;padding:26px 20px;margin-top:12px} .qz-res h2{margin:0 0 6px;font-size:26px} .qz-res p{margin:0 0 4px}
 .qz-res.pass{border-color:var(--ok)} .qz-res.pass h2{color:var(--ok)} .qz-res.fail{border-color:var(--warn)} .qz-res.fail h2{color:var(--warn)}
 .qz-go{width:100%;height:52px;margin-top:16px;font-size:15px}
+/* figures */
+.fig{margin:8px 0 18px;text-align:center}
+.fig svg{display:block;margin:0 auto;max-width:100%;height:auto;overflow:visible}
+.fig figcaption{font-size:13px;color:var(--mute);margin-top:6px}
+.fig-err{margin:4px 0 0;font-size:12px;color:var(--warn);font-family:ui-monospace,Consolas,monospace}
+.fig .it{color:var(--ink2);fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.fig .it.acc{color:var(--acc)} .fig .it.ok{color:var(--ok)} .fig .it.warn{color:var(--warn)} .fig .it.mute{color:var(--faint)} .fig .it.ink{color:var(--ink)}
+.fig .it.da{stroke-dasharray:5 4} .fig .it.do{stroke-dasharray:1.5 4} .fig .it.th{stroke-width:2.8}
+.fig .it.fi{fill:currentColor;fill-opacity:.16} .fig .it.on{fill-opacity:.4} .fig .it.ar{stroke:none;color:var(--acc);fill-opacity:.2}
+.fig .it.pl{color:var(--acc);stroke-width:2.1} .fig .it.pl.ok{color:var(--ok)} .fig .it.pl.warn{color:var(--warn)} .fig .it.pl.mute{color:var(--faint)} .fig .it.pl.ink{color:var(--ink)}
+.fig .it.dot{fill:currentColor;fill-opacity:1;stroke:none} .fig .it.hd{fill:currentColor;fill-opacity:1;stroke-width:1}
+.fig .gr{stroke:var(--gline);stroke-width:1;fill:none}
+.fig .ax{color:var(--faint);stroke:currentColor;stroke-width:1.3;fill:none;stroke-linecap:round} .fig .ax.hd{fill:currentColor}
+.fig text{font-family:Inter,system-ui,sans-serif;font-size:13.5px;font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:3.5px;stroke-linejoin:round}
+.fig text.tk{font-size:11px;font-weight:500;fill:var(--faint)}
+.fig text.acc{fill:var(--acc)} .fig text.ok{fill:var(--ok)} .fig text.warn{fill:var(--warn)} .fig text.mute{fill:var(--faint)}
+.card .fig text{stroke:var(--card)}
+/* practice */
+.pr-head .pr-bar{flex-basis:100%;height:6px;border-radius:99px;background:var(--line2);overflow:hidden;order:9}
+.pr-head .pr-bar i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.pr-head b{flex:none;min-width:0} .pr-head .small{flex:1;min-width:140px}
+.pr{margin:0 0 10px} .pr.ok{border-color:var(--ok)} .pr.bad{border-color:var(--warn)}
+.pr .qz-n{display:flex;align-items:center;gap:8px} .pr.ok .qz-n{color:var(--ok)} .pr.bad .qz-n{color:var(--warn)}
+.pr .qz-q{font-size:16px} .pr .fig{margin:0 0 10px}
+.pr-again{margin-left:auto;border:none;background:none;color:var(--mute);font:inherit;font-size:12px;text-transform:none;letter-spacing:0;cursor:pointer;text-decoration:underline;padding:0}
+.pr-row{display:flex;gap:8px;flex-wrap:wrap} .pr-row .qz-in{flex:1;min-width:150px} .pr-row .btn{height:46px}
+.pr-opts .qz-o{width:100%;text-align:left;font:inherit;color:var(--ink)} .pr-opts .qz-o:disabled{cursor:default;opacity:1}
+.pr-btns{margin-top:8px} .pr-your{margin:0;color:var(--mute)}
+.pr-why{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--soft);font-size:14.5px;line-height:1.5}
+.mx sup{font-size:.72em}
 /* train */
 .deck-list{margin-top:16px;overflow:hidden}
 .deck{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--row);min-height:60px}
@@ -1207,8 +1237,8 @@ ${mode === 'edit' ? `<textarea class="ed-body" id="ed-body" data-note="${n.id}" 
 /* ---- markdown ---- */
 function mathHtml(src) {
   const t = src.replace(/<=/g, '≤').replace(/>=/g, '≥').replace(/!=/g, '≠').replace(/\*/g, '×').replace(/(^|[\s(])-(?=[\s\d(a-zA-Z])/g, '$1−').replace(/(\d)-(\d)/g, '$1−$2');
-  return t.replace(/_(\([^)]*\)|[A-Za-z0-9]+)|(\d+(?:[.,]\d+)*)|([+−×·÷=<>≤≥≠≈:/^%→])|([?▢□])|([()\[\]{}])|([a-zA-Z]+)/g, (m, sb, n, o, q, b, v) =>
-    sb ? `<sub>${esc(sb.replace(/^\((.*)\)$/, '$1'))}</sub>` : n ? `<span class="mn">${n}</span>` : o ? `<span class="mo">${esc(o)}</span>` : q ? '<span class="mq">▢</span>' : b ? `<span class="mb">${b}</span>` : v.length === 1 ? `<span class="mv">${v}</span>` : `<span class="mt">${v}</span>`);
+  return t.replace(/\^(\((?:[^()]|\([^()]*\))*\)|[−-]?(?:\d+(?:[.,]\d+)?|[A-Za-z]))|_(\([^)]*\)|[A-Za-z0-9]+)|(\d+(?:[.,]\d+)*)|([+−×·÷=<>≤≥≠≈:/^%→])|([?▢□])|([()\[\]{}])|([a-zA-Z]+)/g, (m, sp, sb, n, o, q, b, v) =>
+    sp ? `<sup>${mathHtml(sp.replace(/^\((.*)\)$/, '$1'))}</sup>` : sb ? `<sub>${esc(sb.replace(/^\((.*)\)$/, '$1'))}</sub>` : n ? `<span class="mn">${n}</span>` : o ? `<span class="mo">${esc(o)}</span>` : q ? '<span class="mq">▢</span>' : b ? `<span class="mb">${b}</span>` : v.length === 1 ? `<span class="mv">${v}</span>` : `<span class="mt">${v}</span>`);
 }
 function inline(s) {
   const maths = [];
@@ -1234,12 +1264,14 @@ function mdTable(rows) {
 function md(src, noteId) {
   if (!String(src || '').trim()) return '<p class="mute">Empty note. Switch to Edit to write.</p>';
   const L = src.split('\n'), out = [];
+  let pb = 0;
   const LIST = /^\s*([-*]|\d+\.)\s+/;
   const STOP = /^(#{1,4}\s|```|\s*\$\$|\s*\||\s*>|\s*([-*]|\d+\.)\s+|\s*(---|\*\*\*)\s*$)/;
   let i = 0;
   while (i < L.length) {
     const l = L[i]; let m;
     if (/^```quiz/.test(l)) { const buf = []; i++; while (i < L.length && !/^```/.test(L[i])) buf.push(L[i++]); i++; out.push(quizCard(buf.join('\n'), noteId)); continue; }
+    if (/^```(fig|practice)\s*$/.test(l)) { const kind = l.slice(3).trim(), buf = []; i++; while (i < L.length && !/^```/.test(L[i])) buf.push(L[i++]); i++; out.push(kind === 'fig' ? figSvg(buf.join('\n')) : practiceHtml(buf.join('\n'), noteId, pb++)); continue; }
     if (/^```/.test(l)) { const buf = []; i++; while (i < L.length && !/^```/.test(L[i])) buf.push(L[i++]); i++; out.push(`<pre><code>${esc(buf.join('\n'))}</code></pre>`); continue; }
     if ((m = l.match(/^(#{1,4})\s+(.*)/))) { const h = Math.min(m[1].length + 1, 4); out.push(`<h${h}>${inline(m[2])}</h${h}>`); i++; continue; }
     if (/^\s*(---|\*\*\*)\s*$/.test(l)) { out.push('<hr>'); i++; continue; }
@@ -1261,6 +1293,383 @@ function md(src, noteId) {
     out.push(`<p>${buf.map(inline).join('<br>')}</p>`);
   }
   return out.join('');
+}
+
+/* FIG-BEGIN */
+/* ---- figures ---- */
+// A ```fig block in a note draws a picture from a few plain commands (one per line, or split with ";").
+// Coordinates are ordinary math coordinates (y goes up). The full command list is in FIGURES.md.
+const FIG_FN = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, sqrt: Math.sqrt, abs: Math.abs, ln: Math.log, log: Math.log10, exp: Math.exp, floor: Math.floor, sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh, sign: Math.sign };
+const FIG_K = { pi: Math.PI, 'π': Math.PI, e: Math.E };
+// Turns "2x^2 - sin(x)/3" into a function of one variable (x or t). No eval: a small parser.
+function compileExpr(src) {
+  const s = String(src).replace(/\s+/g, '').replace(/−/g, '-').replace(/[×·]/g, '*').replace(/÷/g, '/').replace(/²/g, '^2').replace(/³/g, '^3').replace(/√/g, 'sqrt');
+  const toks = s.match(/\d+(?:\.\d+)?|[a-zA-Zπ]+|[-+*/^()]/g) || [];
+  if (!toks.length || toks.join('') !== s) throw Error(`cannot read "${src}"`);
+  let p = 0;
+  const peek = () => toks[p], eat = t => { if (toks[p] !== t) throw Error(`expected "${t}" in "${src}"`); p++; };
+  const expr = () => { let a = term(); while (peek() === '+' || peek() === '-') { const o = toks[p++], b = term(), l = a; a = o === '+' ? v => l(v) + b(v) : v => l(v) - b(v); } return a; };
+  const term = () => { let a = unary(); for (;;) { const t = peek(); if (t === '*' || t === '/') { p++; const b = unary(), l = a; a = t === '*' ? v => l(v) * b(v) : v => l(v) / b(v); } else if (t !== undefined && /^[\da-zA-Zπ(]/.test(t)) { const b = power(), l = a; a = v => l(v) * b(v); } else break; } return a; };
+  const unary = () => { if (peek() === '-') { p++; const a = unary(); return v => -a(v); } if (peek() === '+') { p++; return unary(); } return power(); };
+  const power = () => { const a = atom(); if (peek() === '^') { p++; const b = unary(); return v => Math.pow(a(v), b(v)); } return a; };
+  const atom = () => {
+    const t = toks[p++];
+    if (t === undefined) throw Error(`"${src}" ends too early`);
+    if (/^\d/.test(t)) { const n = +t; return () => n; }
+    if (t === '(') { const a = expr(); eat(')'); return a; }
+    if (FIG_FN[t]) { eat('('); const a = expr(); eat(')'); const f = FIG_FN[t]; return v => f(a(v)); }
+    if (t in FIG_K) { const n = FIG_K[t]; return () => n; }
+    if (t === 'x' || t === 't') return v => v;
+    throw Error(`unknown "${t}" in "${src}"`);
+  };
+  const f = expr();
+  if (p < toks.length) throw Error(`cannot read "${src}"`);
+  return f;
+}
+const FIG_FLAGS = new Set(['dashed', 'dotted', 'fill', 'thick', 'flip', 'nonum', 'frac', 'acc', 'ok', 'warn', 'mute', 'ink']);
+const FIG_DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75], c: [0, 0] };
+function figSvg(src) {
+  const errs = [], P = {}, items = [], B = [], pad = { l: 16, r: 16, t: 16, b: 16 };
+  const clip = 'fc' + (figSvg.n = (figSvg.n || 0) + 1);
+  let view = null, W = 340, H = null, cap = '', gridStep = 0, axes = null, tickStep = [0, 0], tickPi = [false, false], rows = 0, pies = 0, boxes = 0;
+  const TAU = Math.PI * 2, f1 = v => +(+v).toFixed(1);
+  const num = s => { if (s === undefined) throw Error('a number is missing'); const v = compileExpr(s)(0); if (!isFinite(v)) throw Error(`"${s}" is not a number`); return v; };
+  const pt = s => { if (s === undefined) throw Error('a point is missing'); if (P[s]) return P[s]; if (/,/.test(s)) { const [a, b] = s.split(','); return [num(a), num(b)]; } throw Error(`unknown point "${s}"`); };
+  const ext = (...ps) => ps.forEach(p => B.push(p));
+  const need = (k, v) => { pad[k] = Math.max(pad[k], v); };
+  const add = (z, f) => items.push({ z, f });
+  const fmt = v => String(+(+v).toFixed(3)).replace('-', '−');
+  const cls = (fl, more = '') => ['it', ...['acc', 'ok', 'warn', 'mute', 'ink'].filter(c => fl.has(c)), fl.has('dashed') ? 'da' : '', fl.has('dotted') ? 'do' : '', fl.has('thick') ? 'th' : '', fl.has('fill') ? 'fi' : '', more].filter(Boolean).join(' ');
+  const dstr = (pts, close) => 'M' + pts.map(p => f1(p[0]) + ' ' + f1(p[1])).join('L') + (close ? 'Z' : '');
+  const path = (pts, fl, close, more = '', attr = '') => `<path class="${cls(fl, more)}" d="${dstr(pts, close)}"${attr}/>`;
+  const txt = (x, y, s, dir = 'c', k = 'lb', off = 11) => { const d = FIG_DIRS[dir] || FIG_DIRS.c; return `<text class="${k}" x="${f1(x + d[0] * off)}" y="${f1(y + d[1] * off)}" text-anchor="${d[0] > 0 ? 'start' : d[0] < 0 ? 'end' : 'middle'}" dominant-baseline="${d[1] > 0 ? 'hanging' : d[1] < 0 ? 'auto' : 'central'}">${esc(s)}</text>`; };
+  const head = (a, b, fl, size = 8) => { const an = Math.atan2(b[1] - a[1], b[0] - a[0]), q = k => [b[0] - size * Math.cos(an + k), b[1] - size * Math.sin(an + k)]; return `<path class="${cls(fl, 'hd')}" d="${dstr([b, q(.42), q(-.42)], true)}"/>`; };
+  const NO = new Set();
+  const kw = (a, k) => { const i = a.indexOf(k); if (i < 0) return undefined; const v = a[i + 1]; a.splice(i, 2); return v; };
+  const rng = s => { const m = s.match(/\bfrom\s+(\S+)\s+to\s+(\S+)/); return m ? [num(m[1]), num(m[2])] : null; };
+  const clean = s => s.replace(/"[^"]*"/g, '').replace(/\bfrom\s+\S+\s+to\s+\S+/, '').split(/\s+/).filter(t => t && !FIG_FLAGS.has(t)).join(' ');
+  const nice = u => { const k = Math.pow(10, Math.floor(Math.log10(u))), m = u / k; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * k; };
+  const piFmt = v => { const k = v / Math.PI; for (const d of [1, 2, 3, 4, 6, 12]) { const n = Math.round(k * d); if (Math.abs(k * d - n) < 1e-6) { if (!n) return '0'; return (n === 1 ? '' : n === -1 ? '−' : fmt(n)) + 'π' + (d > 1 ? '/' + d : ''); } } return fmt(v); };
+  const yAxis = (T, top) => { const st = nice(top / 5); let s = path([[T.X(T.x0), T.Y(0)], [T.X(T.x0), T.Y(T.y1)]], NO, false, 'ax'); for (let v = 0; v <= T.y1 + 1e-9; v += st) s += `<path class="gr" d="${dstr([[T.X(T.x0), T.Y(v)], [T.X(T.x1), T.Y(v)]])}"/>` + txt(T.X(T.x0) - 6, T.Y(v), fmt(v), 'w', 'tk', 0); return s; };
+  // half of an ellipse in pixels: back = the far (upper) half
+  const halfEl = (c, rx, ry, back, fl) => `<path class="${cls(new Set([...fl, ...(back ? ['dashed'] : [])]))}" d="M${f1(c[0] - rx)} ${f1(c[1])}A${f1(rx)} ${f1(ry)} 0 0 ${back ? 1 : 0} ${f1(c[0] + rx)} ${f1(c[1])}"/>`;
+  const dash = fl => new Set([...fl, 'dashed']);
+  const sub = (p, q) => [p[0] - q[0], p[1] - q[1]], plus = (p, q) => [p[0] + q[0], p[1] + q[1]];
+
+  function run({ cmd, labs, fl, a, raw }) {
+    switch (cmd) {
+      case 'view': view = [num(a[0]), num(a[1]), num(a[2]), num(a[3])]; if (view[0] >= view[1] || view[2] >= view[3]) { view = null; throw Error('view needs xmin < xmax and ymin < ymax'); } break;
+      case 'size': W = Math.max(120, Math.min(640, num(a[0]))); if (a[1]) H = Math.max(60, Math.min(520, num(a[1]))); break;
+      case 'caption': cap = labs[0] || raw; break;
+      case 'grid': gridStep = a[0] ? num(a[0]) : 1; break;
+      case 'axes': axes = { x: labs[0] ?? 'x', y: labs[1] ?? 'y', nonum: fl.has('nonum') }; need('l', 30); need('b', 24); break;
+      case 'ticks': { const ys = a[1] ?? a[0]; tickStep = [num(a[0]), num(ys)]; tickPi = [/pi|π/.test(a[0]), /pi|π/.test(ys)]; break; }
+      case 'def': ext(P[a[0]] = [num(a[1]), num(a[2])]); break;
+      case 'mid': { const A = pt(a[1]), C = pt(a[2]); P[a[0]] = [(A[0] + C[0]) / 2, (A[1] + C[1]) / 2]; break; }
+      case 'along': { const A = pt(a[1]), C = pt(a[2]), t = num(a[3]); ext(P[a[0]] = [A[0] + (C[0] - A[0]) * t, A[1] + (C[1] - A[1]) * t]); break; }
+      case 'foot': { const Q = pt(a[1]), A = pt(a[2]), C = pt(a[3]), d = sub(C, A), t = ((Q[0] - A[0]) * d[0] + (Q[1] - A[1]) * d[1]) / (d[0] * d[0] + d[1] * d[1]); ext(P[a[0]] = [A[0] + d[0] * t, A[1] + d[1] * t]); break; }
+      case 'inter': { const A = pt(a[1]), C = pt(a[2]), D = pt(a[3]), E = pt(a[4]), r = sub(C, A), s = sub(E, D), den = r[0] * s[1] - r[1] * s[0]; if (Math.abs(den) < 1e-12) throw Error('lines are parallel'); const t = ((D[0] - A[0]) * s[1] - (D[1] - A[1]) * s[0]) / den; ext(P[a[0]] = [A[0] + r[0] * t, A[1] + r[1] * t]); break; }
+      case 'rot': { const Q = pt(a[1]), O = pt(a[2]), g = num(a[3]) * Math.PI / 180, d = sub(Q, O); ext(P[a[0]] = [O[0] + d[0] * Math.cos(g) - d[1] * Math.sin(g), O[1] + d[0] * Math.sin(g) + d[1] * Math.cos(g)]); break; }
+      case 'refl': { const Q = pt(a[1]), A = pt(a[2]), C = pt(a[3]), d = sub(C, A), t = ((Q[0] - A[0]) * d[0] + (Q[1] - A[1]) * d[1]) / (d[0] * d[0] + d[1] * d[1]), F = [A[0] + d[0] * t, A[1] + d[1] * t]; ext(P[a[0]] = [2 * F[0] - Q[0], 2 * F[1] - Q[1]]); break; }
+      case 'onc': { const O = pt(a[1]), r = num(a[2]), g = num(a[3]) * Math.PI / 180; ext(P[a[0]] = [O[0] + r * Math.cos(g), O[1] + r * Math.sin(g)]); break; }
+      case 'shift': { const Q = pt(a[1]); ext(P[a[0]] = [Q[0] + num(a[2]), Q[1] + num(a[3])]); break; }
+      case 'point': {
+        let p, name = a[0], dir = 'ne', rest;
+        if (a.length >= 3 && !FIG_DIRS[a[1]]) { p = P[name] = [num(a[1]), num(a[2])]; rest = a.slice(3); } else { p = pt(name); rest = a.slice(1); }
+        if (rest[0]) { if (!FIG_DIRS[rest[0]]) throw Error(`bad direction "${rest[0]}"`); dir = rest[0]; }
+        const lab = labs.length ? labs[0] : /,/.test(name) ? '' : name; ext(p);
+        add(2, T => { const [x, y] = T.px(p); return `<circle class="${cls(fl, 'dot')}" cx="${f1(x)}" cy="${f1(y)}" r="3.2"/>` + (lab ? txt(x, y, lab, dir) : ''); });
+        break;
+      }
+      case 'seg': case 'line': case 'ray': case 'vec': {
+        const A = pt(a[0]), C = pt(a[1]); ext(A, C);
+        add(1, T => {
+          let p = T.px(A), q = T.px(C); const d = sub(q, p), len = Math.hypot(d[0], d[1]) || 1, u = [d[0] / len, d[1] / len];
+          let s;
+          if (cmd === 'line' || cmd === 'ray') s = path([cmd === 'line' ? [p[0] - u[0] * 3000, p[1] - u[1] * 3000] : p, [p[0] + u[0] * 3000, p[1] + u[1] * 3000]], fl, false, '', ` clip-path="url(#${clip})"`);
+          else s = path([p, cmd === 'vec' ? [q[0] - u[0] * 4, q[1] - u[1] * 4] : q], fl) + (cmd === 'vec' ? head(p, q, fl) : '');
+          if (labs[0]) { const k = fl.has('flip') ? -1 : 1; s += txt((p[0] + q[0]) / 2 - u[1] * 13 * k, (p[1] + q[1]) / 2 + u[0] * 13 * k, labs[0]); }
+          return s;
+        });
+        break;
+      }
+      case 'poly': { const ps = a.map(pt); if (ps.length < 3) throw Error('poly needs 3 or more points'); ext(...ps); add(fl.has('fill') ? 0 : 1, T => path(ps.map(T.px), fl, true)); break; }
+      case 'circle': case 'ellipse': {
+        const O = pt(a[0]), rx = P[a[1]] ? Math.hypot(P[a[1]][0] - O[0], P[a[1]][1] - O[1]) : num(a[1]), ry = cmd === 'ellipse' ? num(a[2]) : rx;
+        ext([O[0] - rx, O[1] - ry], [O[0] + rx, O[1] + ry]);
+        add(fl.has('fill') ? 0 : 1, T => { const c = T.px(O); return `<ellipse class="${cls(fl)}" cx="${f1(c[0])}" cy="${f1(c[1])}" rx="${f1(rx * T.sx)}" ry="${f1(ry * T.sy)}"/>`; });
+        break;
+      }
+      case 'arc': {
+        const O = pt(a[0]), r = num(a[1]), g1 = num(a[2]), g2 = num(a[3]), ps = [], n = Math.max(2, Math.ceil(Math.abs(g2 - g1) / 3));
+        for (let k = 0; k <= n; k++) { const g = (g1 + (g2 - g1) * k / n) * Math.PI / 180; ps.push([O[0] + r * Math.cos(g), O[1] + r * Math.sin(g)]); }
+        ext(...ps); add(1, T => path(ps.map(T.px), fl) + (labs[0] ? (() => { const m = T.px(ps[n >> 1]), c = T.px(O), d = sub(m, c), l = Math.hypot(d[0], d[1]) || 1; return txt(m[0] + d[0] / l * 12, m[1] + d[1] / l * 12, labs[0]); })() : ''));
+        break;
+      }
+      case 'angle': {
+        const A = pt(a[0]), V = pt(a[1]), C = pt(a[2]), r = a[3] ? num(a[3]) : 22;
+        add(1, T => {
+          const pa = T.px(A), pv = T.px(V), pc = T.px(C); let t1 = Math.atan2(pv[1] - pa[1], pa[0] - pv[0]), t2 = Math.atan2(pv[1] - pc[1], pc[0] - pv[0]);
+          let d = ((t2 - t1) % TAU + TAU) % TAU; if (d > Math.PI) { t1 = t2; d = TAU - d; }
+          const ps = [], n = 16; for (let k = 0; k <= n; k++) { const g = t1 + d * k / n; ps.push([pv[0] + r * Math.cos(g), pv[1] - r * Math.sin(g)]); }
+          const gm = t1 + d / 2;
+          return path(ps, fl) + (labs[0] ? txt(pv[0] + (r + 12) * Math.cos(gm), pv[1] - (r + 12) * Math.sin(gm), labs[0]) : '');
+        });
+        break;
+      }
+      case 'right': {
+        const A = pt(a[0]), V = pt(a[1]), C = pt(a[2]);
+        add(1, T => { const pv = T.px(V), un = q => { const d = sub(T.px(q), pv), l = Math.hypot(d[0], d[1]) || 1; return [d[0] / l * 10, d[1] / l * 10]; }, u = un(A), v = un(C); return path([plus(pv, u), plus(plus(pv, u), v), plus(pv, v)], fl); });
+        break;
+      }
+      case 'tick': {
+        const A = pt(a[0]), C = pt(a[1]), n = a[2] ? num(a[2]) : 1;
+        add(1, T => { const p = T.px(A), q = T.px(C), d = sub(q, p), l = Math.hypot(d[0], d[1]) || 1, u = [d[0] / l, d[1] / l], m = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; let s = ''; for (let k = 0; k < n; k++) { const o = (k - (n - 1) / 2) * 4, c = [m[0] + u[0] * o, m[1] + u[1] * o]; s += path([[c[0] - u[1] * 5, c[1] + u[0] * 5], [c[0] + u[1] * 5, c[1] - u[0] * 5]], fl); } return s; });
+        break;
+      }
+      case 'label': {
+        let p, dir;
+        if (P[a[0]] || /,/.test(a[0] || '')) { p = pt(a[0]); dir = a[1]; } else { p = [num(a[0]), num(a[1])]; dir = a[2]; }
+        if (dir && !FIG_DIRS[dir]) throw Error(`bad direction "${dir}"`);
+        if (!labs.length) throw Error('label needs "text"');
+        ext(p); add(3, T => { const [x, y] = T.px(p); return txt(x, y, labs[0], dir || 'c', 'lb' + (['acc', 'ok', 'warn', 'mute'].find(c => fl.has(c)) ? ' ' + ['acc', 'ok', 'warn', 'mute'].find(c => fl.has(c)) : '')); });
+        break;
+      }
+      case 'plot': {
+        const f = compileExpr(clean(raw)), r = rng(raw);
+        if (!view) { const [u, v] = r || [-5, 5]; for (let k = 0; k <= 60; k++) { const x = u + (v - u) * k / 60, y = f(x); if (isFinite(y) && Math.abs(y) <= 10) ext([x, y]); } }
+        add(1, T => {
+          const u = Math.max(T.x0, r ? r[0] : T.x0), v = Math.min(T.x1, r ? r[1] : T.x1), N = 260; let d = '', pen = false, prev = 0;
+          for (let k = 0; k <= N; k++) { const x = u + (v - u) * k / N, y = f(x), py = T.Y(y); const ok = isFinite(y) && Math.abs(py) < 5000 && !(pen && Math.abs(py - prev) > Math.max(T.h, 60) * 1.2); if (!ok) { pen = isFinite(y) && Math.abs(py) < 5000 ? (d += `M${f1(T.X(x))} ${f1(py)}`, true) : false; prev = py; continue; } d += (pen ? 'L' : 'M') + f1(T.X(x)) + ' ' + f1(py); pen = true; prev = py; }
+          return d ? `<path class="${cls(fl, 'pl')}" d="${d}" clip-path="url(#${clip})"/>` : '';
+        });
+        break;
+      }
+      case 'polar': case 'param': {
+        const parts = clean(raw).split('|'), r = rng(raw) || [0, TAU], N = 360, ps = [];
+        const fx = compileExpr(parts[0]), fy = cmd === 'param' ? compileExpr(parts[1] ?? '') : null;
+        for (let k = 0; k <= N; k++) { const t = r[0] + (r[1] - r[0]) * k / N, p = fy ? [fx(t), fy(t)] : [fx(t) * Math.cos(t), fx(t) * Math.sin(t)]; if (isFinite(p[0]) && isFinite(p[1])) ps.push(p); }
+        if (!view) ext(...ps.filter(p => Math.abs(p[0]) <= 20 && Math.abs(p[1]) <= 20));
+        add(1, T => ps.length > 1 ? path(ps.map(T.px), fl, false, 'pl', ` clip-path="url(#${clip})"`) : '');
+        break;
+      }
+      case 'area': {
+        const parts = clean(raw).split('|'), f = compileExpr(parts[0]), g = parts[1] ? compileExpr(parts[1]) : () => 0, r = rng(raw);
+        if (!r) throw Error('area needs "from a to b"');
+        const N = 80, ps = []; for (let k = 0; k <= N; k++) { const x = r[0] + (r[1] - r[0]) * k / N; ps.push([x, f(x)]); } for (let k = N; k >= 0; k--) { const x = r[0] + (r[1] - r[0]) * k / N; ps.push([x, g(x)]); }
+        if (ps.some(p => !isFinite(p[1]))) throw Error('area is not finite on that interval');
+        if (!view) ext(...ps);
+        add(0, T => path(ps.map(T.px), new Set([...fl, 'fill']), true, 'ar', ` clip-path="url(#${clip})"`));
+        break;
+      }
+      case 'numline': {
+        const lo = num(a[0]), hi = num(a[1]), rest = a.slice(2); if (!(hi > lo)) throw Error('numline needs a < b');
+        const st = kw(rest, 'step'), every = kw(rest, 'labels'); const step = st ? num(st) : nice((hi - lo) / 12), lab = every ? num(every) : step * Math.max(1, Math.ceil((hi - lo) / step / 21));
+        if (step <= 0 || (hi - lo) / step > 200) throw Error('numline step is too small');
+        ext([lo, 0], [hi, 0]); need('b', 36); need('t', 22); need('l', 26); need('r', 26);
+        add(1, T => {
+          const y = T.Y(0), xa = T.X(lo) - 12, xb = T.X(hi) + 12; let s = path([[xa + 4, y], [xb - 4, y]], fl, false, 'ax') + head([xa + 20, y], [xa, y], fl, 7) + head([xb - 20, y], [xb, y], fl, 7);
+          const den = Math.round(1 / step);
+          for (let k = 0; k <= Math.round((hi - lo) / step); k++) { const v = lo + k * step, x = T.X(v), big = Math.abs(v / lab - Math.round(v / lab)) < 1e-6; s += path([[x, y - (big ? 6 : 4)], [x, y + (big ? 6 : 4)]], fl, false, 'ax'); if (big && !fl.has('nonum')) { const n = Math.round(v * den); s += txt(x, y + 10, fl.has('frac') && den > 1 && n % den ? `${fmt(n)}/${den}` : fmt(v), 's', 'tk', 0); } }
+          return s;
+        });
+        break;
+      }
+      case 'jump': {
+        const u = num(a[0]), v = num(a[1]); ext([u, 0], [v, 0]); need('t', 50);
+        add(2, T => { const p = [T.X(u), T.Y(0) - 7], q = [T.X(v), T.Y(0) - 7], m = [(p[0] + q[0]) / 2, p[1] - 34]; return `<path class="${cls(fl.size ? fl : new Set(['acc']))}" d="M${f1(p[0])} ${f1(p[1])}Q${f1(m[0])} ${f1(m[1])} ${f1(q[0])} ${f1(q[1])}"/>` + head(m, q, fl.size ? fl : new Set(['acc']), 7) + (labs[0] ? txt(m[0], p[1] - 22, labs[0], 'n', 'lb', 0) : ''); });
+        break;
+      }
+      case 'bars': case 'hist': {
+        const hist = cmd === 'hist', x0 = hist ? num(a[0]) : 0, w = hist ? num(a[1]) : 1, vals = a.slice(hist ? 2 : 0).map(num), top = Math.max(...vals, 0) * 1.14 || 1;
+        if (!vals.length) throw Error(cmd + ' needs values');
+        ext([x0, 0], [x0 + vals.length * w, top]); if (!H) H = 180; need('l', 36); need('b', 30);
+        add(1, T => {
+          let s = yAxis(T, top);
+          vals.forEach((v, i) => { const xa = T.X(x0 + (i + (hist ? 0 : .16)) * w), xb = T.X(x0 + (i + (hist ? 1 : .84)) * w); s += path([[xa, T.Y(0)], [xa, T.Y(v)], [xb, T.Y(v)], [xb, T.Y(0)]], new Set([...(fl.size ? fl : ['acc']), 'fill']), true) + txt((xa + xb) / 2, T.Y(v) - 4, fmt(v), 'n', 'tk', 0); if (!hist && labs[i]) s += txt((xa + xb) / 2, T.Y(0) + 8, labs[i], 's', 'tk', 0); });
+          if (hist) for (let i = 0; i <= vals.length; i++) s += txt(T.X(x0 + i * w), T.Y(0) + 8, fmt(x0 + i * w), 's', 'tk', 0);
+          return s + path([[T.X(T.x0), T.Y(0)], [T.X(T.x1), T.Y(0)]], NO, false, 'ax');
+        });
+        break;
+      }
+      case 'boxplot': {
+        const v = a.slice(0, 5).map(num), i = boxes++; if (v.length < 5) throw Error('boxplot needs min q1 median q3 max');
+        ext([v[0], 0], [v[4], 0]); need('t', 30 + 40 * (i + 1));
+        add(1, T => { const y = T.Y(0) - 36 - 40 * i, X = T.X, c = fl.size ? fl : new Set(['acc']); return path([[X(v[1]), y - 12], [X(v[3]), y - 12], [X(v[3]), y + 12], [X(v[1]), y + 12]], new Set([...c, 'fill']), true) + path([[X(v[0]), y], [X(v[1]), y]], c) + path([[X(v[3]), y], [X(v[4]), y]], c) + path([[X(v[0]), y - 7], [X(v[0]), y + 7]], c) + path([[X(v[4]), y - 7], [X(v[4]), y + 7]], c) + path([[X(v[2]), y - 12], [X(v[2]), y + 12]], new Set([...c, 'thick'])) + (labs[0] ? txt(X(v[4]) + 8, y, labs[0], 'e', 'tk', 0) : ''); });
+        break;
+      }
+      case 'dots': {
+        const vals = a.map(num), seen = {}; let mx = 0; vals.forEach(v => { mx = Math.max(mx, seen[v] = (seen[v] || 0) + 1); });
+        ext(...vals.map(v => [v, 0])); need('t', 26 + 11 * mx);
+        add(2, T => { const cnt = {}; return vals.map(v => { const k = cnt[v] = (cnt[v] || 0) + 1; return `<circle class="${cls(fl.size ? fl : new Set(['acc']), 'dot')}" cx="${f1(T.X(v))}" cy="${f1(T.Y(0) - 4 - 11 * k)}" r="4.5"/>`; }).join(''); });
+        break;
+      }
+      case 'scatter': { const ps = a.map(pt); ext(...ps); add(2, T => ps.map(p => { const q = T.px(p); return `<circle class="${cls(fl.size ? fl : new Set(['acc']), 'dot')}" cx="${f1(q[0])}" cy="${f1(q[1])}" r="3"/>`; }).join('')); break; }
+      case 'fracbar': {
+        const at = kw(a, 'at'), n = Math.round(num(a[0])), k = num(a[1]), o = at ? pt(at) : [0, -1.5 * rows]; rows++;
+        if (n < 1 || n > 60) throw Error('fracbar needs 1 to 60 parts');
+        ext(o, [o[0] + 8, o[1] + 1]); if (labs[0]) need('r', 54);
+        add(1, T => { let s = ''; for (let i = 0; i < n; i++) { const xa = o[0] + 8 * i / n, xb = o[0] + 8 * (i + 1) / n; s += path([[xa, o[1]], [xb, o[1]], [xb, o[1] + 1], [xa, o[1] + 1]].map(T.px), new Set([...(fl.size ? fl : ['acc']), ...(i < k ? ['fill'] : [])]), true, i < k ? 'on' : ''); } return s + (labs[0] ? txt(T.X(o[0] + 8) + 8, T.Y(o[1] + .5), labs[0], 'e', 'lb', 0) : ''); });
+        break;
+      }
+      case 'pie': {
+        const at = kw(a, 'at'), rr = kw(a, 'r'), n = Math.round(num(a[0])), k = num(a[1]), r = rr ? num(rr) : 1, o = at ? pt(at) : [2.6 * pies, 0]; pies++;
+        if (n < 1 || n > 60) throw Error('pie needs 1 to 60 parts');
+        ext([o[0] - r, o[1] - r], [o[0] + r, o[1] + r]); if (labs[0]) need('b', 34);
+        add(1, T => {
+          const c = T.px(o), rx = r * T.sx, ry = r * T.sy, q = j => { const g = -Math.PI / 2 + TAU * j / n; return [c[0] + rx * Math.cos(g), c[1] + ry * Math.sin(g)]; }; let s = '';
+          const col = fl.size ? fl : new Set(['acc']);
+          if (n === 1) s = `<ellipse class="${cls(new Set([...col, ...(k >= 1 ? ['fill'] : [])]), k >= 1 ? 'on' : '')}" cx="${f1(c[0])}" cy="${f1(c[1])}" rx="${f1(rx)}" ry="${f1(ry)}"/>`;
+          else for (let j = 0; j < n; j++) { const p = q(j), p2 = q(j + 1); s += `<path class="${cls(new Set([...col, ...(j < k ? ['fill'] : [])]), j < k ? 'on' : '')}" d="M${f1(c[0])} ${f1(c[1])}L${f1(p[0])} ${f1(p[1])}A${f1(rx)} ${f1(ry)} 0 0 1 ${f1(p2[0])} ${f1(p2[1])}Z"/>`; }
+          return s + (labs[0] ? txt(c[0], c[1] + ry + 8, labs[0], 's', 'lb', 0) : '');
+        });
+        break;
+      }
+      case 'array': {
+        const at = kw(a, 'at'), r = Math.round(num(a[0])), c = Math.round(num(a[1])), o = at ? pt(at) : [0, 0];
+        if (r < 1 || c < 1 || r * c > 400) throw Error('array needs 1 to 400 dots');
+        ext([o[0] - .5, o[1] + .5], [o[0] + c - .5, o[1] - r + .5]);
+        add(2, T => { let s = ''; const rad = Math.min(9, .32 * T.sx); for (let i = 0; i < r; i++) for (let j = 0; j < c; j++) s += `<circle class="${cls(fl.size ? fl : new Set(['acc']), 'dot')}" cx="${f1(T.X(o[0] + j))}" cy="${f1(T.Y(o[1] - i))}" r="${f1(rad)}"/>`; return s; });
+        break;
+      }
+      case 'cuboid': {
+        const at = kw(a, 'at'), w = num(a[0]), h = num(a[1]), dp = num(a[2]), o = at ? pt(at) : [0, 0], d = [dp * .5, dp * .35];
+        const fbl = o, fbr = [o[0] + w, o[1]], ftr = [o[0] + w, o[1] + h], ftl = [o[0], o[1] + h], bbl = plus(fbl, d), bbr = plus(fbr, d), btr = plus(ftr, d), btl = plus(ftl, d);
+        ext(fbl, btr); if (labs[1]) need('l', 34); if (labs[0]) need('b', 30);
+        add(1, T => { const q = T.px, L = (p1, p2, f) => path([q(p1), q(p2)], f); return path([fbl, fbr, ftr, ftl].map(q), fl, true) + L(ftl, btl, fl) + L(ftr, btr, fl) + L(fbr, bbr, fl) + L(btl, btr, fl) + L(btr, bbr, fl) + L(fbl, bbl, dash(fl)) + L(bbl, bbr, dash(fl)) + L(bbl, btl, dash(fl)) + (labs[0] ? txt(T.X(o[0] + w / 2), T.Y(o[1]) + 7, labs[0], 's', 'lb', 0) : '') + (labs[1] ? txt(T.X(o[0]) - 8, T.Y(o[1] + h / 2), labs[1], 'w', 'lb', 0) : '') + (labs[2] ? txt(T.X(fbr[0] + d[0] / 2) + 8, T.Y(fbr[1] + d[1] / 2) + 4, labs[2], 'e', 'lb', 0) : ''); });
+        break;
+      }
+      case 'cylinder': case 'cone': {
+        const at = kw(a, 'at'), r = num(a[0]), h = num(a[1]), o = at ? pt(at) : [0, 0], k = .3, top = [o[0], o[1] + h];
+        ext([o[0] - r, o[1] - r * k], [o[0] + r, o[1] + h + (cmd === 'cone' ? 0 : r * k)]); if (labs[1]) need(cmd === 'cone' ? 'l' : 'r', 34);
+        add(1, T => {
+          const c = T.px(o), t = T.px(top), rx = r * T.sx, ry = r * k * T.sy; let s = halfEl(c, rx, ry, true, fl) + halfEl(c, rx, ry, false, fl);
+          if (cmd === 'cylinder') s += `<ellipse class="${cls(fl)}" cx="${f1(t[0])}" cy="${f1(t[1])}" rx="${f1(rx)}" ry="${f1(ry)}"/>` + path([[c[0] - rx, c[1]], [t[0] - rx, t[1]]], fl) + path([[c[0] + rx, c[1]], [t[0] + rx, t[1]]], fl) + (labs[0] ? path([t, [t[0] + rx, t[1]]], dash(fl)) + txt(t[0] + rx / 2, t[1] - 5, labs[0], 'n', 'lb', 0) : '') + (labs[1] ? txt(c[0] + rx + 8, (c[1] + t[1]) / 2, labs[1], 'e', 'lb', 0) : '');
+          else s += path([[c[0] - rx, c[1]], t, [c[0] + rx, c[1]]], fl) + (labs[0] ? path([c, [c[0] + rx, c[1]]], dash(fl)) + txt(c[0] + rx / 2, c[1] + 5, labs[0], 's', 'lb', 0) : '') + (labs[1] ? path([c, t], dash(fl)) + txt(c[0] - 6, (c[1] + t[1]) / 2, labs[1], 'w', 'lb', 0) : '') + (labs[2] ? txt((t[0] + c[0] + rx) / 2 + 8, (t[1] + c[1]) / 2, labs[2], 'e', 'lb', 0) : '');
+          return s;
+        });
+        break;
+      }
+      case 'sphere': {
+        const at = kw(a, 'at'), r = num(a[0]), o = at ? pt(at) : [0, 0]; ext([o[0] - r, o[1] - r], [o[0] + r, o[1] + r]);
+        add(1, T => { const c = T.px(o), rx = r * T.sx, ry = r * T.sy; return `<ellipse class="${cls(fl)}" cx="${f1(c[0])}" cy="${f1(c[1])}" rx="${f1(rx)}" ry="${f1(ry)}"/>` + halfEl(c, rx, ry * .3, true, new Set([...fl].filter(x => x !== 'fill'))) + halfEl(c, rx, ry * .3, false, new Set([...fl].filter(x => x !== 'fill'))) + (labs[0] ? path([c, [c[0] + rx, c[1]]], dash(fl)) + `<circle class="it dot" cx="${f1(c[0])}" cy="${f1(c[1])}" r="2.5"/>` + txt(c[0] + rx / 2, c[1] - 5, labs[0], 'n', 'lb', 0) : ''); });
+        break;
+      }
+      case 'pyramid': {
+        const at = kw(a, 'at'), w = num(a[0]), h = num(a[1]), o = at ? pt(at) : [0, 0], d = [w * .5, w * .35];
+        const fl_ = o, fr = [o[0] + w, o[1]], br = plus(fr, d), bl = plus(o, d), ce = [o[0] + w / 2 + d[0] / 2, o[1] + d[1] / 2], ap = [ce[0], ce[1] + h];
+        ext(fl_, br, ap); if (labs[0]) need('b', 30);
+        add(1, T => { const q = T.px, L = (p1, p2, f) => path([q(p1), q(p2)], f); return L(fl_, fr, fl) + L(fr, br, fl) + L(ap, fl_, fl) + L(ap, fr, fl) + L(ap, br, fl) + L(bl, br, dash(fl)) + L(fl_, bl, dash(fl)) + L(ap, bl, dash(fl)) + (labs[0] ? txt(T.X(o[0] + w / 2), T.Y(o[1]) + 7, labs[0], 's', 'lb', 0) : '') + (labs[1] ? L(ap, ce, dash(fl)) + txt(q(ce)[0] + 7, (q(ce)[1] + q(ap)[1]) / 2 + 10, labs[1], 'e', 'lb', 0) : ''); });
+        break;
+      }
+      default: throw Error('unknown command');
+    }
+  }
+  String(src || '').split(/\n|;/).forEach(rawLine => {
+    const line = rawLine.trim(); if (!line || line.startsWith('//')) return;
+    try {
+      const tk = line.match(/"[^"]*"|\S+/g) || [], cmd = tk.shift().toLowerCase(), labs = [], fl = new Set(), a = [];
+      tk.forEach(t => t[0] === '"' ? labs.push(t.slice(1, -1)) : FIG_FLAGS.has(t) ? fl.add(t) : a.push(t));
+      run({ cmd, labs, fl, a, raw: line.slice(cmd.length).trim() });
+    } catch (e) { errs.push(`${line.slice(0, 48)} → ${e.message}`); }
+  });
+  let x0, x1, y0, y1;
+  if (view) [x0, x1, y0, y1] = view;
+  else {
+    const fin = B.filter(p => isFinite(p[0]) && isFinite(p[1]));
+    if (!fin.length) fin.push([0, 0], [1, 1]);
+    x0 = Math.min(...fin.map(p => p[0])); x1 = Math.max(...fin.map(p => p[0])); y0 = Math.min(...fin.map(p => p[1])); y1 = Math.max(...fin.map(p => p[1]));
+    if (axes || gridStep) { x0 = Math.floor(x0 - .5); x1 = Math.ceil(x1 + .5); y0 = Math.floor(y0 - .5); y1 = Math.ceil(y1 + .5); }
+  }
+  if (x1 - x0 < 1e-9) { x0 -= 1; x1 += 1; }
+  const flat = y1 - y0 < 1e-9;
+  let sx, sy, w, h;
+  if (H && !flat) { sx = W / (x1 - x0); sy = H / (y1 - y0); w = W; h = H; }
+  else if (flat) { sx = sy = W / (x1 - x0); w = W; h = 0; }
+  else { sx = sy = Math.min(W / (x1 - x0), 300 / (y1 - y0)); w = (x1 - x0) * sx; h = (y1 - y0) * sy; }
+  const T = { X: x => pad.l + (x - x0) * sx, Y: y => pad.t + (y1 - y) * sy, sx, sy, x0, x1, y0, y1, w, h };
+  T.px = p => [T.X(p[0]), T.Y(p[1])];
+  let bg = '';
+  if (gridStep > 0) {
+    let g = gridStep; while ((x1 - x0) / g > 60 || (y1 - y0) / g > 60) g *= 2;
+    for (let v = Math.ceil(x0 / g - 1e-9) * g; v <= x1 + 1e-9; v += g) bg += `<path class="gr" d="${dstr([[T.X(v), T.Y(y0)], [T.X(v), T.Y(y1)]])}"/>`;
+    for (let v = Math.ceil(y0 / g - 1e-9) * g; v <= y1 + 1e-9; v += g) bg += `<path class="gr" d="${dstr([[T.X(x0), T.Y(v)], [T.X(x1), T.Y(v)]])}"/>`;
+  }
+  if (axes) {
+    const ax = Math.min(Math.max(0, x0), x1), ay = Math.min(Math.max(0, y0), y1), xs = tickStep[0] || nice(30 / sx), ys = tickStep[1] || nice(24 / sy);
+    const pa = [T.X(x0), T.Y(ay)], pb = [T.X(x1) + 8, T.Y(ay)], pc = [T.X(ax), T.Y(y0)], pd = [T.X(ax), T.Y(y1) - 8];
+    bg += path([pa, pb], NO, false, 'ax') + head(pa, pb, NO, 7).replace('it hd', 'ax hd') + path([pc, pd], NO, false, 'ax') + head(pc, pd, NO, 7).replace('it hd', 'ax hd');
+    if (axes.x) bg += txt(pb[0], pb[1] - 8, axes.x, 'n', 'tk', 0);
+    if (axes.y) bg += txt(pd[0] + 8, pd[1] + 2, axes.y, 'e', 'tk', 0);
+    if (!axes.nonum) {
+      const skip = Math.max(1, Math.ceil((tickPi[0] ? 34 : 22) / (xs * sx)));
+      for (let v = Math.ceil(x0 / xs - 1e-9) * xs; v <= x1 - xs * .3; v += xs) { if (Math.abs(v - ax) < xs * 1e-6 || Math.round(v / xs) % skip) continue; bg += path([[T.X(v), T.Y(ay) - 3], [T.X(v), T.Y(ay) + 3]], NO, false, 'ax') + txt(T.X(v), T.Y(ay) + 7, tickPi[0] ? piFmt(v) : fmt(v), 's', 'tk', 0); }
+      for (let v = Math.ceil(y0 / ys - 1e-9) * ys; v <= y1 - ys * .3; v += ys) { if (Math.abs(v - ay) < ys * 1e-6) continue; bg += path([[T.X(ax) - 3, T.Y(v)], [T.X(ax) + 3, T.Y(v)]], NO, false, 'ax') + txt(T.X(ax) - 7, T.Y(v), tickPi[1] ? piFmt(v) : fmt(v), 'w', 'tk', 0); }
+    }
+  }
+  let body = '';
+  items.sort((p, q) => p.z - q.z).forEach(it => { try { body += it.f(T); } catch (e) { errs.push(e.message); } });
+  const TW = f1(w + pad.l + pad.r), TH = f1(h + pad.t + pad.b);
+  return `<figure class="fig"><svg viewBox="0 0 ${TW} ${TH}" width="${TW}" height="${TH}" role="img" aria-label="${esc(cap || 'Figure')}"><defs><clipPath id="${clip}"><rect x="${pad.l}" y="${pad.t}" width="${f1(w)}" height="${f1(h)}"/></clipPath></defs>${bg}${body}</svg>${cap ? `<figcaption>${inline(cap)}</figcaption>` : ''}${errs.map(e => `<p class="fig-err">fig: ${esc(e)}</p>`).join('')}</figure>`;
+}
+
+/* ---- practice ---- */
+// A ```practice block in a note is a set of exercises that are checked one at a time, right in the note:
+//   ? Question text        starts an exercise ($...$ math works)
+//   ~ fig commands; ...    optional picture for the exercise (same commands as a ```fig block)
+//   = 15 | petnaest        typed answer; any of the |-separated answers counts
+//   * right option         multiple choice: * marks the correct option, - a wrong one
+//   ! Explanation          shown after answering
+// Progress is kept on this device.
+function parsePractice(text) {
+  const qs = []; let cur = null;
+  String(text || '').split('\n').forEach(l => {
+    l = l.trim(); if (!l) return;
+    if (l[0] === '?') { cur = { q: l.slice(1).trim(), ans: [], opts: [], why: [], fig: [] }; qs.push(cur); }
+    else if (!cur) return;
+    else if (l[0] === '=') cur.ans.push(...l.slice(1).split('|').map(t => t.trim()).filter(Boolean));
+    else if (/^[*-]\s/.test(l)) cur.opts.push({ t: l.slice(2).trim(), ok: l[0] === '*' });
+    else if (l[0] === '!') cur.why.push(l.slice(1).trim());
+    else if (l[0] === '~') cur.fig.push(l.slice(1).trim());
+  });
+  return qs.filter(x => x.q && (x.ans.length || x.opts.some(o => o.ok)));
+}
+const prNorm = t => String(t).toLowerCase().replace(/\$/g, '').replace(/[−–]/g, '-').replace(/,/g, '.').replace(/[\s°%]+/g, '').replace(/\.$/, '');
+const prNum = t => { const m = t.match(/^(-?\d+(?:\.\d+)?)(?:\/(-?\d+(?:\.\d+)?))?$/); return m ? (m[2] !== undefined ? +m[1] / +m[2] : +m[1]) : NaN; };
+// same text, or the same number written another way (0.5 for 1/2) when the expected answer is not itself a fraction
+const prMatch = (ans, v) => { const a = prNorm(ans), b = prNorm(v); if (a === b) return true; if (a.includes('/')) return false; const x = prNum(a), y = prNum(b); return isFinite(x) && isFinite(y) && Math.abs(x - y) < 1e-9; };
+/* FIG-END */
+const prQid = x => hashId(x.q).slice(0, 13);
+const prOpts = x => x.opts.map(o => ({ ...o, k: hashId(x.q + '|' + o.t) })).sort((p, q) => p.k.localeCompare(q.k));
+const prState = id => load('knot.practice', {})[id] || {};
+const prSave = (id, fn) => { const all_ = load('knot.practice', {}); all_[id] = fn(all_[id] || {}); save('knot.practice', all_); };
+function prCard(x, i, total, st) {
+  let inner;
+  if (x.opts.length) inner = `<div class="pr-opts">${prOpts(x).map((o, j) => `<button class="qz-o${st && o.ok ? ' right' : ''}${st && st.pick === String(j) && !o.ok ? ' wrong' : ''}" data-act="pr-pick" data-j="${j}" ${st ? 'disabled' : ''}><span>${inline(o.t)}</span></button>`).join('')}</div>${st ? '' : '<div class="pr-btns"><button class="btn sec" data-act="pr-skip">Ne znam (show)</button></div>'}`;
+  else inner = st ? `<p class="pr-your">${st.pick ? `Tvoj odgovor: <b>${esc(st.pick)}</b>` : 'Bez odgovora'}</p>${st.ok ? '' : `<p class="qz-fix">Tačno (correct): ${inline(x.ans[0])}</p>`}`
+    : `<div class="pr-row"><input class="qz-in pr-in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tvoj odgovor (your answer)" aria-label="Answer to exercise ${i + 1}"><button class="btn pri" data-act="pr-check">Proveri</button><button class="btn sec" data-act="pr-skip">Ne znam</button></div>`;
+  const why = st && x.why.length ? `<div class="pr-why">${x.why.map(inline).join('<br>')}</div>` : '';
+  return `<div class="card pad qz pr${st ? (st.ok ? ' ok' : ' bad') : ''}" data-pr-i="${i}"><div class="qz-n">Zadatak ${i + 1} / ${total}${st ? (st.ok ? ' · tačno' : ' · netačno') : ''}${st ? '<button class="pr-again" data-act="pr-again">Ponovo</button>' : ''}</div><div class="qz-q">${inline(x.q)}</div>${x.fig.length ? figSvg(x.fig.join('\n')) : ''}${inner}${why}</div>`;
+}
+const prHead = (qs, st) => { const ok = qs.filter(x => st[prQid(x)]?.ok).length, bad = qs.filter(x => st[prQid(x)] && !st[prQid(x)].ok).length, left = qs.length - ok - bad; return `<b>Vežba (practice) · ${qs.length} zadataka</b><span class="small"><span style="color:var(--ok)">${ok} tačno</span>${bad ? ` · <span style="color:var(--warn)">${bad} netačno</span>` : ''} · ${left ? `još ${left}` : 'sve urađeno'}</span><span class="pr-bar"><i style="width:${Math.round(ok / qs.length * 100)}%"></i></span>${ok + bad ? '<button class="btn sec" data-act="pr-reset">Ispočetka</button>' : ''}`; };
+function practiceHtml(text, noteId, bi) {
+  const qs = parsePractice(text);
+  if (!qs.length) return '<p class="mute small">Practice block has no valid exercises yet.</p>';
+  const st = noteId ? prState(noteId) : {};
+  return `<div class="pr-set" data-pr-set="${bi}"><div class="quiz-card pr-head">${prHead(qs, st)}</div>${qs.map((x, i) => prCard(x, i, qs.length, st[prQid(x)])).join('')}</div>`;
+}
+function prCtx(el) {
+  const set = el.closest('[data-pr-set]'), card = el.closest('[data-pr-i]'), id = el.closest('[data-note-md]')?.dataset.noteMd, n = get('notes', id);
+  if (!set || !n) return null;
+  const blocks = [...n.body.matchAll(/```practice[^\n]*\n([\s\S]*?)```/g)], qs = parsePractice(blocks[+set.dataset.prSet]?.[1]);
+  const i = card ? +card.dataset.prI : -1;
+  return { set, card, id, qs, i, x: qs[i] };
+}
+function prAnswer(c, st) {
+  prSave(c.id, s => { if (st) s[prQid(c.x)] = st; else delete s[prQid(c.x)]; return s; });
+  c.card.outerHTML = prCard(c.x, c.i, c.qs.length, st);
+  c.set.querySelector('.pr-head').innerHTML = prHead(c.qs, prState(c.id));
+  if (!st) c.set.querySelector(`[data-pr-i="${c.i}"] .pr-in`)?.focus();
 }
 
 /* ---- graph ---- */
@@ -1664,6 +2073,11 @@ const ACTIONS = {
   'del-row': el => { const id = el.dataset.id; S.sel.delete(id); undoable('Task deleted', () => update('tasks', id, { deleted: true }, false)); },
   'focus-task': el => { P.taskId = el.dataset.id; if (!P.endsAt) { P.mode = 'focus'; P.left = null; } pomoSave(); if (!P.endsAt) pomoStart(); P.open = true; renderPomo(); },
   'quiz-open': el => { S.quiz = null; location.hash = '#quiz/' + (el.dataset.id || el.closest('[data-note-md]')?.dataset.noteMd); },
+  'pr-check': el => { const c = prCtx(el); if (!c?.x) return; const v = c.card.querySelector('.pr-in')?.value.trim(); if (!v) { toast('Upiši odgovor'); return; } prAnswer(c, { ok: c.x.ans.some(a => prMatch(a, v)), pick: v }); },
+  'pr-pick': el => { const c = prCtx(el); if (!c?.x) return; prAnswer(c, { ok: !!prOpts(c.x)[+el.dataset.j]?.ok, pick: el.dataset.j }); },
+  'pr-skip': el => { const c = prCtx(el); if (c?.x) prAnswer(c, { ok: false, pick: '' }); },
+  'pr-again': el => { const c = prCtx(el); if (c?.x) prAnswer(c, null); },
+  'pr-reset': el => { const c = prCtx(el); if (!c) return; prSave(c.id, s => { c.qs.forEach(x => delete s[prQid(x)]); return s; }); render(true); },
   'quiz-retry': () => { S.quiz = null; render(true); window.scrollTo(0, 0); $('#main').scrollTop = 0; },
   'train-start': el => { startTrain(el.dataset.k); location.hash = '#train/' + el.dataset.k; },
   'train-show': () => { if (S.train) { S.train.shown = true; render(true); } },
@@ -1786,6 +2200,7 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('focusout', () => { setTimeout(() => { if (pendingRender && !typing()) render(true); }, 0); });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.classList?.contains('pr-in')) { e.preventDefault(); ACTIONS['pr-check'](e.target); return; }
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); if (!dlg.open) openPalette(); return; }
   if (!typing() && !dlg.open && !e.ctrlKey && !e.metaKey && !e.altKey && route().v !== 'train' && route().v !== 'graph') {
     const k = e.key;
