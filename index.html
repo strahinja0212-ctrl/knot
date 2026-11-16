@@ -324,7 +324,7 @@ details.done-list summary::-webkit-details-marker{display:none}
 .mx{font-family:'Cambria Math','STIX Two Math','Latin Modern Math',Cambria,Georgia,serif;font-size:1.08em;white-space:nowrap;padding:0 2px}
 .mxb{display:block;text-align:center;font-size:1.3em;margin:4px 0 14px;white-space:normal}
 .mx .mn{color:var(--ok)} .mx .mo{color:var(--acc-ink);padding:0 .18em;font-weight:600} .mx .mb{color:var(--mute)}
-.mx .mv{font-style:italic;color:var(--warn)} .mx .mt{color:var(--ink2)}
+.mx .mv{font-style:italic;color:var(--warn)} .mx sub{font-size:.7em;color:var(--ink2)} .mx .mt{color:var(--ink2)}
 .mx .mq{display:inline-block;font-family:system-ui,sans-serif;font-size:.85em;color:var(--warn);font-weight:700;min-width:1em;text-align:center;background:color-mix(in srgb,var(--warn) 14%,transparent);border-radius:4px;padding:0 .15em}
 .md code{background:var(--soft);border-radius:4px;padding:1px 5px;font-size:.9em}
 .md pre code{background:none;padding:0}
@@ -1207,8 +1207,8 @@ ${mode === 'edit' ? `<textarea class="ed-body" id="ed-body" data-note="${n.id}" 
 /* ---- markdown ---- */
 function mathHtml(src) {
   const t = src.replace(/<=/g, '≤').replace(/>=/g, '≥').replace(/!=/g, '≠').replace(/\*/g, '×').replace(/(^|[\s(])-(?=[\s\d(a-zA-Z])/g, '$1−').replace(/(\d)-(\d)/g, '$1−$2');
-  return t.replace(/(\d+(?:[.,]\d+)*)|([+−×·÷=<>≤≥≠≈:/^%→])|([?▢□])|([()\[\]{}])|([a-zA-Z]+)/g, (m, n, o, q, b, v) =>
-    n ? `<span class="mn">${n}</span>` : o ? `<span class="mo">${esc(o)}</span>` : q ? '<span class="mq">▢</span>' : b ? `<span class="mb">${b}</span>` : v.length === 1 ? `<span class="mv">${v}</span>` : `<span class="mt">${v}</span>`);
+  return t.replace(/_(\([^)]*\)|[A-Za-z0-9]+)|(\d+(?:[.,]\d+)*)|([+−×·÷=<>≤≥≠≈:/^%→])|([?▢□])|([()\[\]{}])|([a-zA-Z]+)/g, (m, sb, n, o, q, b, v) =>
+    sb ? `<sub>${esc(sb.replace(/^\((.*)\)$/, '$1'))}</sub>` : n ? `<span class="mn">${n}</span>` : o ? `<span class="mo">${esc(o)}</span>` : q ? '<span class="mq">▢</span>' : b ? `<span class="mb">${b}</span>` : v.length === 1 ? `<span class="mv">${v}</span>` : `<span class="mt">${v}</span>`);
 }
 function inline(s) {
   const maths = [];
