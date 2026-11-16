@@ -21,7 +21,7 @@ const K = 'bg side card surface line line2 row soft ink ink2 mute faint ring acc
 const pal = (name, group, v, onAcc, fx, sky) => ({ name, group, onAcc, fx, sky: sky ? sky.split(' ') : null, ...Object.fromEntries(K.map((k, i) => [k, v.split(' ')[i]])) });
 // Night-only palettes. group k = Knot originals, c = community editor themes (open source palettes).
 const PALETTES = {
-  // group a = aurora skies: animated light behind see-through glass panels. Last field = 4 sky colours.
+  // group a = aurora: neon palettes. Last field = 4 glow colours (the 3rd is the gradient partner of the accent).
   'aurora': pal('Aurora', 'a', '#0A0F1E #0E1426 #121A30 #1D253A #232B41 #30384D #21293E #232B41 #E8F0FF #C8D0E0 #979FB0 #798193 #565E72 #7CFFB2', '#05200F', 'glow', '#22D3A6 #7C3AED #38BDF8 #A3E635'),
   'borealis': pal('Borealis', 'a', '#04121A #061923 #0A2230 #12303F #173646 #22455A #153345 #173646 #E3FBF4 #C1DDD6 #8FB0AA #72928D #52716E #34F5C5', '#01241B', 'glow', '#10B981 #06B6D4 #8B5CF6 #22C55E'),
   'nebula': pal('Nebula', 'a', '#0E0718 #130A20 #190E2A #241838 #2A1D40 #382A50 #27193C #2A1D40 #F5EAFF #D9CBE6 #A897B8 #8A7A9B #66577A #E879F9', '#2A0530', 'glow', '#C026D3 #6D28D9 #2563EB #DB2777'),
@@ -78,17 +78,14 @@ function themeVars() {
     ok: dk ? '#86EFAC' : '#166534', 'ok-soft': mix(dk ? '#86EFAC' : '#16A34A', dk ? 16 : 14, P.card),
     hov: dk ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.045)', toast: dk ? mix(P.ink, 22, P.card) : '#18181B',
   };
-  if (P.sky) {
-    // glass: panels let the sky through
-    Object.assign(v, { card: mix(P.card, 80, 'transparent'), side: mix(P.side, 66, 'transparent'), surface: mix(P.surface, 82, 'transparent'), 'acc-soft': mix('var(--acc)', 22, 'transparent') });
-    P.sky.forEach((c, i) => { v['s' + (i + 1)] = c; });
-  }
+  // gradient partner for the accent: lighter when text on it is dark, darker when it is white (keeps button text readable)
+  v.acc2 = mix('var(--acc)', 72, v['on-acc'] === '#FFFFFF' ? '#000000' : '#FFFFFF');
   return { t, key, P, css: Object.entries(v).map(([k, x]) => `--${k}:${x}`).join(';') + `;color-scheme:${dk ? 'dark' : 'light'}` };
 }
 function applyTheme() {
   const { t, key, P, css } = themeVars();
   const h = document.documentElement;
-  h.style.cssText = css; h.dataset.theme = key; h.dataset.fx = (P.fx + (P.sky ? ' sky' : '')).trim(); h.dataset.motion = t.motion;
+  h.style.cssText = css; h.dataset.theme = key; h.dataset.fx = P.fx; h.dataset.motion = t.motion;
   const m = document.querySelector('meta[name=theme-color]');
   if (m) m.content = P.bg;
   return t;
@@ -443,26 +440,28 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 #toast:empty{display:none}
 #toast button{color:#A5B4FC;font-weight:600;padding:6px 8px}
 @media (min-width:900px){#toast{bottom:24px}}
-/* aurora sky (palettes with data-fx~=sky) */
-#sky{display:none;position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:var(--bg)}
-:root[data-fx~=sky] #sky{display:block}
-#app{position:relative;z-index:1}
-#sky i{position:absolute;width:70vmax;height:70vmax;opacity:.62;will-change:transform;contain:strict}
-#sky i:nth-child(1){background:radial-gradient(closest-side,var(--s1),transparent);left:-18vmax;top:-24vmax;animation:sk1 34s ease-in-out infinite alternate}
-#sky i:nth-child(2){background:radial-gradient(closest-side,var(--s2),transparent);right:-24vmax;top:6vh;animation:sk2 41s ease-in-out infinite alternate}
-#sky i:nth-child(3){background:radial-gradient(closest-side,var(--s3),transparent);left:12vw;bottom:-34vmax;animation:sk3 47s ease-in-out infinite alternate}
-#sky i:nth-child(4){background:radial-gradient(closest-side,var(--s4),transparent);right:4vw;bottom:-30vmax;width:50vmax;height:50vmax;opacity:.38;animation:sk4 29s ease-in-out infinite alternate}
-#sky b{position:absolute;left:-15%;right:-15%;top:-8%;height:62%;background:linear-gradient(100deg,transparent 8%,var(--s1) 28%,var(--s3) 48%,var(--s2) 68%,transparent 90%);opacity:.2;transform-origin:50% 0;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 35%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 35%,transparent);animation:curtain 23s ease-in-out infinite alternate;will-change:transform}
-@keyframes sk1{to{transform:translate(22vw,16vh) scale(1.15)}}
-@keyframes sk2{to{transform:translate(-26vw,22vh) scale(.85)}}
-@keyframes sk3{to{transform:translate(18vw,-18vh) scale(1.2)}}
-@keyframes sk4{to{transform:translate(-30vw,-12vh) scale(1.1)}}
-@keyframes curtain{0%{transform:translateX(-7%) skewX(-14deg) scaleY(.85)}50%{transform:translateX(3%) skewX(9deg) scaleY(1.12)}100%{transform:translateX(9%) skewX(-5deg) scaleY(.95)}}
-:root:is([data-motion=calm],[data-motion=off]) #sky *{animation:none}
-:root[data-fx~=sky] :is(.card,.bl,.lk,.th){border-color:color-mix(in srgb,var(--ink) 11%,transparent)}
-:root[data-fx~=sky] dialog{background:var(--card)}
-:root[data-fx~=sky] dialog::backdrop{background:rgba(0,0,0,.5)}
-:root[data-fx~=sky] :is(.title,.ptitle h1){background:linear-gradient(90deg,var(--ink) 20%,var(--acc) 70%,var(--s3));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+/* style: lit buttons and glow, all palettes (static, cheap: shadows only) */
+.btn.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));position:relative;overflow:hidden;isolation:isolate;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--acc) 70%,transparent),0 6px 18px -6px color-mix(in srgb,var(--acc) 75%,transparent),inset 0 1px 0 rgba(255,255,255,.28)}
+.btn.pri::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.38) 50%,transparent 65%);transform:translateX(-130%)}
+.btn.pri:hover{box-shadow:0 0 0 1px var(--acc),0 0 22px -2px color-mix(in srgb,var(--acc) 80%,transparent),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.pri:hover::after{transform:translateX(130%);transition:transform .55s ease}
+.btn.sec:hover{border-color:color-mix(in srgb,var(--acc) 60%,var(--line2));box-shadow:0 0 14px -4px color-mix(in srgb,var(--acc) 60%,transparent);color:var(--acc-ink)}
+.logo{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 16px -2px color-mix(in srgb,var(--acc) 70%,transparent),inset 0 1px 0 rgba(255,255,255,.3)}
+.nav a.on{background:var(--acc-soft);box-shadow:inset 3px 0 0 var(--acc),0 0 20px -8px var(--acc)}
+.nav a.on svg,.tab.on svg{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--acc) 80%,transparent))}
+.title,.ptitle h1{background:linear-gradient(90deg,var(--ink) 30%,var(--acc-ink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.card{box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 30px -18px rgba(0,0,0,.8)}
+.qa:focus-within,.search:focus-within{border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 22%,transparent),0 0 20px -6px var(--acc)}
+.check:hover .ring{border-color:var(--acc);box-shadow:0 0 10px -1px color-mix(in srgb,var(--acc) 70%,transparent)}
+.task.done .ring{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 10px -1px color-mix(in srgb,var(--acc) 70%,transparent)}
+.th.on{box-shadow:0 0 0 1px var(--acc),0 0 18px -4px var(--acc)}
+.tbtn:hover{border-color:currentColor;box-shadow:0 0 16px -4px currentColor}
+.tbtn.g1:hover{color:var(--warn)} .tbtn.g3:hover{color:var(--ok)} .tbtn.g4:hover{color:var(--acc-ink)}
+.deck .btn.pri,.pomo-fab.run{box-shadow:0 0 18px -3px color-mix(in srgb,var(--acc) 80%,transparent)}
+.seg .on{box-shadow:0 0 12px -4px var(--acc)}
+:focus-visible{box-shadow:0 0 14px -2px var(--acc)}
+.chip.p1{box-shadow:0 0 10px -3px var(--warn)}
 
 /* motion (off when data-motion=off or the OS asks for reduced motion) */
 @keyframes rise{from{opacity:0;transform:translateY(10px)}}
@@ -475,16 +474,16 @@ dialog::backdrop{background:rgba(24,24,27,.35)}
 @keyframes strike{from{text-decoration-color:transparent}}
 @media (prefers-reduced-motion:no-preference){
 :root:not([data-motion=off]){
-  &[data-enter] :is(.page > *,.notes-layout > *){animation:rise .42s cubic-bezier(.2,.8,.2,1) backwards}
-  &[data-enter] .page > :nth-child(2){animation-delay:.04s} &[data-enter] .page > :nth-child(3){animation-delay:.08s} &[data-enter] .page > :nth-child(n+4){animation-delay:.12s}
-  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(-n+14){animation:rise .38s cubic-bezier(.2,.8,.2,1) backwards}
-  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(2){animation-delay:.03s}
-  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(3){animation-delay:.06s}
-  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(4){animation-delay:.09s}
-  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(5){animation-delay:.12s}
-  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(6){animation-delay:.15s}
-  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(7){animation-delay:.18s}
-  &[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(n+8){animation-delay:.21s}
+  &:not([data-motion=calm])[data-enter] :is(.page > *,.notes-layout > *){animation:rise .42s cubic-bezier(.2,.8,.2,1) backwards}
+  &:not([data-motion=calm])[data-enter] .page > :nth-child(2){animation-delay:.04s} &[data-enter] .page > :nth-child(3){animation-delay:.08s} &[data-enter] .page > :nth-child(n+4){animation-delay:.12s}
+  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(-n+14){animation:rise .38s cubic-bezier(.2,.8,.2,1) backwards}
+  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(2){animation-delay:.03s}
+  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(3){animation-delay:.06s}
+  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(4){animation-delay:.09s}
+  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(5){animation-delay:.12s}
+  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(6){animation-delay:.15s}
+  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(7){animation-delay:.18s}
+  &:not([data-motion=calm])[data-enter] :is(.card > .task,.deck,.tr,.fr,.bl,.lk,.th,.prow,.nrow):nth-child(n+8){animation-delay:.21s}
   .task.pop .ring{animation:pop .42s cubic-bezier(.3,1.6,.5,1),burst .6s ease-out}
   .task.pop .ttl{animation:strike .5s ease-out}
   .btn,.tbtn,.th,.check,.nav a,.tab,.pomo-fab,.lk,.bl,.deck,.accents button,.seg button{transition:transform .14s ease,background-color .2s,border-color .2s,color .2s,box-shadow .2s}
@@ -582,7 +581,6 @@ body.pip .pomo-time{font-size:min(22vw,64px)}
 </style>
 </head>
 <body>
-<div id="sky" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
 <div id="app">
   <aside id="sidebar" aria-label="Sidebar"></aside>
   <main id="main"></main>
@@ -1780,14 +1778,14 @@ function viewAppearance() {
   const pv = P => `<span class="pv" style="background:${P.sky ? `radial-gradient(circle at 15% 15%,${P.sky[0]}99,transparent 55%),radial-gradient(circle at 85% 30%,${P.sky[1]}88,transparent 55%),radial-gradient(circle at 50% 100%,${P.sky[2]}77,transparent 60%),` : ''}${P.bg}"><i style="background:${P.side}"></i><i style="background:${P.card};display:flex;flex-direction:column;justify-content:flex-end;gap:3px;padding:4px"><b style="height:3px;width:80%;border-radius:2px;background:${P.mute}"></b><b style="height:6px;width:55%;border-radius:3px;background:${t.accent === 'auto' ? P.acc : ACCENTS[t.accent]}"></b></i></span>`;
   const group = g => Object.entries(PALETTES).filter(([, P]) => P.group === g).map(([k, P]) => `<button class="th${t.theme === k ? ' on' : ''}" data-act="set-theme" data-v="${k}" aria-pressed="${t.theme === k}">${pv(P)}${P.name}</button>`).join('');
   return `<section class="card pad set-sec"><h2>Appearance</h2><p>Saved on this device, so your phone and PC can look different.</p>
-<h3 class="side-h3" style="margin:4px 0 8px">Aurora skies</h3><div class="themes" role="group" aria-label="Aurora palettes">${group('a')}</div>
+<h3 class="side-h3" style="margin:4px 0 8px">Aurora</h3><div class="themes" role="group" aria-label="Aurora palettes">${group('a')}</div>
 <h3 class="side-h3" style="margin:4px 0 8px">Knot originals</h3><div class="themes" role="group" aria-label="Knot palettes">${group('k')}</div>
 <h3 class="side-h3" style="margin:4px 0 8px">Editor classics</h3><div class="themes" role="group" aria-label="Editor palettes">${group('c')}</div>
 <h3 class="side-h3" style="margin:4px 0 8px">Accent</h3>
 <div class="accents" role="group" aria-label="Accent colour"><button class="auto${t.accent === 'auto' ? ' on' : ''}" data-act="set-accent" data-v="auto" aria-label="Palette's own accent" aria-pressed="${t.accent === 'auto'}" title="Palette's own">A</button>${Object.entries(ACCENTS).map(([k, c]) => `<button class="${t.accent === k ? 'on' : ''}" style="background:${c}" data-act="set-accent" data-v="${k}" aria-label="${k} accent" title="${k}" aria-pressed="${t.accent === k}"></button>`).join('')}</div>
 <h3 class="side-h3" style="margin:16px 0 8px">Motion</h3>
 <div class="seg" role="group" aria-label="Motion">${[['full', 'Full'], ['calm', 'Calm'], ['off', 'Off']].map(([k, l]) => `<button class="${t.motion === k ? 'on' : ''}" data-act="set-motion" data-v="${k}" aria-pressed="${t.motion === k}">${l}</button>`).join('')}</div>
-<p class="small mute" style="margin:8px 0 0">Full: animations and a moving aurora sky. Calm: animations, still sky. Off: no motion.</p></section>`;
+<p class="small mute" style="margin:8px 0 0">Full: all animations. Calm: only small ones (presses, hovers). Off: no motion.</p></section>`;
 }
 
 /* ============ pomodoro ============ */
