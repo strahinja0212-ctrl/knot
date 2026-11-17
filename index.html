@@ -1153,8 +1153,10 @@ function viewProject(id, tab) {
   const open = pt.filter(x => !x.done), done = pt.filter(x => x.done).sort((a, b) => (b.done_at || '').localeCompare(a.done_at || ''));
   const pids = pDesc(id), kids = pKids(id), up = pParent(p);
   const notes = all('notes').filter(n => pids.has(noteProject(n)?.id)).sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (b.updated_at || '').localeCompare(a.updated_at || ''));
-  tab = ['tasks', 'notes', 'path'].includes(tab) ? tab : kids.length ? 'path' : 'tasks';
-  if (tab === 'path' && !kids.length) tab = 'tasks';
+  // Path (course view) only for course-like projects: a subproject holds a quiz note
+  const isCourse = kids.length > 0 && notes.some(n => /```quiz/.test(n.body || ''));
+  tab = ['tasks', 'notes', 'path'].includes(tab) ? tab : isCourse ? 'path' : 'tasks';
+  if (tab === 'path' && !isCourse) tab = 'tasks';
   let body;
   if (tab === 'path') body = pathView(p, kids);
   else if (tab === 'tasks') {
@@ -1175,7 +1177,7 @@ function viewProject(id, tab) {
 <div class="hdr"><a class="back" href="${up ? `#project/${up.id}` : '#projects'}">${I.back}${up ? esc(up.name) : 'Projects'}</a><span style="display:flex;gap:6px"><button class="btn sec" data-act="new-project" data-parent="${id}">${I.plus}Subproject</button><button class="icon-btn" data-act="edit-project" data-id="${id}" aria-label="Project options">${I.more}</button></span></div>
 <div class="ptitle"><span class="sq" style="background:${esc(p.color)}"></span><h1>${esc(p.name)}</h1></div>
 <p class="mute small" style="margin:6px 0 14px">${kids.length ? `${projPct(id).pct}% done overall · ` : ''}${open.length} open · ${done.length} done · ${notes.length} notes</p>
-<div class="seg full" role="tablist">${kids.length ? `<a role="tab" aria-selected="${tab === 'path'}" class="${tab === 'path' ? 'on' : ''}" href="#project/${id}/path">Path</a>` : ''}<a role="tab" aria-selected="${tab === 'tasks'}" class="${tab === 'tasks' ? 'on' : ''}" href="#project/${id}/tasks">Tasks</a><a role="tab" aria-selected="${tab === 'notes'}" class="${tab === 'notes' ? 'on' : ''}" href="#project/${id}/notes">Notes · ${notes.length}</a></div>
+<div class="seg full" role="tablist">${isCourse ? `<a role="tab" aria-selected="${tab === 'path'}" class="${tab === 'path' ? 'on' : ''}" href="#project/${id}/path">Path</a>` : ''}<a role="tab" aria-selected="${tab === 'tasks'}" class="${tab === 'tasks' ? 'on' : ''}" href="#project/${id}/tasks">Tasks</a><a role="tab" aria-selected="${tab === 'notes'}" class="${tab === 'notes' ? 'on' : ''}" href="#project/${id}/notes">Notes · ${notes.length}</a></div>
 ${body}</div>`;
 }
 
