@@ -332,7 +332,10 @@ details.done-list summary::-webkit-details-marker{display:none}
 .struck{color:var(--faint);text-decoration:line-through}
 .md blockquote{margin:0 0 12px;padding:4px 14px;border-left:3px solid var(--line2);color:var(--mute)}
 .md pre{background:var(--soft);border-radius:10px;padding:12px;overflow:auto;font-size:13px}
-.mx{font-family:'Cambria Math','STIX Two Math','Latin Modern Math',Cambria,Georgia,serif;font-size:1.08em;white-space:nowrap;padding:0 2px}
+.mx{font-family:'Cambria Math','STIX Two Math','Latin Modern Math',Cambria,Georgia,serif;font-size:1.08em;white-space:normal;overflow-wrap:anywhere;padding:0 2px}
+/* phones: 16px inputs stop iOS zooming in on focus (and staying zoomed); nothing may widen the page */
+@media (pointer:coarse){input,textarea,select{font-size:16px!important}}
+html,body{overflow-x:clip}
 .mxb{display:block;text-align:center;font-size:1.3em;margin:4px 0 14px;white-space:normal}
 .mx .mn{color:var(--ok)} .mx .mo{color:var(--acc-ink);padding:0 .18em;font-weight:600} .mx .mb{color:var(--mute)}
 .mx .mv{font-style:italic;color:var(--warn)} .mx sub{font-size:.7em;color:var(--ink2)} .mx .mt{color:var(--ink2)}
