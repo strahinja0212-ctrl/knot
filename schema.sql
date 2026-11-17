@@ -139,3 +139,30 @@ drop trigger if exists knot_touch on public.quiz_results;
 create trigger knot_touch before insert or update on public.quiz_results for each row execute function public.knot_touch();
 create index if not exists quiz_results_sync_idx on public.quiz_results (user_id, synced_at);
 alter publication supabase_realtime add table public.quiz_results;
+
+-- weekly class schedule (uni timetable)
+create table if not exists public.classes (
+  id uuid primary key,
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  title text not null default '',
+  kind text default '',
+  weekday int not null default 1,
+  start_time text default '',
+  end_time text default '',
+  room text default '',
+  color text,
+  project_id uuid,
+  starts_on text default '',
+  ends_on text default '',
+  created_at timestamptz,
+  updated_at timestamptz not null default now(),
+  deleted boolean not null default false,
+  synced_at timestamptz not null default now()
+);
+alter table public.classes enable row level security;
+drop policy if exists own_rows on public.classes;
+create policy own_rows on public.classes for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop trigger if exists knot_touch on public.classes;
+create trigger knot_touch before insert or update on public.classes for each row execute function public.knot_touch();
+create index if not exists classes_sync_idx on public.classes (user_id, synced_at);
+alter publication supabase_realtime add table public.classes;

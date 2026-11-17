@@ -222,6 +222,17 @@ details.done-list summary::-webkit-details-marker{display:none}
 .day-h{margin:20px 8px 8px;font-size:15px;font-weight:600}
 .day-h span{font-weight:400;color:var(--mute)}
 .free{font-size:13px;color:var(--mute);margin:0 8px}
+.cls{padding:4px 0;margin-bottom:8px}
+.cl-row{display:flex;align-items:center;gap:12px;width:100%;padding:8px 14px;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.cl-row+.cl-row{border-top:1px solid var(--line)}
+.cl-row.past{opacity:.45}
+.cl-bar{width:4px;align-self:stretch;border-radius:2px;flex:none}
+.cl-time{display:flex;flex-direction:column;font-variant-numeric:tabular-nums;font-size:13px;font-weight:600;min-width:42px}
+.cl-time span{font-weight:400;color:var(--mute)}
+.cl-main{display:flex;flex-direction:column;min-width:0}
+.cl-t{font-weight:600}
+.cl-now{font-size:11px;color:var(--acc);font-weight:600;margin-left:4px}
+.cl-day{font-size:13px;color:var(--mute);margin:12px 0 6px;font-weight:600}
 .month{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:12px}
 .month .wh{font-size:11px;color:var(--mute);text-align:center;font-weight:500;padding-bottom:4px}
 .month button{aspect-ratio:1/1;max-height:64px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:14px;font-weight:500}
@@ -781,9 +792,10 @@ const I = {
 };
 
 /* ============ store ============ */
-const TABLES = ['projects', 'folders', 'tasks', 'notes', 'cards', 'quiz_results'];
+const TABLES = ['projects', 'folders', 'tasks', 'notes', 'cards', 'quiz_results', 'classes'];
 const COLS = {
   projects: ['id', 'name', 'color', 'grp', 'parent_id', 'position', 'created_at', 'updated_at', 'deleted'],
+  classes: ['id', 'title', 'kind', 'weekday', 'start_time', 'end_time', 'room', 'color', 'project_id', 'starts_on', 'ends_on', 'created_at', 'updated_at', 'deleted'],
   quiz_results: ['id', 'note_id', 'score', 'total', 'passed', 'created_at', 'updated_at', 'deleted'],
   tasks: ['id', 'project_id', 'title', 'due', 'due_time', 'priority', 'done', 'done_at', 'section', 'note_id', 'recur', 'created_at', 'updated_at', 'deleted'],
   folders: ['id', 'name', 'parent_id', 'project_id', 'color', 'position', 'created_at', 'updated_at', 'deleted'],
@@ -791,7 +803,7 @@ const COLS = {
   notes: ['id', 'project_id', 'folder', 'folder_id', 'title', 'body', 'pinned', 'created_at', 'updated_at', 'deleted'],
 };
 const store = {
-  db: load('knot.db', { projects: {}, folders: {}, tasks: {}, notes: {}, cards: {}, quiz_results: {} }),
+  db: load('knot.db', { projects: {}, folders: {}, tasks: {}, notes: {}, cards: {}, quiz_results: {}, classes: {} }),
   dirty: new Set(load('knot.dirty', [])),
   meta: load('knot.meta', { lastPull: {}, goal: 5 }),
 };
@@ -1053,6 +1065,21 @@ ${I.plus}<input id="qa" name="q" autocomplete="off" enterkeyhint="done" placehol
 }
 
 /* ============ views ============ */
+/* ============ class schedule (weekly timetable) ============ */
+const WDN = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const isoWd = k => ((parseKey(k).getDay() + 6) % 7) + 1;
+const hm = t => { const [h, m] = (t || '0:0').split(':').map(Number); return h * 60 + (m || 0); };
+const sortClasses = l => l.sort((a, b) => (a.weekday - b.weekday) || hm(a.start_time) - hm(b.start_time));
+const classesOn = k => sortClasses(all('classes').filter(c => +c.weekday === isoWd(k) && (!c.starts_on || c.starts_on <= k) && (!c.ends_on || c.ends_on >= k)));
+function classList(list, k) {
+  if (!list.length) return '';
+  const now = new Date(), live = k === today(), m = now.getHours() * 60 + now.getMinutes();
+  return `<div class="card cls">${list.map(c => {
+    const st = live ? (hm(c.end_time) <= m ? 'past' : hm(c.start_time) <= m ? 'now' : '') : '';
+    return `<button class="cl-row ${st}" data-act="edit-class" data-id="${c.id}"><span class="cl-bar" style="background:${esc(c.color || 'var(--acc)')}"></span><span class="cl-time">${esc(c.start_time)}<span>${esc(c.end_time)}</span></span><span class="cl-main"><span class="cl-t">${esc(c.title)}${st === 'now' ? ' <span class="cl-now">now</span>' : ''}</span><span class="small mute">${[c.kind, c.room].filter(Boolean).map(esc).join(' · ')}</span></span></button>`;
+  }).join('')}</div>`;
+}
+
 function viewToday() {
   const t = today(), ts = all('tasks');
   const overdue = sortTasks(ts.filter(x => !x.done && x.due && x.due < t));
@@ -1067,6 +1094,7 @@ function viewToday() {
 <div class="hdr m-only" style="min-height:0"><span></span><div class="hdr-actions"><span class="pill ${syncClass()}" data-sync>${syncLabel()}</span><button class="icon-btn" data-act="palette" aria-label="Search and commands">${I.search}</button><a class="icon-btn" href="#settings" aria-label="Settings">${I.settings}</a></div></div>
 <header class="t-head">${ringBig(done.length, total)}<div class="t-hm"><span class="mute small">${fmtLong(t)}</span><h1 class="title">Today</h1><div class="chips-s">${g.streak ? `<span class="chip-s streak">${I.flame}${g.streak}-day streak</span>` : ''}<span class="chip-s lvl">Level ${g.L} · ${g.xp - g.from} / ${g.to - g.from} XP</span></div></div><a class="btn sec d-only" href="#wins">${I.trophy}Wins</a></header>
 ${hero}
+${(() => { const cl = classesOn(t); return cl.length ? `<h2 class="sec-h"><span>Classes</span><span>${cl.length}</span></h2>${classList(cl, t)}` : ''; })()}
 ${quickAdd({ due: t, ph: 'Add a task, press Enter' })}
 ${overdue.length ? `<h2 class="sec-h late">Overdue</h2>${taskCard(overdue)}` : ''}
 ${open.length ? `<h2 class="sec-h">Today</h2>${taskCard(open, { hideDue: true })}` : !total ? '<div class="card empty" style="margin-top:12px">Nothing due today. Add a task above.</div>' : ''}
@@ -1086,7 +1114,7 @@ function viewUpcoming() {
     const days = [...Array(7)].map((_, i) => addDays(t, i));
     const strip = `<div class="strip">${days.map(k => { const d = parseKey(k); return `<button class="${k === sel ? 'on' : ''} ${byDay.has(k) ? 'has' : ''}" data-act="up-day" data-k="${k}" aria-label="${fmtLong(k)}"><span class="wd">${WD[d.getDay()]}</span><span class="dn">${d.getDate()}</span><span class="dd"></span></button>`; }).join('')}</div>`;
     const later = sortTasks(ts.filter(x => x.due > days[6]));
-    const list = days.map(k => `<h2 class="day-h" id="d-${k}">${dayLabel(k)} <span>· ${fmtShort(k)}</span></h2>${byDay.has(k) ? taskCard(sortTasks(byDay.get(k)), { hideDue: true }) : '<p class="free">Nothing planned</p>'}`).join('');
+    const list = days.map(k => `<h2 class="day-h" id="d-${k}">${dayLabel(k)} <span>· ${fmtShort(k)}</span></h2>${classList(classesOn(k), k)}${byDay.has(k) ? taskCard(sortTasks(byDay.get(k)), { hideDue: true }) : classesOn(k).length ? '' : '<p class="free">Nothing planned</p>'}`).join('');
     return `<div class="page">${head}<p class="mute" style="margin:4px 0 0">${['January','February','March','April','May','June','July','August','September','October','November','December'][parseKey(t).getMonth()]} ${parseKey(t).getFullYear()}</p>${strip}
 ${quickAdd({ due: sel, ph: `Add a task for ${dayLabel(sel).toLowerCase() === 'today' ? 'today' : fmtShort(sel)}` })}
 ${list}${later.length ? `<h2 class="day-h">Later</h2>${taskCard(later)}` : ''}</div>`;
@@ -1101,7 +1129,7 @@ ${list}${later.length ? `<h2 class="day-h">Later</h2>${taskCard(later)}` : ''}</
 ${grid}
 <h2 class="day-h">${dayLabel(sel)} <span>· ${fmtShort(sel)}</span></h2>
 ${quickAdd({ due: sel, ph: `Add a task for ${fmtShort(sel)}` })}
-${selTasks.length ? taskCard(selTasks, { hideDue: true }) : '<p class="free" style="margin-top:12px">Nothing planned</p>'}</div>`;
+${classList(classesOn(sel), sel)}${selTasks.length ? taskCard(selTasks, { hideDue: true }) : classesOn(sel).length ? '' : '<p class="free" style="margin-top:12px">Nothing planned</p>'}</div>`;
 }
 
 function viewProjects() {
@@ -1926,6 +1954,7 @@ function viewSettings() {
   }
   return `<div class="page"><div class="hdr"><h1 class="title">Settings</h1></div>
 <section class="card pad set-sec"><div class="hdr" style="min-height:0;margin-bottom:6px"><h2 style="margin:0">Sync</h2><span class="pill ${syncClass()}" data-sync>${syncLabel()}</span></div>${syncBody}</section>
+<section class="card pad set-sec"><div class="hdr" style="min-height:0;margin-bottom:6px"><h2 style="margin:0">Class schedule</h2><button class="btn sec" data-act="new-class">${I.plus}Add class</button></div><p>Weekly classes. They show on Today and Upcoming on their weekday, between the first and last day you set.</p>${(() => { const l = sortClasses(all('classes')); return l.length ? [1, 2, 3, 4, 5, 6, 7].filter(d => l.some(c => +c.weekday === d)).map(d => `<h3 class="cl-day">${WDN[d]}</h3>${classList(l.filter(c => +c.weekday === d), '')}`).join('') : '<p class="mute">No classes yet.</p>'; })()}</section>
 ${viewAppearance()}
 <section class="card pad set-sec"><h2>Daily goal</h2><p>Tasks per day shown as the goal line in Stats.</p><form data-form="goal" style="flex-direction:row;align-items:flex-end"><label class="fld" style="max-width:120px">Tasks<input type="number" name="goal" min="1" max="50" value="${+store.meta.goal || 5}"></label><button class="btn sec">Save</button></form></section>
 <section class="card pad set-sec"><h2>Focus timer</h2><p>Pomodoro lengths in minutes. A long break comes after every few focus sessions.</p><form data-form="pomo" style="flex-direction:row;flex-wrap:wrap;align-items:flex-end">${[['focus', 'Focus'], ['short', 'Short break'], ['long', 'Long break'], ['every', 'Long every']].map(([k, l]) => `<label class="fld" style="max-width:110px;min-width:90px">${l}<input type="number" name="${k}" min="1" max="${k === 'every' ? 12 : 120}" value="${pomoCfg()[k]}"></label>`).join('')}<button class="btn sec">Save</button></form></section>
@@ -2028,6 +2057,20 @@ function editFolder(id, parentId) {
 <div class="dlg-actions">${fo ? `<button type="button" class="btn danger" data-act="del-folder" data-id="${fo.id}">${I.trash}Delete</button>` : ''}<span style="flex:1"></span><button type="button" class="btn sec" data-act="close-dlg">Cancel</button><button class="btn pri">${fo ? 'Save' : 'Create'}</button></div></form>`);
 }
 
+function editClass(id) {
+  const c = id ? get('classes', id) : null;
+  const color = c?.color || COLORS[0];
+  openDlg(`<form class="dlg-form" data-form="class" data-id="${id || ''}"><h2>${c ? 'Edit class' : 'New class'}</h2>
+<label class="fld">Subject<input name="title" value="${esc(c?.title || '')}" required placeholder="Matematika 3"></label>
+<label class="fld">Type<input name="kind" list="dl-kind" value="${esc(c?.kind || '')}" placeholder="Predavanja, Vežbe…"><datalist id="dl-kind">${['Predavanja', 'Vežbe', 'Lab. vežbe', 'Kolokvijum', 'Ispit'].map(k => `<option value="${k}">`).join('')}</datalist></label>
+<label class="fld">Day<select name="weekday">${[1, 2, 3, 4, 5, 6, 7].map(d => `<option value="${d}" ${+(c?.weekday || 1) === d ? 'selected' : ''}>${WDN[d]}</option>`).join('')}</select></label>
+<div style="display:flex;gap:10px"><label class="fld" style="flex:1">Starts<input type="time" name="start_time" value="${esc(c?.start_time || '')}" required></label><label class="fld" style="flex:1">Ends<input type="time" name="end_time" value="${esc(c?.end_time || '')}" required></label></div>
+<label class="fld">Room<input name="room" value="${esc(c?.room || '')}" placeholder="učionica 24"></label>
+<div style="display:flex;gap:10px"><label class="fld" style="flex:1">First day (optional)<input type="date" name="starts_on" value="${esc(c?.starts_on || '')}"></label><label class="fld" style="flex:1">Last day (optional)<input type="date" name="ends_on" value="${esc(c?.ends_on || '')}"></label></div>
+<fieldset style="border:none;padding:0;margin:0"><legend class="fld" style="margin-bottom:8px">Colour</legend><div class="swatches">${COLORS.map(x => `<label style="background:${x}"><input type="radio" name="color" value="${x}" ${x === color ? 'checked' : ''} aria-label="${x}"></label>`).join('')}</div></fieldset>
+<div class="dlg-actions">${c ? `<button type="button" class="btn danger" data-act="del-class" data-id="${c.id}">${I.trash}Delete</button>` : ''}<span style="flex:1"></span><button type="button" class="btn sec" data-act="close-dlg">Cancel</button><button class="btn pri">${c ? 'Save' : 'Add'}</button></div></form>`);
+}
+
 /* ============ actions ============ */
 function toggleTask(id) {
   const x = get('tasks', id); if (!x) return;
@@ -2098,6 +2141,9 @@ const ACTIONS = {
     update('folders', fo.id, { deleted: true }, false); });
   },
   'new-project': el => editProject(null, el.dataset.parent || ''),
+  'new-class': () => editClass(null),
+  'edit-class': el => editClass(el.dataset.id),
+  'del-class': el => { const c = get('classes', el.dataset.id); if (!c) return; dlg.close(); undoable(`Class “${c.title}” deleted`, () => update('classes', c.id, { deleted: true }, false)); },
   'edit-project': el => editProject(el.dataset.id),
   'del-project': el => { dlg.close(); const gone = get('projects', el.dataset.id); if (!gone) return; location.hash = '#projects'; undoable(`Project “${gone.name}” deleted`, () => { pKids(gone.id).forEach(k => update('projects', k.id, { parent_id: gone.parent_id || null }, false)); update('projects', gone.id, { deleted: true }, false); }); },
   'up-mode': el => { S.upMode = el.dataset.v; render(true); },
@@ -2155,6 +2201,11 @@ document.addEventListener('submit', async e => {
     const d = Object.fromEntries(new FormData(f));
     update('tasks', f.dataset.id, { title: d.title.trim(), due: d.due || '', due_time: d.due_time || '', priority: +d.priority, recur: d.recur, project_id: d.project_id || null, section: d.section.trim(), note_id: d.note_id || null });
     dlg.close();
+  } else if (kind === 'class') {
+    const d = Object.fromEntries(new FormData(f));
+    const fields = { title: d.title.trim(), kind: d.kind.trim(), weekday: +d.weekday, start_time: d.start_time, end_time: d.end_time, room: d.room.trim(), color: d.color || COLORS[0], starts_on: d.starts_on || '', ends_on: d.ends_on || '' };
+    dlg.close();
+    if (f.dataset.id) update('classes', f.dataset.id, fields); else create('classes', fields);
   } else if (kind === 'folder') {
     const d = Object.fromEntries(new FormData(f));
     const [k, ref] = (d.parent || ':').split(':');
