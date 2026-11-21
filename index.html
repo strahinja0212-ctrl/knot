@@ -117,7 +117,7 @@ svg{flex:none}
 #sidebar{display:none}
 #main{min-width:0;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
 #tabbar{position:fixed;left:0;right:0;bottom:0;height:calc(64px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:20}
-.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:500;color:var(--faint);min-width:60px;padding:6px 0}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:500;color:var(--faint);flex:1;min-width:0;padding:6px 0}
 .tab.on{color:var(--acc);font-weight:600}
 .tab svg{width:24px;height:24px}
 @media (min-width:900px){
@@ -717,6 +717,70 @@ body.pip{display:flex;align-items:stretch;justify-content:center;padding:10px;he
 body.pip .pomo-card{width:100%;box-shadow:none;border:none;padding:4px;gap:8px;background:transparent}
 body.pip .pomo-time{font-size:min(22vw,64px)}
 .res-h{margin:22px 8px 8px;font-size:13px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+/* ---- gym tab ---- */
+.gweek{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.gweek b{font-size:15px} .gweek b span{font-weight:500}
+.strip.g{margin-top:2px}
+.strip.g .gl{font-size:11px;font-weight:700;color:var(--faint);height:14px;line-height:14px}
+.strip.g .ok .gl{color:var(--ok)}
+.strip.g .now:not(.on){box-shadow:inset 0 0 0 1px var(--ring)}
+.strip.g .on .gl{color:var(--on-acc)}
+.glink{font-size:13px;font-weight:600;color:var(--acc-ink);text-transform:none;letter-spacing:0}
+.gcard{display:flex;align-items:center;gap:12px;padding:16px 18px;flex-wrap:wrap}
+.gcard.gdone{border-color:var(--ok);margin-top:12px} .gcard.gdone .eyebrow{color:var(--ok)}
+.gsel{height:40px;border:1px solid var(--line2);border-radius:10px;background:var(--surface);color:var(--ink);padding:0 10px;font-size:14px;font-weight:500;max-width:100%}
+.gwarm{margin-top:10px;padding:0 18px} .gwarm summary{height:46px;display:flex;align-items:center;font-size:14px;font-weight:600;color:var(--ink2);cursor:pointer} .gwarm p{margin:0 0 14px;font-size:14px;line-height:1.5;color:var(--mute)}
+.gxs{margin-top:10px}
+.gx{padding:16px 18px;border-bottom:1px solid var(--line)} .gx:last-child{border-bottom:none}
+.gx-top{display:flex;align-items:center;gap:12px}
+.gx-n{flex:none;width:28px;height:28px;border-radius:14px;background:var(--line);color:var(--mute);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.gx.done .gx-n{background:var(--ok-soft);color:var(--ok)}
+.gx-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .gx-main b{font-size:17px;line-height:1.25}
+.btn.gx-vid{height:34px;padding:0 12px;font-size:13px;flex:none}
+.gx-cue{margin:10px 0 0;font-size:14px;line-height:1.45;color:var(--mute)}
+.gx-in{display:flex;align-items:center;gap:8px;margin:12px 0 8px}
+.gx-f{position:relative;flex:1;min-width:0;max-width:130px;display:block}
+.gx-f input{width:100%;height:48px;border:1px solid var(--line2);border-radius:10px;background:var(--surface);color:var(--ink);font-size:18px!important;font-weight:600;padding:0 40px 0 12px;font-variant-numeric:tabular-nums}
+.gx-f input:focus{outline:none;border-color:var(--acc)} .gx-f input::placeholder{color:var(--ring);font-weight:500;font-size:15px}
+.gx-f span{position:absolute;right:10px;top:0;height:48px;display:flex;align-items:center;font-size:12px;color:var(--faint);pointer-events:none}
+.gx-x{color:var(--faint);font-weight:600;flex:none}
+.btn.gx-rest{height:48px;flex:none;min-width:92px;margin-left:auto;font-variant-numeric:tabular-nums}
+.btn.gx-rest.run{border-color:var(--acc);color:var(--acc-ink);background:var(--acc-soft)}
+.gx-ok{flex:none;width:48px;height:48px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);color:var(--faint);display:flex;align-items:center;justify-content:center}
+.gx-ok svg{width:22px;height:22px}
+.gx.done .gx-ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.gx-last{display:block}
+.btn.gfin{width:100%;height:50px;font-size:16px;margin-top:12px}
+.gx-help{margin:12px 8px 0;line-height:1.5}
+.gphs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.gphs{grid-template-columns:minmax(0,1fr)}}
+.gph{padding:16px 18px;display:flex;flex-direction:column;gap:4px} .gph b{font-size:19px}
+.gph.cur{border-color:var(--acc)} .gph.cur .eyebrow{color:var(--acc-ink)} .gph.past .eyebrow{color:var(--ok)} .gph .pbar{height:6px;margin-top:8px}
+.gwo{margin-bottom:8px;padding:0 18px}
+.gwo summary{min-height:60px;display:flex;flex-direction:column;justify-content:center;gap:1px;cursor:pointer} .gwo summary b{font-size:16px}
+.gwo-r{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.gwo-n{flex:1;min-width:0;font-weight:600;font-size:15px} .gwo-r .small{text-align:right;line-height:1.35;flex:none}
+.gck{padding:12px 18px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px} .gck:last-child{border-bottom:none} .gck.past b{color:var(--ok)}
+.gbw{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px} .gbw .fld{min-width:120px;max-width:180px} .gbw .btn{height:42px}
+.gchart{width:100%;max-width:560px;height:auto;display:block}
+.gchart text{font-size:13px;fill:var(--faint)} .gchart .gr{stroke:var(--line);stroke-width:1}
+.gchart .band{fill:var(--acc);opacity:.14} .gchart .ln{fill:none;stroke:var(--acc);stroke-width:2.2;stroke-linejoin:round} .gchart circle{fill:var(--acc)}
+.gbw-list{margin-top:12px} .gbw-list summary,.glift summary{cursor:pointer}
+.gbw-list summary{font-size:13px;font-weight:600;color:var(--mute);height:36px;display:flex;align-items:center}
+.gheat{max-width:320px} .gh-h{font-size:11px;font-weight:600;color:var(--faint);text-align:center}
+.glift{border-bottom:1px solid var(--line);padding:0 18px} .glift:last-child{border-bottom:none}
+.glift summary{display:flex;align-items:center;gap:12px;min-height:60px;list-style:none} .glift summary::-webkit-details-marker{display:none}
+.gl-n{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .gl-n b{font-size:15px}
+.gl-v{flex:none;font-weight:700;font-size:15px;font-variant-numeric:tabular-nums;text-align:right}
+.gspark{flex:none} .gspark polyline{fill:none;stroke:var(--acc);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round} .gspark circle{fill:var(--acc)}
+.gup{color:var(--ok)}
+.gl-r{display:flex;justify-content:space-between;align-items:center;min-height:36px;font-size:14px;color:var(--ink2);border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.gl-r span{display:flex;align-items:center;gap:6px}
+.gdel{width:32px;height:32px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;color:var(--faint)} .gdel svg{width:15px;height:15px}
+.gym-today{display:flex;align-items:center;gap:12px;padding:14px 18px;margin-top:12px}
+.gt-i{flex:none;width:38px;height:38px;border-radius:12px;background:var(--acc-soft);color:var(--acc-ink);display:flex;align-items:center;justify-content:center} .gt-i svg{width:20px;height:20px}
+.gt-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .gym-today .chev{width:18px;height:18px;color:var(--faint);display:flex}
+@media (max-width:480px){.gx-f span{display:none}.gx-f input{padding:0 8px;text-align:center}.btn.gx-rest{min-width:84px;padding:0 8px}}
 </style>
 </head>
 <body>
@@ -795,10 +859,11 @@ const I = {
 };
 
 /* ============ store ============ */
-const TABLES = ['projects', 'folders', 'tasks', 'notes', 'cards', 'quiz_results', 'classes'];
+const TABLES = ['projects', 'folders', 'tasks', 'notes', 'cards', 'quiz_results', 'classes', 'gym_log'];
 const COLS = {
   projects: ['id', 'name', 'color', 'grp', 'parent_id', 'position', 'created_at', 'updated_at', 'deleted'],
   classes: ['id', 'title', 'kind', 'weekday', 'start_time', 'end_time', 'room', 'color', 'project_id', 'starts_on', 'ends_on', 'created_at', 'updated_at', 'deleted'],
+  gym_log: ['id', 'day', 'kind', 'key', 'kg', 'reps', 'created_at', 'updated_at', 'deleted'],
   quiz_results: ['id', 'note_id', 'score', 'total', 'passed', 'created_at', 'updated_at', 'deleted'],
   tasks: ['id', 'project_id', 'title', 'due', 'due_time', 'priority', 'done', 'done_at', 'section', 'note_id', 'recur', 'created_at', 'updated_at', 'deleted'],
   folders: ['id', 'name', 'parent_id', 'project_id', 'color', 'position', 'created_at', 'updated_at', 'deleted'],
@@ -1097,6 +1162,7 @@ function viewToday() {
 <div class="hdr m-only" style="min-height:0"><span></span><div class="hdr-actions"><span class="pill ${syncClass()}" data-sync>${syncLabel()}</span><button class="icon-btn" data-act="palette" aria-label="Search and commands">${I.search}</button><a class="icon-btn" href="#settings" aria-label="Settings">${I.settings}</a></div></div>
 <header class="t-head">${ringBig(done.length, total)}<div class="t-hm"><span class="mute small">${fmtLong(t)}</span><h1 class="title">Today</h1><div class="chips-s">${g.streak ? `<span class="chip-s streak">${I.flame}${g.streak}-day streak</span>` : ''}<span class="chip-s lvl">Level ${g.L} · ${g.xp - g.from} / ${g.to - g.from} XP</span></div></div><a class="btn sec d-only" href="#wins">${I.trophy}Wins</a></header>
 ${hero}
+${gymTodayCard()}
 ${(() => { const cl = classesOn(t); return cl.length ? `<h2 class="sec-h"><span>Classes</span><span>${cl.length}</span></h2>${classList(cl, t)}` : ''; })()}
 ${quickAdd({ due: t, ph: 'Add a task, press Enter' })}
 ${overdue.length ? `<h2 class="sec-h late">Overdue</h2>${taskCard(overdue)}` : ''}
@@ -1975,15 +2041,15 @@ function navCounts() {
 }
 function renderSidebar(r) {
   const c = navCounts();
-  const act = { today: 'today', inbox: 'inbox', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', quiz: 'notes', graph: 'graph', stats: 'stats', train: 'train', wins: 'wins', settings: 'settings', search: 'search' }[r.v];
+  const act = { today: 'today', inbox: 'inbox', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', quiz: 'notes', graph: 'graph', stats: 'stats', train: 'train', gym: 'gym', wins: 'wins', settings: 'settings', search: 'search' }[r.v];
   const item = (k, href, icon, label, cnt = 0) => `<a class="${act === k ? 'on' : ''}" href="${href}" title="${label}" aria-label="${label}${cnt ? ', ' + cnt : ''}">${icon}${cnt ? `<span class="rc">${cnt > 99 ? '99+' : cnt}</span>` : ''}</a>`;
   return `<span class="logo" title="${APP}">${I.tick}</span>
-<nav class="rail" aria-label="Main">${item('today', '#today', I.today, 'Today', c.today)}${item('inbox', '#inbox', I.inbox, 'Inbox', c.inbox)}${item('upcoming', '#upcoming', I.upcoming, 'Upcoming')}${item('projects', '#projects', I.projects, 'Projects')}${item('notes', '#notes', I.notes, 'Notes')}${item('graph', '#graph', I.graph, 'Graph')}${item('train', '#train', I.train, 'Train', trainDueAll())}${item('wins', '#wins', I.trophy, 'Wins')}${item('stats', '#stats', I.stats, 'Stats')}</nav>
+<nav class="rail" aria-label="Main">${item('today', '#today', I.today, 'Today', c.today)}${item('inbox', '#inbox', I.inbox, 'Inbox', c.inbox)}${item('upcoming', '#upcoming', I.upcoming, 'Upcoming')}${item('projects', '#projects', I.projects, 'Projects')}${item('notes', '#notes', I.notes, 'Notes')}${item('graph', '#graph', I.graph, 'Graph')}${item('train', '#train', I.train, 'Train', trainDueAll())}${item('gym', '#gym', I.gym, 'Gym')}${item('wins', '#wins', I.trophy, 'Wins')}${item('stats', '#stats', I.stats, 'Stats')}</nav>
 <nav class="rail rail-foot" aria-label="More"><button data-act="palette" title="Search and commands (Ctrl K)" aria-label="Search and commands">${I.search}</button>${item('settings', '#settings', I.settings, 'Settings')}<span class="pill ${syncClass()}" data-sync title="Sync">${syncLabel()}</span></nav>`;
 }
 function renderTabbar(r) {
-  const act = { today: 'today', inbox: 'today', wins: 'today', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', quiz: 'notes', graph: 'notes', stats: 'stats', train: 'train' }[r.v];
-  return [['today', 'Today', I.today], ['upcoming', 'Upcoming', I.upcoming], ['projects', 'Projects', I.projects], ['notes', 'Notes', I.notes], ['train', 'Train', I.train], ['stats', 'Stats', I.stats]]
+  const act = { today: 'today', inbox: 'today', wins: 'today', upcoming: 'upcoming', projects: 'projects', project: 'projects', notes: 'notes', note: 'notes', quiz: 'notes', graph: 'notes', stats: 'stats', train: 'train', gym: 'gym' }[r.v];
+  return [['today', 'Today', I.today], ['upcoming', 'Upcoming', I.upcoming], ['projects', 'Projects', I.projects], ['notes', 'Notes', I.notes], ['train', 'Train', I.train], ['gym', 'Gym', I.gym], ['stats', 'Stats', I.stats]]
     .map(([k, l, ic]) => `<a class="tab${act === k ? ' on' : ''}" href="#${k}" ${act === k ? 'aria-current="page"' : ''}>${ic}${l}</a>`).join('');
 }
 let pendingRender = false;
@@ -1994,7 +2060,7 @@ function render(force) {
   const ae = document.activeElement, fid = ae && ae.id, ss = ae && ae.selectionStart, se = ae && ae.selectionEnd;
   if (G) { cancelAnimationFrame(G.raf); G = null; }
   const r = route();
-  const views = { today: viewToday, upcoming: viewUpcoming, projects: viewProjects, project: () => viewProject(r.a, r.b), notes: () => viewNotes(null), note: () => viewNotes(r.a), graph: () => viewGraph(r.a), stats: viewStats, train: () => viewTrain(r.a), quiz: () => viewQuiz(r.a), inbox: viewInbox, wins: viewWins, settings: viewSettings, search: viewSearch };
+  const views = { today: viewToday, upcoming: viewUpcoming, projects: viewProjects, project: () => viewProject(r.a, r.b), notes: () => viewNotes(null), note: () => viewNotes(r.a), graph: () => viewGraph(r.a), stats: viewStats, train: () => viewTrain(r.a), gym: () => viewGym(r.a), quiz: () => viewQuiz(r.a), inbox: viewInbox, wins: viewWins, settings: viewSettings, search: viewSearch };
   $('#main').innerHTML = (views[r.v] || viewToday)();
   $('#sidebar').innerHTML = renderSidebar(r);
   $('#tabbar').innerHTML = renderTabbar(r);
@@ -2572,7 +2638,7 @@ function moveCur(step) {
 }
 
 /* ============ command palette (Ctrl K) ============ */
-const PAL_GO = [['Today', '#today'], ['Inbox', '#inbox'], ['Upcoming', '#upcoming'], ['Projects', '#projects'], ['Notes', '#notes'], ['Graph', '#graph'], ['Train', '#train'], ['Wins', '#wins'], ['Stats', '#stats'], ['Settings', '#settings']];
+const PAL_GO = [['Today', '#today'], ['Inbox', '#inbox'], ['Upcoming', '#upcoming'], ['Projects', '#projects'], ['Notes', '#notes'], ['Graph', '#graph'], ['Train', '#train'], ['Gym', '#gym'], ['Wins', '#wins'], ['Stats', '#stats'], ['Settings', '#settings']];
 function palItems(q) {
   const raw = q.trim(), n = raw.toLowerCase(), out = [];
   const go = PAL_GO.filter(([l]) => !n || l.toLowerCase().includes(n)).map(([l, h]) => ({ label: 'Go to ' + l, hint: '', run: () => { location.hash = h; } }));
@@ -2791,6 +2857,298 @@ async function pomoPop() {
 // close the timer card when clicking elsewhere in the app
 document.addEventListener('click', e => { if (P.open && !e.target.closest('#pomo') && document.contains(e.target)) { P.open = false; renderPomo(); } });
 if (P.endsAt) { if (pomoLeft() > 0) pomoTicker(true); else setTimeout(() => pomoNext(true), 0); }
+
+/* ============ gym ============ */
+// The whole gym course in one tab: today's workout with kg × reps inputs, the plan, progress, and the guide.
+// The program itself is fixed data below; what you log lives in the synced "gym_log" table:
+//   kind 'lift'    key = exercise, kg + reps of the top set, one row per lift per day
+//   kind 'bw'      kg = bodyweight that day
+//   kind 'session' key = workout, the session was finished that day
+I.gym = SV('<path d="M6.5 6v12M17.5 6v12M3.5 9v6M20.5 9v6M6.5 12h11"/>', 'stroke-width="2"');
+// exercise: [name, YouTube id, cue, unit] — unit is set only for lifts logged without a weight
+const GX = {
+  goblet: ['Goblet squat', '9KzZD_n2r64', 'Hold a dumbbell at your chest, sit down between your heels, chest up.'],
+  chestpress: ['Machine chest press', 'pLofEAcfsO8', 'Handles at mid-chest height, squeeze at the top, slow on the way back.'],
+  latpull: ['Lat pulldown', 'O94yEoGXtBY', 'Pull to your upper chest, elbows down and back, no swinging.'],
+  dbshoulder: ['Seated DB shoulder press', 'qEwKCR5JCog', 'Back supported, press up and slightly in, ribs down.'],
+  plank: ['Plank', 'A2b2EmIg0dA', 'Straight line from head to heels, squeeze glutes, keep breathing.', 's'],
+  legpress: ['Leg press', '8nm863C0c60', 'Feet shoulder-width mid-platform, lower until thighs are about 90°, do not lock the knees hard.'],
+  cablerow: ['Seated cable row', 'EU7bOadUsNI', 'Chest tall, pull the handle to your belly, squeeze the shoulder blades.'],
+  inclinedb: ['Incline DB press', 'hChjZQhX1Ls', 'Bench at about 30°, elbows about 45° from the body.'],
+  legcurl: ['Seated leg curl', 'S367qaHeYWU', 'Control the weight on the way back. The slow part is half the exercise.'],
+  deadbug: ['Dead bug', 'bxn9FBrt4-A', 'Lower back glued to the floor, slow opposite arm and leg.', 'reps'],
+  bench: ['Barbell bench press', 'rT7DgCr-3pg', 'Feet planted, slight arch, bar to mid-chest. Use safeties or a spotter.'],
+  latraise: ['DB lateral raise', '3VcKaXpzqRo', 'Light weight, lead with the elbows, no swinging.'],
+  pushdown: ['Cable triceps pushdown', '_w-HpW70nSQ', 'Elbows pinned to your sides.'],
+  dbcurl: ['DB biceps curl', 'XE_pHwbst04', 'Upper arms still, full stretch at the bottom.'],
+  ohp: ['Barbell overhead press', 'F3QY5vMz_6I', 'Squeeze glutes, do not lean back, press to lockout overhead.'],
+  pullup: ['Pull-up', '6zyx46Vpato', 'Cannot do one yet? Use the assisted machine or slow negatives.', 'reps'],
+  dbrow: ['One-arm DB row', 'pYcpY20QaE8', 'Knee and hand on the bench, pull to your hip, no torso twist.'],
+  revpec: ['Reverse pec deck', 'v0rJuhEa59c', 'Rear delts: light weight, arms slightly bent, squeeze back.'],
+  hammer: ['Hammer curl', '8XLxfXROrTo', 'Thumbs up, upper arms still.'],
+  ropepush: ['Rope triceps pushdown', 'd-ySLTHUgQA', 'Split the rope apart at the bottom.'],
+  squat: ['Barbell back squat', '8PMjqgR8Wa8', 'Empty bar for the first 2 weeks. Hips to at least parallel.'],
+  rdl: ['Romanian deadlift', '_oyxCn2iSjU', 'Hips back, soft knees, bar close to the legs, stop when the hamstrings stretch.'],
+  calf: ['Standing calf raise', 'SVtg-1loH4c', 'Full stretch at the bottom, pause at the top.'],
+  deadlift: ['Deadlift', 'MBbyAqvTNkU', 'Watch the full video first. Start light (40–50 kg), flat back, push the floor away.'],
+  bulgarian: ['Bulgarian split squat', 'VPhhE6bBzZE', 'Rear foot on the bench, torso slightly forward.'],
+  hipthrust: ['Hip thrust', 'Zp26q4BY5HE', 'Shoulder blades on the bench, chin tucked, squeeze glutes hard at the top.'],
+  legext: ['Leg extension', '3zWKiW9BBpo', 'Pause at the top, lower slowly.'],
+  kneeraise: ['Hanging knee raise', 'G6a5267YpHM', 'No swinging. Curl the pelvis up.', 'reps'],
+};
+// workout: exercises are [exercise, sets × reps, rest]
+const GW = {
+  fba: { name: 'Full Body A', short: 'A', when: 'Phase I · Mon / Wed / Fri', min: 45, ex: [['goblet', '3 × 8–10', '90 s'], ['chestpress', '3 × 8–10', '90 s'], ['latpull', '3 × 8–10', '90 s'], ['dbshoulder', '2 × 10–12', '90 s'], ['plank', '3 × 20–40 s', '60 s']] },
+  fbb: { name: 'Full Body B', short: 'B', when: 'Phase I · Mon / Wed / Fri', min: 45, ex: [['legpress', '3 × 10–12', '90 s'], ['cablerow', '3 × 8–10', '90 s'], ['inclinedb', '3 × 8–10', '90 s'], ['legcurl', '2 × 12–15', '60–90 s'], ['deadbug', '3 × 8 / side', '60 s']] },
+  ua: { name: 'Upper A', short: 'UA', when: 'Phase II–III · Monday', min: 60, ex: [['bench', '3 × 6–8', '2–3 min'], ['cablerow', '3 × 8–10', '2 min'], ['dbshoulder', '3 × 8–10', '2 min'], ['latpull', '3 × 10–12', '90 s'], ['latraise', '3 × 12–15', '60–90 s'], ['pushdown', '2 × 10–12', '60–90 s'], ['dbcurl', '2 × 10–12', '60–90 s']] },
+  la: { name: 'Lower A', short: 'LA', when: 'Phase II–III · Tuesday', min: 60, ex: [['squat', '3 × 6–8', '2–3 min'], ['rdl', '3 × 8–10', '2–3 min'], ['legpress', '2 × 10–12', '2 min'], ['legcurl', '3 × 10–12', '90 s'], ['calf', '3 × 10–15', '60–90 s'], ['plank', '3 × 30–45 s', '60 s']] },
+  ub: { name: 'Upper B', short: 'UB', when: 'Phase II–III · Thursday', min: 60, ex: [['ohp', '3 × 6–8', '2–3 min'], ['pullup', '3 × max (5–10)', '2 min'], ['inclinedb', '3 × 8–10', '2 min'], ['dbrow', '3 × 10–12 / side', '90 s'], ['revpec', '3 × 12–15', '60–90 s'], ['hammer', '2 × 10–12', '60–90 s'], ['ropepush', '2 × 10–12', '60–90 s']] },
+  lb: { name: 'Lower B', short: 'LB', when: 'Phase II–III · Friday', min: 60, ex: [['deadlift', '3 × 5–6', '3 min'], ['bulgarian', '3 × 8–10 / leg', '2 min'], ['hipthrust', '3 × 8–12', '2 min'], ['legext', '3 × 12–15', '90 s'], ['calf', '3 × 10–15', '60–90 s'], ['kneeraise', '3 × 8–12', '60 s']] },
+};
+const GYM_PHASES = [['I', 'Foundation', 1, 4, 'Mon / Wed / Fri · about 45 min', 'Full Body A and B, alternating'], ['II', 'Build', 5, 12, 'Mon / Tue / Thu / Fri · about 60 min', 'Upper A · Lower A · Upper B · Lower B'], ['III', 'Grow', 13, 26, 'Same four days', 'Same split, more weight every week']];
+const GYM_RULES = `## Warm-up, every session
+- **5 min** easy incline walk or bike.
+- **Ramp-up sets** for the first exercise: 1 × 10 very light, then 1 × 5 at about 70% of the working weight.
+- Rest the full time listed.
+
+## Picking the weight
+- The last rep should feel like you could do **2–3 more**. First 2 weeks: keep it that easy on every set.
+- **Progression:** top of the rep range on all sets with clean form → add the smallest step next time (+2.5 kg upper body, +5 kg lower body, machines: one plate).
+- Fell below the range? Stay at that weight and build the reps back.
+- From Phase III: the last set ends 1–2 reps short of failure.
+
+## Deload
+Every 6–8 weeks: one week at about 60% of your weights, same exercises.
+
+## Machine busy?
+Leg press ↔ hack squat · lat pulldown ↔ assisted pull-up · cable row ↔ chest-supported DB row · DB press ↔ machine press.
+
+## Off days
+Walk, 8–10k steps. Sleep 7–9 h. That is where the muscle is built.`;
+const GYM_GUIDE = `## First day, step by step
+- **Bring:** water, a small towel, this page open on your phone.
+- **Arrive 10 min early** the first time and walk the floor once: squat rack, cable tower, leg press.
+- **Finding your weight:** do one set of 10 that is clearly too light. Add a little. Repeat until a set of 8 leaves 2–3 reps in you. That is your starting weight: type it into the workout.
+- **Equipment busy?** "How many sets do you have left?" or "Can I work in?" Both are completely normal.
+- **Bad session?** Do the first three exercises and leave. It still counts.
+
+## Loading a barbell
+The empty bar is **20 kg**. Plates go on **both ends**.
+
+| Total on the bar | Plates per side |
+|---|---|
+| 20 kg | nothing, just the bar |
+| 30 kg | 1 × 5 |
+| 40 kg | 1 × 10 |
+| 50 kg | 1 × 15, or 10 + 5 |
+| 60 kg | 1 × 20 |
+| 70 kg | 20 + 5 |
+| 80 kg | 20 + 10 |
+| 100 kg | 20 + 20 |
+
+- Smallest jump: 2 × 1.25 kg = +2.5 kg total.
+- **Always use clips** on squat and bench.
+- **Bench and squat inside a rack** with the safety pins just below your bottom position, or use a spotter.
+- Some bars are 15 kg or fixed EZ bars. Check the number stamped on the end.
+
+## When life gets in the way
+- **Missed one session:** never miss twice in a row. Do it the next day; do not cram two together.
+- **No time:** first three exercises, 25 minutes. Short beats skipped.
+- **Missed a week:** nothing is lost. Same weights.
+- **2–4 weeks off:** restart at about 90% and rebuild over two weeks.
+- **Over a month off:** go back one phase for two weeks.
+- **Sick:** above the neck → train lighter. Below the neck (chest, fever) → rest until a day after it clears, restart at 90%.
+- **Travelling:** push-ups, split squats, hip thrusts, planks. 3 rounds, 20 min.
+
+## Stop and check
+- **Sharp joint pain:** stop that exercise, re-watch the video, half the weight next time. Lasts a week → doctor or physio.
+- **Dizzy or seeing spots:** sit, drink water. Usually under-eating or holding your breath.
+- **A lift going backwards two sessions running:** a recovery problem. Sleep, calories, stress.
+- **Soreness past 72 h:** repeat last week's weights.
+
+## Food
+Goal: 70 → 90 kg. About **3,100 kcal** and **150 g protein** a day, gaining 0.25–0.5 kg a week. Weight flat for 2 weeks → +300 kcal a day.`;
+
+S.gym = { day: null };
+const gPick = load('knot.gymPick', {});
+const gStart = () => load('knot.gymStart', '2026-11-16');
+const gDays = (a, b) => Math.round((parseKey(b) - parseKey(a)) / 864e5);
+const gWeek = k => Math.floor(gDays(gStart(), k) / 7) + 1;
+const gPhase = w => GYM_PHASES.find(p => w <= p[3]) || GYM_PHASES[2];
+const gTarget = w => (w <= 4 ? 3 : 4);
+// which workout the program puts on a day (null = rest). Phase I alternates A-B-A / B-A-B by counting Mon/Wed/Fri slots.
+function gPlan(k) {
+  const w = gWeek(k), wd = isoWd(k);
+  if (w < 1 || w > 26) return null;
+  if (w <= 4) { const i = [1, 3, 5].indexOf(wd); return i < 0 ? null : ((w - 1) * 3 + i) % 2 ? 'fbb' : 'fba'; }
+  return { 1: 'ua', 2: 'la', 4: 'ub', 5: 'lb' }[wd] || null;
+}
+const gLog = () => all('gym_log');
+const gFind = (day, kind, key = '') => gLog().find(r => r.day === day && r.kind === kind && (kind === 'session' || (r.key || '') === key));
+const gSet = (day, kind, key, f) => { const r = gFind(day, kind, key); return r ? update('gym_log', r.id, { key, ...f }, false) : create('gym_log', { day, kind, key, kg: null, reps: null, ...f }, false); };
+const gSess = day => gFind(day, 'session');
+const gLast = (key, before) => gLog().filter(r => r.kind === 'lift' && r.key === key && r.day < before).sort((a, b) => b.day.localeCompare(a.day))[0];
+const gNum = v => (v == null ? '' : String(+(+v).toFixed(2)));
+const gShow = (r, unit) => unit ? `${gNum(r.reps) || '–'} ${unit}` : `${gNum(r.kg) || '–'} kg × ${gNum(r.reps) || '–'}`;
+const gRestSecs = s => { const n = +([...s.matchAll(/\d+/g)].pop() || [60])[0]; return /min\s*$/.test(s) ? n * 60 : n; };
+const gClock = s => `${Math.floor(s / 60)}:${pad(s % 60)}`;
+const gKeyOf = day => { const s = gSess(day); if (s) return GW[s.key] ? s.key : null; const k = gPick[day] ?? gPlan(day); return GW[k] ? k : null; };
+const gCount = (day, w) => `${GW[w].ex.filter(([k]) => gFind(day, 'lift', k)).length} of ${GW[w].ex.length} logged`;
+const gSessions = () => gLog().filter(r => r.kind === 'session');
+
+/* ---- rest timer: counts down from the rest time of the exercise you tapped ---- */
+const GR = { end: 0, key: '', int: null, audio: null };
+function gRestPaint() {
+  const left = Math.max(0, Math.ceil((GR.end - Date.now()) / 1000));
+  document.querySelectorAll('[data-act="gym-rest"]').forEach(el => { const on = GR.int && el.dataset.key === GR.key; el.classList.toggle('run', !!on); el.textContent = on ? gClock(left) : 'Rest ' + gClock(+el.dataset.s); });
+  if (GR.int && left <= 0) {
+    clearInterval(GR.int); GR.int = null; gRestPaint(); toast('Rest over. Next set.');
+    try { const ctx = GR.audio, t0 = ctx.currentTime; [0, .28].forEach(d => { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = 880; g.gain.setValueAtTime(.0001, t0 + d); g.gain.exponentialRampToValueAtTime(.3, t0 + d + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + d + .22); o.connect(g).connect(ctx.destination); o.start(t0 + d); o.stop(t0 + d + .25); }); } catch { }
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  }
+}
+
+/* ---- views ---- */
+function gExRow(day, [key, sr, rest], i) {
+  const [name, vid, cue, unit] = GX[key], r = gFind(day, 'lift', key), last = gLast(key, day), secs = gRestSecs(rest);
+  const fld = (n, suffix, v, ph) => `<label class="gx-f"><input id="g-${n}-${key}" data-gym="${n}" inputmode="decimal" autocomplete="off" value="${gNum(v)}" placeholder="${gNum(ph) || suffix}" aria-label="${esc(name)} ${suffix}"><span>${suffix}</span></label>`;
+  return `<div class="gx${r ? ' done' : ''}" data-key="${key}" data-day="${day}">
+<div class="gx-top"><span class="gx-n">${i + 1}</span><div class="gx-main"><b>${esc(name)}</b><span class="small mute">${sr} · rest ${rest}</span></div><a class="btn sec gx-vid" href="https://youtu.be/${vid}" target="_blank" rel="noopener">Form</a></div>
+<p class="gx-cue">${esc(cue)}</p>
+<div class="gx-in">${unit ? '' : fld('kg', 'kg', r?.kg, last?.kg) + '<span class="gx-x" aria-hidden="true">×</span>'}${fld('reps', unit === 's' ? 'sec' : 'reps', r?.reps, last?.reps)}<button class="btn sec gx-rest${GR.int && GR.key === key ? ' run' : ''}" data-act="gym-rest" data-key="${key}" data-s="${secs}">Rest ${gClock(secs)}</button><button class="gx-ok" data-act="gym-ok" aria-label="Log ${esc(name)}" title="Log it (empty boxes use last time's numbers)">${I.tick}</button></div>
+<span class="small mute gx-last">${last ? `Last time: ${gShow(last, unit)} · ${fmtShort(last.day)}` : 'First time. Start light.'}</span>
+</div>`;
+}
+function gymWorkout() {
+  const t = today(), day = S.gym.day || t, mon = addDays(day, 1 - isoWd(day)), w = gWeek(day);
+  const strip = `<div class="strip g">${[...Array(7)].map((_, i) => { const k = addDays(mon, i), d = parseKey(k), s = gSess(k), p = s ? s.key : gPick[k] ?? gPlan(k); return `<button class="${k === day ? 'on' : ''}${s ? ' ok' : ''}${k === t ? ' now' : ''}" data-act="gym-day" data-k="${k}" aria-label="${fmtLong(k)}${GW[p] ? ', ' + GW[p].name : ', rest'}${s ? ', done' : ''}"><span class="wd">${WD[d.getDay()]}</span><span class="dn">${d.getDate()}</span><span class="gl">${s ? '✓' : GW[p] ? GW[p].short : '·'}</span></button>`; }).join('')}</div>`;
+  const key = gKeyOf(day), sess = gSess(day);
+  const sel = sess ? '' : `<select class="gsel" data-change="gym-pick" data-day="${day}" aria-label="Change workout">${Object.entries(GW).map(([k, v]) => `<option value="${k}"${k === key ? ' selected' : ''}>${v.name}</option>`).join('')}<option value="rest"${key ? '' : ' selected'}>Rest day</option></select>`;
+  let body;
+  if (!key) {
+    let nk = null; for (let i = 1; i <= 14 && !nk; i++) if (gPlan(addDays(day, i))) nk = addDays(day, i);
+    const nw = nk && gPlan(nk);
+    body = `<section class="card gcard"><div class="un-main"><span class="eyebrow">Rest day</span><span class="un-t">Walk, 8–10k steps</span>${nw ? `<span class="small mute">Next: ${GW[nw].name} · ${fmtLong(nk)}</span>` : ''}</div>${sel}${nw ? `<button class="btn pri" data-act="gym-pick" data-day="${day}" data-w="${nw}">Do ${GW[nw].name} now</button>` : ''}</section>`;
+  } else {
+    const W = GW[key], ph = gPhase(Math.max(1, w));
+    body = `<section class="card gcard"><div class="un-main"><span class="eyebrow">${gPlan(day) === key ? `Phase ${ph[0]} · ${ph[1]}` : 'Extra session'}</span><span class="un-t">${W.name}</span><span class="small mute">${W.ex.length} exercises · about ${W.min} min · <span data-gcount>${gCount(day, key)}</span></span></div>${sel}</section>
+<details class="card gwarm"><summary>Warm-up · 8 min</summary><p>5 min easy incline walk or bike. Then for the first exercise: 1 × 10 very light, 1 × 5 at about 70%, then the working sets.</p></details>
+<div class="card gxs" data-day="${day}" data-w="${key}">${W.ex.map((e, i) => gExRow(day, e, i)).join('')}</div>
+${sess ? `<section class="card gcard gdone"><div class="un-main"><span class="eyebrow">Session done</span><span class="un-t">${W.name} logged</span></div><button class="btn sec" data-act="gym-unfinish" data-day="${day}">Undo</button></section>` : `<button class="btn pri gfin" data-act="gym-finish" data-day="${day}" data-w="${key}">${I.tick}Finish session</button>`}
+<p class="small mute gx-help">Type the weight and reps of your best set. The tick logs it; empty boxes reuse last time's numbers. Clear both boxes to remove a lift.</p>`;
+  }
+  return `<div class="gweek"><button class="icon-btn" data-act="gym-week" data-v="-7" aria-label="Previous week">${I.back}</button><b>${w >= 1 && w <= 26 ? `Week ${w}` : 'Off program'} <span class="mute">· ${fmtShort(mon)} – ${fmtShort(addDays(mon, 6))}</span></b><button class="icon-btn" data-act="gym-week" data-v="7" aria-label="Next week">${I.right}</button></div>
+${strip}
+<h2 class="sec-h"><span>${day === t ? 'Today' : fmtLong(day)}</span>${day === t ? '' : `<button class="glink" data-act="gym-day" data-k="${t}">Back to today</button>`}</h2>
+${body}`;
+}
+function gymPlanTab() {
+  const t = today(), s = gStart(), wk = gWeek(t);
+  const phases = GYM_PHASES.map(([n, name, a, b, days, what]) => { const cur = wk >= a && wk <= b, done = wk > b; return `<div class="card gph${cur ? ' cur' : ''}${done ? ' past' : ''}"><span class="eyebrow">Phase ${n} · weeks ${a}–${b}${cur ? ' · now' : done ? ' · done' : ''}</span><b>${name}</b><span class="small mute">${fmtShort(addDays(s, (a - 1) * 7))} – ${fmtShort(addDays(s, b * 7 - 1))}</span><span class="small">${days}</span><span class="small mute">${what}</span>${cur ? `<div class="pbar"><i style="width:${Math.round((wk - a) / (b - a + 1) * 100)}%"></i></div>` : ''}</div>`; }).join('');
+  const workouts = Object.entries(GW).map(([k, W]) => `<details class="card gwo"${gKeyOf(t) === k ? ' open' : ''}><summary><b>${W.name}</b><span class="small mute">${W.when} · ${W.ex.length} exercises</span></summary>${W.ex.map(([x, sr, rest], i) => `<div class="gwo-r"><span class="gx-n">${i + 1}</span><span class="gwo-n">${esc(GX[x][0])}</span><span class="small mute">${sr}<br>rest ${rest}</span><a class="btn sec gx-vid" href="https://youtu.be/${GX[x][1]}" target="_blank" rel="noopener">Form</a></div>`).join('')}</details>`).join('');
+  const checks = [[4, 'Week 4', 'Trained 10 times or more? Every lift heavier than week 1? Move to Phase II.'], [8, 'Week 8', 'Bodyweight up about 2–4 kg? Flat for 2 weeks → +300 kcal a day.'], [12, 'Week 12', 'Progress photo against day 1. Weights up 30–60% is normal.'], [26, 'Month 6', 'Pick a fresh program.']];
+  return `<h2 class="sec-h">Phases</h2><div class="gphs">${phases}</div>
+<h2 class="sec-h">Workouts</h2>${workouts}
+<h2 class="sec-h">Rules</h2><section class="card pad"><div class="md">${md(GYM_RULES)}</div></section>
+<h2 class="sec-h">Checkpoints</h2><div class="card">${checks.map(([w, l, txt]) => `<div class="gck${wk > w ? ' past' : ''}"><b>${l}<span class="small mute"> · ${fmtShort(addDays(s, w * 7 - 1))}</span></b><span class="small mute">${txt}</span></div>`).join('')}</div>
+<h2 class="sec-h">Program start</h2><section class="card pad"><label class="fld" style="max-width:220px">First Monday of week 1<input type="date" data-change="gym-start" value="${s}"></label></section>`;
+}
+const gSpark = v => { if (!v.length) return ''; const lo = Math.min(...v), hi = Math.max(...v), X = i => v.length === 1 ? 36 : 3 + i * 66 / (v.length - 1), Y = x => hi === lo ? 11 : 19 - (x - lo) / (hi - lo) * 16; return `<svg class="gspark" viewBox="0 0 72 22" width="72" height="22" aria-hidden="true">${v.length > 1 ? `<polyline points="${v.map((x, i) => X(i).toFixed(1) + ',' + Y(x).toFixed(1)).join(' ')}"/>` : ''}<circle cx="${X(v.length - 1).toFixed(1)}" cy="${Y(v[v.length - 1]).toFixed(1)}" r="2.6"/></svg>`; };
+function gBwChart(rows) {
+  if (!rows.length) return '<p class="mute" style="margin:0">No weigh-ins yet. Add one above.</p>';
+  const d0 = rows[0].day, k0 = rows[0].kg, wx = r => gDays(d0, r.day) / 7, W = 420, H = 200, L = 34, R = 22, T = 12, B = 28;
+  const xm = Math.max(12, Math.ceil(wx(rows[rows.length - 1])) + 2), lo = Math.floor(Math.min(...rows.map(r => r.kg)) - 1), hi = Math.ceil(Math.max(k0 + .5 * xm, ...rows.map(r => r.kg)) + 1), st = hi - lo > 14 ? 5 : 2;
+  const X = x => L + x / xm * (W - L - R), Y = y => T + (hi - y) / (hi - lo) * (H - T - B), P = (x, y) => X(x).toFixed(1) + ',' + Y(y).toFixed(1);
+  let g = '';
+  for (let y = Math.ceil(lo / st) * st; y <= hi; y += st) g += `<line class="gr" x1="${L}" x2="${W - R}" y1="${Y(y).toFixed(1)}" y2="${Y(y).toFixed(1)}"/><text x="${L - 6}" y="${(Y(y) + 4).toFixed(1)}" text-anchor="end">${y}</text>`;
+  for (let x = 0; x <= xm; x += 4) g += `<text x="${X(x).toFixed(1)}" y="${H - 8}" text-anchor="middle">${x ? 'wk ' + x : 'start'}</text>`;
+  return `<svg class="gchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Bodyweight over time against the target band">${g}<polygon class="band" points="${P(0, k0)} ${P(xm, k0 + .5 * xm)} ${P(xm, k0 + .25 * xm)}"/><polyline class="ln" points="${rows.map(r => P(wx(r), r.kg)).join(' ')}"/>${rows.map(r => `<circle cx="${X(wx(r)).toFixed(1)}" cy="${Y(r.kg).toFixed(1)}" r="3.6"><title>${fmtShort(r.day)} · ${gNum(r.kg)} kg</title></circle>`).join('')}</svg><p class="small mute" style="margin:8px 0 0">Shaded band = the target, +0.25 to +0.5 kg a week from your first weigh-in.</p>`;
+}
+function gymProgress() {
+  const t = today(), mon = addDays(t, 1 - isoWd(t)), wk = Math.max(1, gWeek(t)), ss = gSessions(), days = new Set(ss.map(r => r.day));
+  const thisWeek = ss.filter(r => r.day >= mon && r.day <= addDays(mon, 6)).length, tgt = gTarget(wk);
+  const bw = gLog().filter(r => r.kind === 'bw' && r.kg != null).sort((a, b) => a.day.localeCompare(b.day)), b0 = bw[0], b1 = bw[bw.length - 1];
+  const grid = `<div class="heat gheat">${['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(x => `<span class="gh-h">${x}</span>`).join('')}${[...Array(28)].map((_, i) => { const k = addDays(mon, i - 21); return `<span class="hm ${days.has(k) ? 'l4' : gPlan(k) && k < t ? 'l1' : ''}${k === t ? ' now' : ''}" title="${fmtShort(k)}${days.has(k) ? ' · trained' : ''}"></span>`; }).join('')}</div>`;
+  const lifts = Object.entries(GX).map(([key, [name, , , unit]]) => {
+    const rows = gLog().filter(r => r.kind === 'lift' && r.key === key).sort((a, b) => a.day.localeCompare(b.day));
+    if (!rows.length) return '';
+    const val = r => unit ? (r.reps || 0) : (r.kg || 0) * (1 + (r.reps || 0) / 30), v = rows.map(val), last = rows[rows.length - 1], diff = v[v.length - 1] - v[0];
+    return `<details class="glift"><summary><span class="gl-n"><b>${esc(name)}</b><span class="small mute">${rows.length} ${rows.length === 1 ? 'entry' : 'entries'}${rows.length > 1 && diff ? ` · <span class="${diff > 0 ? 'gup' : 'late'}">${diff > 0 ? '+' : ''}${unit ? diff + ' ' + unit : Math.round(diff / v[0] * 100) + '%'}</span>` : ''}</span></span>${gSpark(v)}<span class="gl-v">${gShow(last, unit)}</span></summary>${rows.slice().reverse().map(r => `<div class="gl-r"><span>${fmtShort(r.day)}</span><span>${gShow(r, unit)}</span></div>`).join('')}</details>`;
+  }).join('');
+  return `<div class="w-grid" style="margin-top:16px">
+<div class="card w-stat"><span>This week</span><b>${thisWeek} / ${tgt}</b><div class="pbar"><i style="width:${Math.min(100, Math.round(thisWeek / tgt * 100))}%"></i></div><span class="small mute">sessions</span></div>
+<div class="card w-stat"><span>Total sessions</span><b>${ss.length}</b><span class="small mute">since ${fmtShort(gStart())}</span></div>
+<div class="card w-stat"><span>Bodyweight</span><b>${b1 ? gNum(b1.kg) + ' kg' : '–'}</b><span class="small mute">${b1 && b0 !== b1 ? `${b1.kg - b0.kg >= 0 ? '+' : ''}${gNum(b1.kg - b0.kg)} kg since ${fmtShort(b0.day)} · ` : ''}goal 90 kg</span></div></div>
+<h2 class="sec-h">Bodyweight</h2><section class="card pad">
+<form class="gbw" data-form="gym-bw"><label class="fld">Date<input type="date" name="day" value="${t}" max="${t}" required></label><label class="fld">Weight (kg)<input name="kg" inputmode="decimal" autocomplete="off" placeholder="${b1 ? gNum(b1.kg) : '70'}" required></label><button class="btn pri">Save</button></form>
+${gBwChart(bw)}
+${bw.length ? `<details class="gbw-list"><summary>All weigh-ins · ${bw.length}</summary>${bw.slice().reverse().map(r => `<div class="gl-r"><span>${fmtShort(r.day)}</span><span>${gNum(r.kg)} kg<button class="gdel" data-act="gym-del" data-id="${r.id}" aria-label="Delete weigh-in of ${fmtShort(r.day)}">${I.close}</button></span></div>`).join('')}</details>` : ''}</section>
+<h2 class="sec-h">Last 4 weeks</h2><section class="card pad">${grid}<p class="small mute" style="margin:10px 0 0">Bright = trained. Dim = planned but missed. Today has the outline.</p></section>
+<h2 class="sec-h"><span>Lifts</span><span>best set, latest</span></h2>${lifts ? `<div class="card">${lifts}</div>` : '<div class="card empty">Nothing logged yet. Log a lift in Workout and it shows up here.</div>'}`;
+}
+function viewGym(tab) {
+  tab = ['plan', 'progress', 'guide'].includes(tab) ? tab : 'workout';
+  const wk = gWeek(today()), ph = gPhase(Math.max(1, wk));
+  const body = tab === 'plan' ? gymPlanTab() : tab === 'progress' ? gymProgress() : tab === 'guide' ? `<section class="card pad" style="margin-top:16px"><div class="md">${md(GYM_GUIDE)}</div></section>` : gymWorkout();
+  return `<div class="page gym"><div class="hdr"><h1 class="title">Gym</h1><span class="chip-s lvl">${wk < 1 ? `Starts ${fmtShort(gStart())}` : wk > 26 ? 'Program finished' : `Week ${wk} · Phase ${ph[0]}`}</span></div>
+<div class="seg full" role="tablist" style="margin-top:12px">${[['workout', 'Workout', '#gym'], ['plan', 'Plan', '#gym/plan'], ['progress', 'Progress', '#gym/progress'], ['guide', 'Guide', '#gym/guide']].map(([k, l, h]) => `<a role="tab" aria-selected="${tab === k}" class="${tab === k ? 'on' : ''}" href="${h}">${l}</a>`).join('')}</div>
+${body}</div>`;
+}
+// one line on Today when the program has a session today and it is not logged yet
+function gymTodayCard() {
+  const t = today(), k = gKeyOf(t);
+  if (!k || gSess(t)) return '';
+  return `<a class="card gym-today" href="#gym"><span class="gt-i">${I.gym}</span><span class="gt-m"><b>Gym · ${GW[k].name}</b><span class="small mute">${GW[k].ex.length} exercises · about ${GW[k].min} min</span></span><span class="chev">${I.right}</span></a>`;
+}
+
+/* ---- saving ---- */
+// reads the kg / reps boxes of one exercise row; fill = empty boxes take last time's numbers
+function gSaveRow(gx, fill) {
+  const { day, key } = gx.dataset, unit = GX[key][3];
+  const val = n => { const el = gx.querySelector(`[data-gym="${n}"]`); if (!el) return null; const v = parseFloat(el.value.replace(',', '.')); return isFinite(v) && v >= 0 ? v : null; };
+  let kg = val('kg'), reps = val('reps');
+  if (fill) { const l = gLast(key, day); if (l) { if (kg == null && !unit) kg = l.kg; if (reps == null) reps = l.reps; } }
+  if (kg == null && reps == null) { const r = gFind(day, 'lift', key); if (r) update('gym_log', r.id, { deleted: true }, false); return false; }
+  gSet(day, 'lift', key, { kg, reps: reps == null ? null : Math.round(reps) });
+  return true;
+}
+Object.assign(ACTIONS, {
+  'gym-day': el => { S.gym.day = el.dataset.k; render(true); },
+  'gym-week': el => { S.gym.day = addDays(S.gym.day || today(), +el.dataset.v); render(true); },
+  'gym-pick': el => { gPick[el.dataset.day] = el.dataset.w; save('knot.gymPick', gPick); render(true); },
+  'gym-ok': el => { const gx = el.closest('.gx'); if (!gSaveRow(gx, true)) { toast('Type what you did first'); gx.querySelector('input').focus(); return; } render(true); },
+  'gym-rest': el => {
+    if (GR.int && GR.key === el.dataset.key) { clearInterval(GR.int); GR.int = null; gRestPaint(); return; }
+    try { GR.audio = GR.audio || new (window.AudioContext || window.webkitAudioContext)(); GR.audio.resume(); } catch { }
+    clearInterval(GR.int); GR.key = el.dataset.key; GR.end = Date.now() + el.dataset.s * 1000; GR.int = setInterval(gRestPaint, 250); gRestPaint();
+  },
+  'gym-finish': el => {
+    const { day, w } = el.dataset;
+    gSet(day, 'session', w, {});
+    // tick the matching task in the old GYM project too, if one is still open
+    const ts = sortTasks(openTasks().filter(x => pRoot(get('projects', x.project_id))?.name === 'GYM' && x.title.includes(GW[w].name)));
+    const task = ts.find(x => x.due === day) || ts.find(x => x.due && x.due <= day);
+    if (task) toggleTask(task.id); else { render(true); toast('Session logged'); }
+  },
+  'gym-unfinish': el => undoable('Session removed', () => { const r = gSess(el.dataset.day); if (r) update('gym_log', r.id, { deleted: true }, false); }),
+  'gym-del': el => undoable('Weigh-in deleted', () => update('gym_log', el.dataset.id, { deleted: true }, false)),
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.gym) {
+    // patch the row in place instead of re-rendering, so the next tap is never lost
+    const gx = t.closest('.gx'), box = gx.closest('.gxs');
+    gx.classList.toggle('done', gSaveRow(gx, false));
+    const c = $('[data-gcount]'); if (c) c.textContent = gCount(box.dataset.day, box.dataset.w);
+  } else if (t.dataset.change === 'gym-pick') { gPick[t.dataset.day] = t.value; save('knot.gymPick', gPick); render(true); }
+  else if (t.dataset.change === 'gym-start' && t.value) { save('knot.gymStart', t.value); render(true); }
+});
+document.addEventListener('submit', e => {
+  const f = e.target; if (f.dataset.form !== 'gym-bw') return;
+  const kg = parseFloat(f.kg.value.replace(',', '.'));
+  if (!(kg > 20 && kg < 300)) { toast('Type your weight in kg'); return; }
+  gSet(f.day.value || today(), 'bw', '', { kg }); render(true); toast('Weigh-in saved');
+});
 
 /* ============ boot ============ */
 render(true);

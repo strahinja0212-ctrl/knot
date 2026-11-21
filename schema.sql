@@ -166,3 +166,26 @@ drop trigger if exists knot_touch on public.classes;
 create trigger knot_touch before insert or update on public.classes for each row execute function public.knot_touch();
 create index if not exists classes_sync_idx on public.classes (user_id, synced_at);
 alter publication supabase_realtime add table public.classes;
+
+-- Gym log (added Nov 21 2026): what you log in the Gym tab. kind 'lift' (key = exercise, kg + reps of the top set,
+-- one row per lift per day), 'bw' (kg = bodyweight), 'session' (key = workout finished that day).
+create table if not exists public.gym_log (
+  id uuid primary key,
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  day text not null default '',
+  kind text not null default 'lift',
+  key text default '',
+  kg real,
+  reps int,
+  created_at timestamptz,
+  updated_at timestamptz not null default now(),
+  deleted boolean not null default false,
+  synced_at timestamptz not null default now()
+);
+alter table public.gym_log enable row level security;
+drop policy if exists own_rows on public.gym_log;
+create policy own_rows on public.gym_log for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop trigger if exists knot_touch on public.gym_log;
+create trigger knot_touch before insert or update on public.gym_log for each row execute function public.knot_touch();
+create index if not exists gym_log_sync_idx on public.gym_log (user_id, synced_at);
+alter publication supabase_realtime add table public.gym_log;
